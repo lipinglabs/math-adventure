@@ -1553,3 +1553,245 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
+
+/* ============================================================
+   十格阵（level-lv04）：严格 2 行 × 5 列
+   ============================================================ */
+
+.tenframe {
+  display: grid;
+  grid-template-columns: repeat(5, var(--cell, 30px));
+  grid-template-rows: repeat(2, var(--cell, 30px));
+  gap: 4px;
+  padding: 8px;
+  border-radius: 18px;
+  background: #FFFDF7;
+  border: 1px solid rgba(206, 180, 146, 0.5);
+  box-shadow: inset 0 2px 6px rgba(160, 130, 100, 0.14), 0 10px 22px rgba(150, 120, 90, 0.12);
+}
+
+.tf-cell {
+  border-radius: 8px;
+  background: rgba(233, 218, 196, 0.42);
+  display: grid;
+  place-items: center;
+  transition: background 220ms var(--ease-soft);
+}
+
+.tf-cell.is-on {
+  background: rgba(255, 226, 176, 0.9);
+}
+
+.tf-apple {
+  width: 84%;
+  height: 84%;
+  display: block;
+  will-change: transform;
+}
+
+.tf-apple svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 满十：格子发光呼吸 */
+.tenframe.is-full {
+  animation: tf-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes tf-glow {
+  0%, 100% {
+    box-shadow: inset 0 2px 6px rgba(160, 130, 100, 0.14), 0 10px 22px rgba(150, 120, 90, 0.12);
+  }
+  50% {
+    box-shadow: inset 0 0 0 3px rgba(255, 197, 88, 0.55), 0 12px 26px rgba(220, 160, 60, 0.26);
+  }
+}
+
+.tenframe.is-right {
+  outline: 4px solid rgba(47, 140, 106, 0.42);
+  outline-offset: 3px;
+}
+
+/* ---------------- 教学 ---------------- */
+
+.l4-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.l4-stage--pair {
+  gap: 12px;
+}
+
+.l4-ones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 120px;
+}
+
+.l4-ones--row {
+  max-width: 320px;
+}
+
+.l4-one {
+  width: 34px;
+  height: 38px;
+  display: block;
+}
+
+.l4-one svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.l4-plus {
+  font-size: 26px;
+  font-weight: 800;
+  color: #C79E6A;
+  line-height: 1;
+}
+
+.l4-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.l4-bignum {
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1;
+  color: #E0A32F;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 0 rgba(255, 255, 255, 0.85), 0 12px 24px rgba(220, 160, 60, 0.28);
+}
+
+.l4-bignum--small {
+  font-size: 62px;
+}
+
+/* ---------------- 题型 B：三个十格阵选项 ---------------- */
+
+.l4-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.tf-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D3 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 12px 20px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.tf-option:active {
+  transform: translateY(4px) scale(0.98);
+}
+
+.tf-option.is-right {
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 6px 0 #7FC3A6, 0 12px 20px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.tf-option .tenframe {
+  padding: 5px;
+  gap: 3px;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(160, 130, 100, 0.16);
+}
+
+.tf-plus {
+  font-size: 20px;
+  font-weight: 800;
+  color: #C79E6A;
+}
+
+/* ---------------- 题型 C：拖拽凑数 ---------------- */
+
+.l4-build {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+}
+
+.l4-pile-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.l4-pile {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 22px;
+  border: 2px dashed rgba(206, 180, 146, 0.85);
+  background: rgba(255, 253, 248, 0.78);
+  box-shadow: 0 8px 18px rgba(150, 120, 90, 0.1);
+  touch-action: none;
+  cursor: grab;
+  animation: pile-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes pile-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+
+.l4-pile span {
+  width: 30px;
+  height: 34px;
+  display: block;
+}
+
+.l4-pile svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.l4-pile-hint {
+  display: grid;
+  place-items: center;
+  color: #C7A681;
+}
+
+.l4-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 42px;
+  height: 46px;
+  margin: -23px 0 0 -21px;
+  pointer-events: none;
+  z-index: 999;
+  filter: drop-shadow(0 6px 10px rgba(150, 100, 80, 0.28));
+}
+
+.l4-ghost svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

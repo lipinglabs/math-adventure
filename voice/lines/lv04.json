@@ -1,0 +1,34 @@
+{
+  "level": "lv04",
+  "status": "draft",
+  "note": "Ten and Some More (numbers 11-19 with ten-frames). English only. Type A = count a ten-frame and pick the number (a*_q); type B = pick the matching ten-frame (b*_q); type C = drag apples into the boxes (c*_q). Runtime shuffles the ten questions.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's count! We have one, two, three...", "mood": "count" },
+    { "key": "t1_b", "lang": "en", "text": "Look! Ten apples fill the box. This is a ten.", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "Ten apples, and three more apples. How many in total?", "mood": "ask" },
+    { "key": "t2_b", "lang": "en", "text": "One, two, three... thirteen! One ten and three ones make thirteen.", "mood": "count" },
+
+    { "key": "t3_a", "lang": "en", "text": "Here is one ten. Add six more. What number is it?", "mood": "ask" },
+    { "key": "t3_b", "lang": "en", "text": "One ten and six ones make sixteen.", "mood": "count" },
+
+    { "key": "a1_q", "lang": "en", "text": "Look at the ten-frame. How many apples in total?", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Here is a full ten-frame. How many apples altogether?", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Count them all. How many apples do you see?", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "A ten-frame and some more apples. How many in all?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find the number fifteen.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find the number twelve.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find the number eighteen.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Put fifteen apples in the boxes.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Put thirteen apples in the boxes.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Put seventeen apples in the boxes.", "mood": "ask" }
+  ]
+}

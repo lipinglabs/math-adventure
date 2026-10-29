@@ -24,7 +24,8 @@ window.MATH_DATA = {
     spots: [
       { level: 1, x: 128, y: 520 },
       { level: 2, x: 212, y: 356 },
-      { level: 3, x: 152, y: 196 }
+      { level: 3, x: 152, y: 196 },
+      { level: 4, x: 236, y: 108 }
     ]
   },
 
@@ -183,6 +184,57 @@ window.MATH_DATA = {
         { type: 'number', a: 8, b: 3, op: '-', object: 'apple', voice: 'c1_q' },
         { type: 'number', a: 5, b: 4, op: '+', object: 'apple', voice: 'c2_q' },
         { type: 'number', a: 6, b: 2, op: '+', object: 'apple', voice: 'c3_q' }
+      ]
+    },
+
+    4: {
+      id: 4,
+      name: 'Ten and Some More',
+      status: 'ready',
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv04/t1_a.mp3',
+          'lv04/t1_b.mp3',
+          'lv04/t2_a.mp3',
+          'lv04/t2_b.mp3',
+          'lv04/t3_a.mp3',
+          'lv04/t3_b.mp3',
+
+          'lv04/a1_q.mp3',
+          'lv04/a2_q.mp3',
+          'lv04/a3_q.mp3',
+          'lv04/a4_q.mp3',
+
+          'lv04/b1_q.mp3',
+          'lv04/b2_q.mp3',
+          'lv04/b3_q.mp3',
+
+          'lv04/c1_q.mp3',
+          'lv04/c2_q.mp3',
+          'lv04/c3_q.mp3'
+        ],
+        images: []
+      },
+      // 11–19 与十格阵：4 题看阵点数字 + 3 题听数字选阵 + 3 题拖拽凑数。
+      // 十格阵一律 2 行 × 5 列；ones 表示零散苹果数，target 表示目标数。
+      questions: [
+        { type: 'count', ones: 4, voice: 'a1_q' },
+        { type: 'count', ones: 7, voice: 'a2_q' },
+        { type: 'count', ones: 2, voice: 'a3_q' },
+        { type: 'count', ones: 9, voice: 'a4_q' },
+
+        { type: 'pick', target: 15, options: [12, 15, 18], voice: 'b1_q' },
+        { type: 'pick', target: 12, options: [12, 14, 17], voice: 'b2_q' },
+        { type: 'pick', target: 18, options: [13, 16, 18], voice: 'b3_q' },
+
+        { type: 'build', target: 15, voice: 'c1_q' },
+        { type: 'build', target: 13, voice: 'c2_q' },
+        { type: 'build', target: 17, voice: 'c3_q' }
       ]
     }
   }
