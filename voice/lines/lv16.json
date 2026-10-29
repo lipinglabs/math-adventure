@@ -1,0 +1,28 @@
+{
+  "level": "lv16",
+  "status": "draft",
+  "note": "Stage 3 opener: make ten (carrying addition). Three teaching scenes — nine apples plus four, move one to fill the ten frame, then the vertical sum with the carried ten highlighted. Answer phase: watch the fill and tap / drag apples to fill the ten frame / find the wrong sentence. No self-answer during the quiz.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! Nine apples in the box, and four outside. Let's add them.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "We move one apple to fill the ten! Now the box is full.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "So, nine plus one is ten. And three more ones make thirteen.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "Nine plus four equals thirteen!", "mood": "praise" },
+    { "key": "t3_a", "lang": "en", "text": "When the ones are full, we make a new ten.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Eight apples in the box. Five more outside. How many in total?", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Nine apples in the box. Three more outside. How many in total?", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Nine apples in the box. Five more outside. How many in total?", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Eight apples in the box. Seven more outside. How many in total?", "mood": "ask" },
+
+    { "key": "b_fill_q", "lang": "en", "text": "Drag apples to fill the ten frame.", "mood": "ask" },
+    { "key": "b_total_q", "lang": "en", "text": "How many in total?", "mood": "ask" },
+
+    { "key": "c_q", "lang": "en", "text": "Find the wrong number sentence.", "mood": "ask" }
+  ]
+}

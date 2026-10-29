@@ -831,6 +831,65 @@ window.MATH_DATA = {
           { a: 12, b: 4, op: '+', shown: 18 }
         ] }
       ]
+    },
+    16: {
+      id: 16,
+      name: 'Make Ten',
+      status: 'ready',
+      // 第三阶段开场：满十进一（进位加法）。核心是「凑十」。
+      // fill  = 看动画自动凑满十格阵 → 点总数（4 题）
+      // drag  = 自己拖苹果把十格阵凑满 → 再点总数（3 题，§6.8 两段式）
+      // wrong = 三句里找错的一句（3 题，§6.11）
+      // 十格阵里一律 6–9 个，外面一律 3–7 个，和都落在 12–16（都进位）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv16/t1_a.mp3',
+          'lv16/t2_a.mp3',
+          'lv16/t2_b.mp3',
+          'lv16/t2_c.mp3',
+          'lv16/t3_a.mp3',
+          'lv16/a1_q.mp3',
+          'lv16/a2_q.mp3',
+          'lv16/a3_q.mp3',
+          'lv16/a4_q.mp3',
+          'lv16/b_fill_q.mp3',
+          'lv16/b_total_q.mp3',
+          'lv16/c_q.mp3'
+        ],
+        images: []
+      },
+      // fill: inFrame 个在十格阵里，outside 个在外面；自动飞进 10 - inFrame 个
+      // drag: 同上，但要孩子自己拖 10 - inFrame 个进去
+      questions: [
+        { type: 'fill', inFrame: 8, outside: 5, options: [12, 13, 14], voice: ['a1_q'] },
+        { type: 'fill', inFrame: 9, outside: 3, options: [11, 12, 13], voice: ['a2_q'] },
+        { type: 'fill', inFrame: 9, outside: 5, options: [13, 14, 15], voice: ['a3_q'] },
+        { type: 'fill', inFrame: 8, outside: 7, options: [14, 15, 16], voice: ['a4_q'] },
+
+        { type: 'drag', inFrame: 7, outside: 6, options: [12, 13, 14], voice: ['b_fill_q', 'b_total_q'] },
+        { type: 'drag', inFrame: 8, outside: 4, options: [11, 12, 13], voice: ['b_fill_q', 'b_total_q'] },
+        { type: 'drag', inFrame: 9, outside: 7, options: [15, 16, 17], voice: ['b_fill_q', 'b_total_q'] },
+
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 8, b: 5, op: '+', shown: 13 },
+          { a: 9, b: 6, op: '+', shown: 14 },
+          { a: 7, b: 4, op: '+', shown: 11 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 6, b: 6, op: '+', shown: 12 },
+          { a: 8, b: 7, op: '+', shown: 14 },
+          { a: 9, b: 3, op: '+', shown: 12 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 7, b: 5, op: '+', shown: 12 },
+          { a: 9, b: 8, op: '+', shown: 17 },
+          { a: 6, b: 8, op: '+', shown: 15 }
+        ] }
+      ]
     }
   }
 };
