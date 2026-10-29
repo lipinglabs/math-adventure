@@ -64,6 +64,70 @@
     return (base || '') + src;
   }
 
+  /* ---------------- 素材持久化（Cache Storage） ----------------
+     首次下载后写入 Cache Storage，同设备再次进入直接命中本地，
+     不再走网络；只有真的发生下载时才显示读条。 */
+
+  var CACHE_NAME = 'math-adventure-assets-v1';
+  var objectUrls = {};
+  var cacheReady = null;
+
+  function cacheSupported() {
+    return typeof global.caches !== 'undefined' &&
+      typeof global.fetch === 'function' &&
+      location.protocol !== 'file:';
+  }
+
+  function openAssetCache() {
+    if (cacheReady) return cacheReady;
+    if (!cacheSupported()) {
+      cacheReady = Promise.resolve(null);
+      return cacheReady;
+    }
+    cacheReady = caches.open(CACHE_NAME).then(function (cache) {
+      return cache;
+    }).catch(function () { return null; });
+    return cacheReady;
+  }
+
+  function cleanupOldAssetCaches() {
+    if (!cacheSupported() || !caches.keys) return Promise.resolve();
+    return caches.keys().then(function (keys) {
+      return Promise.all(keys.filter(function (key) {
+        return key.indexOf('math-adventure-assets-') === 0 && key !== CACHE_NAME;
+      }).map(function (key) { return caches.delete(key); }));
+    }).catch(function () { /* 忽略 */ });
+  }
+
+  function absoluteUrl(url) {
+    try { return new URL(url, location.href).href; } catch (e) { return url; }
+  }
+
+  function blobUrlFor(url, blob) {
+    if (objectUrls[url]) URL.revokeObjectURL(objectUrls[url]);
+    var obj = URL.createObjectURL(blob);
+    objectUrls[url] = obj;
+    return obj;
+  }
+
+  function readCachedAsset(cache, url) {
+    if (!cache) return Promise.resolve(null);
+    return cache.match(absoluteUrl(url)).then(function (hit) {
+      return hit ? hit.blob() : null;
+    }).catch(function () { return null; });
+  }
+
+  function downloadAsset(cache, url) {
+    return fetch(url, { credentials: 'same-origin' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var copy = res.clone();
+      return res.blob().then(function (blob) {
+        if (cache) cache.put(absoluteUrl(url), copy).catch(function () { /* 配额满则跳过 */ });
+        return blob;
+      });
+    });
+  }
+
   /* ---------------- 运动预算 ----------------
      每个一次性动画节点在开始时占 1 个名额，animationend（或兜底超时）
      立即释放，并从 DOM 移除。这样可以保证「同屏运动元素 ≤ 10」。 */
@@ -202,41 +266,59 @@
     });
   }
 
-  function loadAudio(src, base) {
+  function loadAudio(src, base, cache, stats) {
     var url = resolveUrl(src, base);
     return new Promise(function (resolve, reject) {
       if (audioPool[url]) return resolve(url);
       if (Object.keys(audioPool).length >= LIMITS.maxAudioNodes) {
         return reject(new Error('音频元素已达上限'));
       }
-      var a = new Audio();
-      var settled = false;
 
-      function cleanup() {
-        a.removeEventListener('canplaythrough', ok);
-        a.removeEventListener('loadeddata', ok);
-        a.removeEventListener('error', bad);
-      }
-      function ok() {
-        if (settled) return;
-        settled = true; cleanup();
-        audioPool[url] = a;
-        levelAudio[url] = true;
-        resolve(url);
-      }
-      function bad() {
-        if (settled) return;
-        settled = true; cleanup();
-        try { a.src = ''; } catch (e) { /* noop */ }
-        reject(new Error('音频无法解码'));
+      var prepare;
+      if (objectUrls[url]) {
+        prepare = Promise.resolve(objectUrls[url]);
+      } else {
+        prepare = readCachedAsset(cache, url).then(function (blob) {
+          if (blob) return blobUrlFor(url, blob);
+          if (stats) stats.downloaded += 1;
+          return downloadAsset(cache, url).then(function (data) {
+            return blobUrlFor(url, data);
+          });
+        });
       }
 
-      a.preload = 'auto';
-      a.addEventListener('canplaythrough', ok);
-      a.addEventListener('loadeddata', ok);
-      a.addEventListener('error', bad);
-      a.src = url;
-      a.load();
+      prepare.then(function (playUrl) {
+        var a = new Audio();
+        var settled = false;
+
+        function cleanup() {
+          a.removeEventListener('canplaythrough', ok);
+          a.removeEventListener('loadeddata', ok);
+          a.removeEventListener('error', bad);
+        }
+        function ok() {
+          if (settled) return;
+          settled = true; cleanup();
+          audioPool[url] = a;
+          levelAudio[url] = true;
+          resolve(url);
+        }
+        function bad() {
+          if (settled) return;
+          settled = true; cleanup();
+          try { a.src = ''; } catch (e) { /* noop */ }
+          reject(new Error('音频无法解码'));
+        }
+
+        a.preload = 'auto';
+        a.addEventListener('canplaythrough', ok);
+        a.addEventListener('loadeddata', ok);
+        a.addEventListener('error', bad);
+        a.src = playUrl;
+        a.load();
+      }, function (err) {
+        reject(err instanceof Error ? err : new Error('音频下载失败'));
+      });
     });
   }
 
@@ -260,6 +342,8 @@
 
   function play(src, opts) {
     opts = opts || {};
+    // 语音互斥：默认先停掉正在播的，再播新的，避免两条题干叠在一起
+    if (opts.exclusive !== false) stopAudio();
     var url = resolveUrl(src, opts.base || '');
     var a = audioPool[url];
     if (!a) {
@@ -323,6 +407,10 @@
       if (a) {
         try { a.pause(); a.src = ''; } catch (e) { /* noop */ }
         delete audioPool[url];
+      }
+      if (objectUrls[url]) {
+        try { URL.revokeObjectURL(objectUrls[url]); } catch (e) { /* noop */ }
+        delete objectUrls[url];
       }
       delete levelAudio[url];
     });
@@ -616,13 +704,15 @@
     (assets.audio || []).forEach(function (src) {
       tasks.push({
         src: src,
-        run: function () { return loadAudio(src, base); }
+        base: base,
+        run: function (cache, stats) { return loadAudio(src, base, cache, stats); }
       });
     });
 
     (assets.images || []).forEach(function (src) {
       tasks.push({
         src: src,
+        base: '',
         run: function () { return loadImage(src); }
       });
     });
@@ -633,6 +723,7 @@
       (function (n) {
         tasks.push({
           src: 'demo/asset-' + n,
+          fake: true,
           run: function () {
             return sleep(rand(120, 380)).then(function () {
               if (options.simulateFail && n === 5) {
@@ -647,9 +738,24 @@
     return tasks;
   }
 
+  /** 统计有多少条素材不在本地缓存里（不需要真的下载） */
+  function countMissing(tasks, cache) {
+    if (!cache) return Promise.resolve(tasks.length);
+    return Promise.all(tasks.map(function (task) {
+      if (task.fake) return Promise.resolve(true);
+      var url = absoluteUrl(resolveUrl(task.src, task.base));
+      return cache.match(url).then(function (hit) { return !hit; })
+        .catch(function () { return true; });
+    })).then(function (flags) {
+      return flags.filter(Boolean).length;
+    });
+  }
+
   /**
    * 加载当前关全部素材。
-   * @returns {Promise<{ok:boolean, failed:Array, total:number, ms:number}>}
+   * · 全部命中本地缓存 → 不显示读条，静默进入
+   * · 有任何一条需要下载 → 才弹进度条
+   * @returns {Promise<{ok, failed, total, ms, downloaded}>}
    */
   function loadLevel(level, options) {
     options = options || {};
@@ -657,36 +763,63 @@
     var tasks = buildTasks(level, options);
     var done = 0;
     var failed = [];
+    var stats = { downloaded: 0 };
+    var needLoader = false;
 
-    loader.open(level && level.name ? 'Loading ' + level.name : 'Loading');
-    loader.set(0, '0 / ' + tasks.length);
-
-    function tick() {
-      loader.set(tasks.length ? done / tasks.length : 1, done + ' / ' + tasks.length);
+    function title() {
+      return level && level.name ? 'Loading ' + level.name : 'Loading';
     }
 
-    var work = Promise.all(tasks.map(function (task) {
-      return withTimeout(task.run(), LIMITS.assetTimeout).then(function () {
-        done += 1; tick();
-      }, function (err) {
-        done += 1; tick();
-        failed.push({ src: task.src, error: String((err && err.message) || err) });
-      });
-    }));
+    function openLoader() {
+      if (needLoader) return;
+      needLoader = true;
+      loader.open(title());
+      loader.set(0, '0 / ' + tasks.length);
+    }
 
-    return Promise.all([work, sleep(LIMITS.loaderMinMs)]).then(function () {
-      var ms = Date.now() - started;
-      if (failed.length) {
-        loader.fail(failed.length + ' files could not load', function () {
-          loader.close();
-          if (typeof options.onRetry === 'function') options.onRetry();
-        });
-        return { ok: false, failed: failed, total: tasks.length, ms: ms };
+    function tick() {
+      if (needLoader) {
+        loader.set(tasks.length ? done / tasks.length : 1, done + ' / ' + tasks.length);
       }
-      loader.set(1, done + ' / ' + tasks.length);
-      return sleep(180).then(function () {
-        loader.close();
-        return { ok: true, failed: [], total: tasks.length, ms: ms };
+    }
+
+    return openAssetCache().then(function (cache) {
+      return countMissing(tasks, cache).then(function (missing) {
+        if (missing > 0 || (options.simulate || 0) > 0 || !cache) openLoader();
+
+        var work = Promise.all(tasks.map(function (task) {
+          return withTimeout(task.run(cache, stats), LIMITS.assetTimeout).then(function () {
+            done += 1; tick();
+          }, function (err) {
+            done += 1; tick();
+            failed.push({ src: task.src, error: String((err && err.message) || err) });
+          });
+        }));
+
+        var minDelay = needLoader ? sleep(LIMITS.loaderMinMs) : Promise.resolve();
+
+        return Promise.all([work, minDelay]).then(function () {
+          var ms = Date.now() - started;
+
+          if (failed.length) {
+            openLoader();
+            loader.fail(failed.length + ' files could not load', function () {
+              loader.close();
+              if (typeof options.onRetry === 'function') options.onRetry();
+            });
+            return { ok: false, failed: failed, total: tasks.length, ms: ms, downloaded: stats.downloaded };
+          }
+
+          if (!needLoader) {
+            return { ok: true, failed: [], total: tasks.length, ms: ms, downloaded: 0 };
+          }
+
+          loader.set(1, done + ' / ' + tasks.length);
+          return sleep(180).then(function () {
+            loader.close();
+            return { ok: true, failed: [], total: tasks.length, ms: ms, downloaded: stats.downloaded };
+          });
+        });
       });
     });
   }
@@ -706,6 +839,8 @@
       say: say,
       stop: stopAudio,
       releaseLevel: releaseLevel,
+      init: cleanupOldAssetCaches,
+      cacheName: CACHE_NAME,
       poolSize: function () { return Object.keys(audioPool).length; }
     },
     sfx: sfx,

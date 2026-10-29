@@ -434,6 +434,7 @@
 
       if (value === answer) {
         locked = true;
+        Engine.audio.stop();          // 立刻掐掉题干，避免与下一题叠音
         key.classList.add('is-right');
         Engine.sfx.correct();
         later(function () { Engine.sfx.star(); }, 90);

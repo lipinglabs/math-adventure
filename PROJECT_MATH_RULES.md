@@ -160,6 +160,15 @@ levels_data.js  →  engine.js  →  progress.js  →  cloud.js  →  sandbox.js
 4. 退关时调用 `Engine.audio.releaseLevel()` 释放本关音频元素，避免 iOS 媒体元素累积。
 5. 单关素材体积预算：**≤ 1.5 MB**。
 
+### 4.6 素材持久化与读条显示（硬约束）
+
+1. 关卡素材首次下载后**必须写入 Cache Storage**（`math-adventure-assets-v1`）；同一设备再次进入必须直接命中本地，**不得重复下载**。
+2. **只有真正发生网络下载时才显示读条**。全部命中缓存时静默进入，不允许出现「每次都转一圈」的假加载。
+3. 缓存按版本命名：换素材时改版本号，启动时清理旧版本；禁止让旧缓存永久占空间。
+4. Cache API 不可用（隐私模式、`file://`）时降级为网络加载，并**如实**显示读条，不得假装已缓存。
+5. 退关必须释放 `blob:` URL，避免内存泄漏。
+6. 验收：同一浏览器第二次进入同一关，`downloaded === 0` 且读条从未出现。
+
 ---
 
 ## §5 视觉与动画（果冻 / 粘土）
@@ -198,6 +207,14 @@ levels_data.js  →  engine.js  →  progress.js  →  cloud.js  →  sandbox.js
 3. 允许的文案只有英文（如 `Loading`、`Level 1`、`Try again`），且必须短、可省略；面向幼儿的关键操作必须做到「不看字也能懂」。
 4. 验收断言：`/[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]/.test(document.body.innerText)` 必须为 `false`。
 5. `index.html` 的 `lang` 必须是 `en`。
+
+### 5.6 结算星效（金 / 银）
+
+1. 通关星星必须是**动态**的：通体金光（银星为银光）隐隐流动，边缘柔和泛光，光晕缓慢呼吸。
+2. **禁止旧版静态光芒条**（几根固定不动的射线），也禁止闪烁刺眼的频闪。
+3. 实现只用 CSS / SVG：光晕用 `radial-gradient` + `opacity/scale` 呼吸，星体用径向渐变 + 高光层轻微呼吸，周围点缀细小光点。
+4. 只允许 `transform` / `opacity` 参与动画，禁止逐帧改 `filter` 或 `box-shadow`；`drop-shadow` 只做静态柔光。
+5. 动画必须尊重 `prefers-reduced-motion`。
 
 ---
 
@@ -244,6 +261,13 @@ levels_data.js  →  engine.js  →  progress.js  →  cloud.js  →  sandbox.js
 - 口令：`123`。
 - 行为：内存态全解锁 + 显示 `SANDBOX` 角标 + **切断云同步** + **绝不写 localStorage**。
 - 退出：点角标 → 恢复进入前快照，重新拉取云端。
+
+### 6.7 语音互斥（绝不叠音）
+
+1. **任意时刻只允许一条语音在播放**。`Engine.audio.play()` 默认独占：播新的之前先停掉旧的。
+2. 答对、答错、切题、结算的**瞬间**必须调用 `Engine.audio.stop()`；不得等 650ms 动画结束才停。
+3. 教学自问自答里的 1 秒停顿是「延时播下一条」，不属于叠音，但同样受独占约束。
+4. 验收：答题后 300ms 检查，处于播放状态的 `<audio>` 数量必须为 0；下一题语音开始后必须为 1。
 
 ---
 
@@ -293,6 +317,8 @@ levels_data.js  →  engine.js  →  progress.js  →  cloud.js  →  sandbox.js
 | 10 | 密钥零泄漏 | 仓库内不得出现密钥；推送清单不含 `secret` |
 | 11 | 选项规则 | 每题 4 个选项；答错后顺序必须变化、内容不变 |
 | 12 | 教学问答闭环 | 每个问句后 1 秒内必须出现答案语音，画面不得静默悬空 |
+| 13 | 素材缓存 | 第二次进入同一关：`downloaded = 0`，读条不出现 |
+| 14 | 语音互斥 | 任意时刻播放中的 `<audio>` ≤ 1；答完题 300ms 内为 0 |
 
 ---
 
@@ -304,3 +330,4 @@ levels_data.js  →  engine.js  →  progress.js  →  cloud.js  →  sandbox.js
 | 2026-10-29 | v2 | **全英文沉浸式铁律**：废止中文配音与中文 UI；唯一音色 Allison（0.85 倍）；答对只播音效；第一关定名 `Apple Addition` |
 | 2026-10-29 | v3 | 记录 48 关大纲（`docs/CURRICULUM.md`）；选择题改为 **4 个选项**，**答错立即重排** |
 | 2026-10-29 | v4 | 教学**自问自答**铁律：问句后停 1 秒必须播答案；新增 L2「Balloon Take Away」 |
+| 2026-10-29 | v5 | 素材 Cache Storage 持久化、读条仅下载时出现；语音互斥不叠音；结算星改为动态辉光 |

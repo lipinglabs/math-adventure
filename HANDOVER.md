@@ -77,6 +77,8 @@ math-adventure/
 ├─ level-lv01.js           第一关 Apple Addition：3 幕教学 + 10 题
 ├─ level-lv02.js           第二关 Balloon Take Away：3 幕教学 + 10 题（题目打乱）
 ├─ level-kit.js            关卡共用：金星 / 银星结算页
+├─ manifest.json           Web App 清单（名称 / 图标 / 立屏打开）
+├─ icons/                  应用图标：512 / 192 / 180 / 32 / maskable
 ├─ PROJECT_MATH_RULES.md   项目铁律（最高约束）
 ├─ HANDOVER.md             本文件
 ├─ config/
@@ -185,7 +187,9 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - 银星 → 金星可升级，金星不会被银星降级；
 - 合并函数：`unlockedLevel` 取最大、星级取最高、`cleared` 取并集；
 - 沙盒口令错误时弹层不关闭；口令正确后全解锁且 `localStorage` 不被改写；
-- 无效 Gist 令牌返回英文错误提示，且不残留令牌。
+- 无效 Gist 令牌返回英文错误提示，且不残留令牌；
+- 冷缓存首次进入：`downloaded = 23`、读条出现一次；二次进入：`downloaded = 0`、读条不出现；
+- 答题瞬间旧语音立即停止：答对后 300ms 播放中的 audio 为 0，下一题开始后为 1。
 
 ---
 
@@ -199,6 +203,8 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 6. **iOS 音频元素数量上限**：一次创建几十个 `<audio>` 后会静默失声。`engine.js` 限 40 个并在退关释放。
 7. **`git push` 一定失败**，不要浪费时间去试代理。
 8. **`--dump-dom` 不会等异步渲染完成**，验证交互要用 CDP。
+9. **Cache Storage 只在 https / localhost 生效**：`file://` 下会退化为每次网络加载；换素材时务必把 `engine.js` 里的 `CACHE_NAME` 版本号 +1，否则旧缓存会继续命中。
+10. **图标来自真实照片**：`tools/make_icon.py` 的 `--box` 控制裁剪范围，换照片时重跑一次即可。
 
 ---
 
@@ -213,7 +219,11 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - `cloud.js`：Gist 先合并再推送、有限退避、令牌只存本地；
 - `sandbox.js`：连点 5 次 + 口令 123，全解锁且不落盘；
 - **第一关 Apple Addition**：23 条英文语音、3 幕教学、10 题纯数字按钮、金星 / 银星结算；
-- 全英文改造：界面零中文，按钮全部 SVG 图标。
+- 全英文改造：界面零中文，按钮全部 SVG 图标；
+- 素材持久化：Cache Storage `math-adventure-assets-v1`，二次进入不重新下载、不弹读条；
+- 语音互斥：`play()` 独占 + 答对瞬间 `stop()`，实测切题时播放中的 audio ≤ 1；
+- 应用图标：由 `tools/make_icon.py` 从照片裁上半身生成；
+- 结算星效：动态金色 / 银色辉光（光晕呼吸 + 星体微亮 + 高光 + 光点），移除旧静态光芒。
 
 ### 下一步
 

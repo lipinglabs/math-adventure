@@ -1051,8 +1051,8 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 
 .result-star {
   position: relative;
-  width: 190px;
-  height: 190px;
+  width: 200px;
+  height: 200px;
   color: #F7B731;
 }
 
@@ -1067,25 +1067,6 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 
 .result-star--silver > svg {
   filter: drop-shadow(0 10px 18px rgba(140, 155, 170, 0.3));
-}
-
-.result-rays {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.result-ray {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 8px;
-  height: 40px;
-  margin: -20px 0 0 -4px;
-  border-radius: 4px;
-  background: currentColor;
-  opacity: 0.42;
-  transform: rotate(calc(var(--i) * 360deg / var(--n))) translateY(-96px);
 }
 
 .result-actions { display: flex; gap: 24px; }
@@ -1220,4 +1201,103 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   flex-direction: column;
   align-items: center;
   gap: 22px;
+}
+
+
+/* ---------------- 动态星效：光晕呼吸 / 星体微亮 / 高光流动 ---------------- */
+
+.star-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 172%;
+  height: 172%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  background: radial-gradient(circle,
+    rgba(255, 214, 110, 0.62) 0%,
+    rgba(255, 190, 60, 0.26) 38%,
+    rgba(255, 190, 60, 0) 70%);
+  animation: star-halo 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.result-star--silver .star-halo {
+  background: radial-gradient(circle,
+    rgba(235, 243, 251, 0.72) 0%,
+    rgba(170, 190, 210, 0.26) 40%,
+    rgba(170, 190, 210, 0) 72%);
+}
+
+@keyframes star-halo {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); }
+  50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+.star-svg {
+  position: relative;
+  z-index: 2;
+  animation: star-breathe 3s ease-in-out infinite;
+}
+
+.star-body { fill: url(#starGoldFill); }
+.result-star--silver .star-body { fill: url(#starSilverFill); }
+
+@keyframes star-breathe {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.03) rotate(1deg); }
+}
+
+.star-sheen {
+  transform-origin: 50% 50%;
+  animation: star-sheen 3.6s ease-in-out infinite;
+}
+
+@keyframes star-sheen {
+  0%, 100% { opacity: 0.08; transform: rotate(-5deg) scale(0.99); }
+  50% { opacity: 0.36; transform: rotate(4deg) scale(1.02); }
+}
+
+.star-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.star-sparkles i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #FFF6D0;
+  box-shadow: 0 0 10px rgba(255, 214, 120, 0.9);
+  opacity: 0;
+  animation: star-twinkle 2.8s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+.result-star--silver .star-sparkles i {
+  background: #F1F7FF;
+  box-shadow: 0 0 10px rgba(210, 230, 250, 0.95);
+}
+
+.star-sparkles i:nth-child(1) { --a: -72; --r: 104px; --d: 0s; }
+.star-sparkles i:nth-child(2) { --a: 18; --r: 112px; --d: 0.5s; }
+.star-sparkles i:nth-child(3) { --a: 96; --r: 100px; --d: 1.1s; }
+.star-sparkles i:nth-child(4) { --a: 152; --r: 116px; --d: 0.8s; }
+.star-sparkles i:nth-child(5) { --a: 212; --r: 102px; --d: 1.6s; }
+.star-sparkles i:nth-child(6) { --a: 286; --r: 110px; --d: 2.1s; }
+
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: rotate(calc(var(--a) * 1deg)) translateY(calc(var(--r) * -1)) scale(0.3);
+  }
+  45% {
+    opacity: 1;
+    transform: rotate(calc(var(--a) * 1deg)) translateY(calc(var(--r) * -1)) scale(1);
+  }
 }

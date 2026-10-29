@@ -393,6 +393,7 @@
   function boot() {
     Progress.init();
     Engine.audio.armUnlock();
+    Engine.audio.init();          // 清理旧版本素材缓存
     renderMap();
     bind();
     Cloud.init();
