@@ -15,7 +15,7 @@
 | 线上地址 | https://lipinglabs.github.io/math-adventure/ |
 | 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
-| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **第一关 Apple Addition 已完成** |
+| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 Apple Addition / L2 Balloon Take Away 已完成** |
 
 ---
 
@@ -74,7 +74,9 @@ math-adventure/
 ├─ cloud.js                Gist 云存档
 ├─ sandbox.js              连点 5 次 + 口令 123 的开发者后门
 ├─ app.js                  启动、地图渲染、路由、云存档面板
-├─ level-lv01.js           第一关 Apple Addition：3 幕教学 + 10 题 + 结算
+├─ level-lv01.js           第一关 Apple Addition：3 幕教学 + 10 题
+├─ level-lv02.js           第二关 Balloon Take Away：3 幕教学 + 10 题（题目打乱）
+├─ level-kit.js            关卡共用：金星 / 银星结算页
 ├─ PROJECT_MATH_RULES.md   项目铁律（最高约束）
 ├─ HANDOVER.md             本文件
 ├─ config/
@@ -82,6 +84,7 @@ math-adventure/
 ├─ voice/
 │  ├─ common/              4 条公共语音（ready / try_again / gold / silver）
 │  ├─ lv01/                19 条第一关语音
+│  ├─ lv02/                19 条第二关语音
 │  └─ lines/               台词清单 JSON（生成脚本的输入）
 ├─ tools/
 │  ├─ gen_tts.py           豆包 TTS 批量生成（--probe 试听 / --dry-run 校验）
@@ -91,7 +94,8 @@ math-adventure/
 │  └─ cdp-reload.mjs       本地验收：关缓存硬刷新
 └─ docs/
    ├─ CURRICULUM.md        全游戏大纲：5 阶段 48 关（唯一事实来源）
-   └─ LEVEL_01_DESIGN.md   第一关台词与动画方案（已实现）
+   ├─ LEVEL_01_DESIGN.md   第一关台词与动画方案（已实现）
+   └─ LEVEL_02_DESIGN.md   第二关台词与动画方案（已实现）
 ```
 
 ---
@@ -176,6 +180,8 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - 390×844 下地图 / 教学 / 答题 / 结算 / 加载 / 弹层无溢出、无重叠；
 - 10 题全对 → `gold` 且 `unlockedLevel = 2`；错一题 → `silver` 且 `unlockedLevel = 1`；
 - 每题 4 个选项；连续答错时，整体顺序与正确答案位置每次都改变，选项集合不变；
+- L2 教学实测：问句结束后 **1.10 秒**接答案语音，问答闭环成立；
+- L2 十题全对 → `gold`，`unlockedLevel = 3`；
 - 银星 → 金星可升级，金星不会被银星降级；
 - 合并函数：`unlockedLevel` 取最大、星级取最高、`cleared` 取并集；
 - 沙盒口令错误时弹层不关闭；口令正确后全解锁且 `localStorage` 不被改写；
@@ -211,7 +217,7 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 
 ### 下一步
 
-1. 第 2 关「气球减法」（`Balloon Take Away`）：沿用第一关的题型框架，新增「飞走消散」动画与 10 题数据；
-2. 关卡 2 语音按 `voice/lines/lv02.json` 新建，复用 `common/` 四条；
-3. 地图节点 2 的解锁验证（第一关金星后自动解锁）；
-4. 真机（iOS Safari / Android Chrome）音频与排版复核。
+1. 第 3 关「混合判断」：果园场景，看图判断该用加法还是减法；
+2. 题目数据与语音清单按 `docs/CURRICULUM.md` L3 落地；
+3. 真机（iOS Safari / Android Chrome）音频与排版复核；
+4. 抽空把 L1 的选项 / 结算逻辑与 L2 对齐（已共用 `Engine.quiz` 与 `LevelKit`）。

@@ -26,7 +26,7 @@
 | 关卡 | 名称 | 重点 | 台词 / 交互 |
 |---|---|---|---|
 | L1 | 苹果加法（5 以内） | 苹果落体合并动画 | "One apple, and one more. How many?" |
-| L2 | 气球减法（个位数） | 气球飞走消散动画 | "Three balloons. Pop one! How many left?" |
+| L2 | 气球减法（个位数）**（已实现）** | 气球飞走消散动画 | "Three balloons. Pop one! How many left?" |
 | L3 | 混合判断 | 果园场景，判断该用加法还是减法 | 看图选算式 |
 
 ---
@@ -182,7 +182,7 @@
 | 关卡编号 | `levels_data.js` 的 `levels.<1–48>`，编号全局唯一、不跳号 |
 | 阶段 / 知识点 | 仅用于文档与地图分区，不参与运行时逻辑 |
 | 三种教学形态 | `tutorial`（动画）→ `interactive`（场景互动）→ `quiz`（半抽象点选） |
-| 已实现 | L1 `Apple Addition`（`level-lv01.js`） |
-| 待实现 | L2 起；L2 将按「气球减法」实现，语音复用 `voice/common/` 四条 |
+| 已实现 | L1 `Apple Addition`（`level-lv01.js`）、L2 `Balloon Take Away`（`level-lv02.js`） |
+| 待实现 | L3 起；L3 为「混合判断」（果园场景，判断用加法还是减法） |
 
 > 注意：当前地图只放了 3 个节点做骨架验证。正式铺开时按阶段分屏（5 个阶段各一张地图），不要把 48 个节点塞进一张图。

@@ -1,0 +1,35 @@
+{
+  "level": "lv02",
+  "status": "draft",
+  "note": "Balloon Take Away (subtraction within 9). English only. Questions q1-q10 are shuffled at runtime, so each question carries its own voice key.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! Three balloons.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Pop! One balloon flew away.", "mood": "teach" },
+    { "key": "t1_q", "lang": "en", "text": "How many left?", "mood": "ask" },
+    { "key": "t1_c", "lang": "en", "text": "One, two. Two balloons!", "mood": "count" },
+
+    { "key": "t2_a", "lang": "en", "text": "Here are five balloons. Let's count.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Two balloons flew away!", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "One, two, three. Three balloons left.", "mood": "count" },
+
+    { "key": "t3_a", "lang": "en", "text": "The minus sign means take away.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "Five take away two equals three.", "mood": "teach" },
+
+    { "key": "q1", "lang": "en", "text": "Listen. Three balloons. One flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q2", "lang": "en", "text": "Listen. Five balloons. Two flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q3", "lang": "en", "text": "Listen. Six balloons. One flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q4", "lang": "en", "text": "Listen. Seven balloons. Four flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q5", "lang": "en", "text": "Listen. Eight balloons. Three flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q6", "lang": "en", "text": "Listen. Nine balloons. Two flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q7", "lang": "en", "text": "Listen. Four balloons. Three flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q8", "lang": "en", "text": "Listen. Nine balloons. Five flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q9", "lang": "en", "text": "Listen. Eight balloons. Six flew away. How many left? Tap the right number.", "mood": "ask" },
+    { "key": "q10", "lang": "en", "text": "Listen. Seven balloons. One flew away. How many left? Tap the right number.", "mood": "ask" }
+  ]
+}

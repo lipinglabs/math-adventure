@@ -342,24 +342,8 @@
 
   /* ---------------- 答题 ---------------- */
 
-  function shuffle(list) {
-    for (var k = list.length - 1; k > 0; k -= 1) {
-      var j = Math.floor(Math.random() * (k + 1));
-      var tmp = list[k]; list[k] = list[j]; list[j] = tmp;
-    }
-    return list;
-  }
-
-  /** 4 个选项：正确答案 + 3 个最接近的干扰项（1–5 范围内） */
   function optionsFor(answer) {
-    var pool = [];
-    for (var v = 1; v <= 5; v += 1) {
-      if (v !== answer) pool.push(v);
-    }
-    pool.sort(function (a, b) {
-      return Math.abs(a - answer) - Math.abs(b - answer) || a - b;
-    });
-    return shuffle([answer].concat(pool.slice(0, 3)));
+    return Engine.quiz.optionsFor(answer, { min: 1, max: 5, count: 4 });
   }
 
   function addObjects(group, kind, count, size) {
@@ -382,6 +366,7 @@
 
   function askQuestion(root) {
     if (!alive) return;
+    Engine.audio.stop();          // 切题先掐掉上一题残留语音，避免叠音
 
     var index = session.index;
     var q = ctx.level.questions[index];
@@ -439,15 +424,9 @@
       });
     }
 
-    /** 答错后重排：只换位置、不改内容；整体顺序与「正确答案所在位置」都必须变化 */
+    /** 答错后重排：只换位置、不改内容；顺序与答案位置都必须变化 */
     function reshuffleOptions() {
-      var before = options.join(',');
-      var beforeIndex = options.indexOf(answer);
-      for (var attempt = 0; attempt < 12; attempt += 1) {
-        shuffle(options);
-        if (options.join(',') !== before && options.indexOf(answer) !== beforeIndex) return;
-      }
-      options.push(options.shift());   // 保底：轮转一位，答案位置必定改变
+      Engine.quiz.reshuffle(options, answer);
     }
 
     function pick(value, key) {
@@ -477,6 +456,7 @@
       errorCount += 1;
       session.answer(false);
       if (errorCount === 1) {
+        Engine.audio.stop();
         later(function () { ctx.audio.play('common/try_again'); }, 240);
       }
       Engine.sfx.wrong();
@@ -500,63 +480,17 @@
 
   /* ---------------- 结算 ---------------- */
 
-  function iconButton(kind, label, onClick) {
-    var btn = el('button', 'result-btn');
-    btn.type = 'button';
-    btn.setAttribute('aria-label', label);
-    btn.innerHTML = ICONS[kind];
-    btn.addEventListener('click', function () {
-      Engine.sfx.tap();
-      onClick();
-    });
-    return btn;
-  }
-
   function showResult(star) {
     if (!currentRoot) return;
-    currentRoot.innerHTML = '';
-
-    var box = el('div', 'result');
-    var starWrap = el('div', 'result-star result-star--' + star);
-    starWrap.innerHTML = ICONS.star;
-
-    var rays = el('div', 'result-rays');
-    var rayCount = star === 'gold' ? 8 : 4;
-    for (var i = 0; i < rayCount; i += 1) {
-      var ray = el('span', 'result-ray');
-      ray.style.setProperty('--i', String(i));
-      ray.style.setProperty('--n', String(rayCount));
-      rays.appendChild(ray);
-    }
-    starWrap.appendChild(rays);
-    box.appendChild(starWrap);
-
-    var actions = el('div', 'result-actions');
-    actions.appendChild(iconButton('replay', 'Play this level again', function () {
-      ctx.restart();
-    }));
-    actions.appendChild(iconButton('home', 'Back to the map', function () {
-      ctx.exit();
-    }));
-    box.appendChild(actions);
-
-    currentRoot.appendChild(box);
-
-    animate(starWrap, [
-      { transform: 'scale(.2) rotate(-18deg)', opacity: 0 },
-      { transform: 'scale(1.14) rotate(4deg)', opacity: 1, offset: 0.7 },
-      { transform: 'scale(1) rotate(0deg)', opacity: 1 }
-    ], { duration: 700 });
-
-    animate(rays, [
-      { opacity: 0, transform: 'scale(.6)' },
-      { opacity: 1, transform: 'scale(1)' }
-    ], { duration: 600, delay: 220, easing: 'cubic-bezier(.22,.61,.36,1)' });
-
-    ctx.audio.play(star === 'gold' ? 'common/gold' : 'common/silver');
+    LevelKit.showResult(currentRoot, star, {
+      onReplay: function () { ctx.restart(); },
+      onHome: function () { ctx.exit(); },
+      play: function (key) { ctx.audio.play(key); }
+    });
   }
 
   function finish(star) {
+    Engine.audio.stop();
     ctx.complete(star);
     showResult(star);
   }

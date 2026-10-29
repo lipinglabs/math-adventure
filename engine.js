@@ -458,6 +458,47 @@
     };
   }
 
+  /* ---------------- 选择题选项（各关共用） ----------------
+     · 选项数默认 4，可在关卡配置里用 optionCount 覆盖
+     · 干扰项优先取离正确答案最近的数值
+     · 答错重排时，整体顺序与正确答案所在位置都必须变化 */
+
+  function shuffleList(list) {
+    for (var k = list.length - 1; k > 0; k -= 1) {
+      var j = Math.floor(Math.random() * (k + 1));
+      var tmp = list[k]; list[k] = list[j]; list[j] = tmp;
+    }
+    return list;
+  }
+
+  function optionsFor(answer, opts) {
+    opts = opts || {};
+    var min = opts.min == null ? 0 : opts.min;
+    var max = opts.max == null ? 9 : opts.max;
+    var count = Math.max(2, opts.count == null ? 4 : opts.count);
+
+    var pool = [];
+    for (var v = min; v <= max; v += 1) {
+      if (v !== answer) pool.push(v);
+    }
+    pool.sort(function (a, b) {
+      return Math.abs(a - answer) - Math.abs(b - answer) || a - b;
+    });
+
+    return shuffleList([answer].concat(pool.slice(0, count - 1)));
+  }
+
+  function reshuffleOptions(list, answer) {
+    var before = list.join(',');
+    var beforeIndex = list.indexOf(answer);
+    for (var attempt = 0; attempt < 12; attempt += 1) {
+      shuffleList(list);
+      if (list.join(',') !== before && list.indexOf(answer) !== beforeIndex) return list;
+    }
+    list.push(list.shift());     // 保底：轮转一位，答案位置必定改变
+    return list;
+  }
+
   /* ---------------- Three.js 扩展位 ----------------
      当前所有关卡都用 DOM / SVG 渲染。将来需要 3D 时：
        1. 在 index.html 里加 <script type="module"> 动态 import three
@@ -670,6 +711,11 @@
     sfx: sfx,
     anim: anim,
     session: createSession,
+    quiz: {
+      optionsFor: optionsFor,
+      reshuffle: reshuffleOptions,
+      shuffle: shuffleList
+    },
     three: three,
     modal: openModal,
     toast: toast,

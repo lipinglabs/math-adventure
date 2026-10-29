@@ -82,9 +82,54 @@ window.MATH_DATA = {
 
     2: {
       id: 2,
-      name: 'Apple Take Away',
-      status: 'coming',
-      assets: { audio: [], images: [] }
+      name: 'Balloon Take Away',
+      status: 'ready',
+      // 每题 4 个选项（全局铁律），干扰项优先取离答案最近的数
+      optionCount: 4,
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv02/t1_a.mp3',
+          'lv02/t1_b.mp3',
+          'lv02/t1_q.mp3',
+          'lv02/t1_c.mp3',
+          'lv02/t2_a.mp3',
+          'lv02/t2_b.mp3',
+          'lv02/t2_c.mp3',
+          'lv02/t3_a.mp3',
+          'lv02/t3_b.mp3',
+
+          'lv02/q1.mp3',
+          'lv02/q2.mp3',
+          'lv02/q3.mp3',
+          'lv02/q4.mp3',
+          'lv02/q5.mp3',
+          'lv02/q6.mp3',
+          'lv02/q7.mp3',
+          'lv02/q8.mp3',
+          'lv02/q9.mp3',
+          'lv02/q10.mp3'
+        ],
+        images: []
+      },
+      // 9 以内减法：被减数 3–9、减数 1–6，结果均 ≥ 1
+      // voice 表示该题固定的题干音频；题目顺序在运行时打乱
+      questions: [
+        { a: 3, b: 1, object: 'balloon', voice: 'q1' },
+        { a: 5, b: 2, object: 'balloon', voice: 'q2' },
+        { a: 6, b: 1, object: 'balloon', voice: 'q3' },
+        { a: 7, b: 4, object: 'balloon', voice: 'q4' },
+        { a: 8, b: 3, object: 'balloon', voice: 'q5' },
+        { a: 9, b: 2, object: 'balloon', voice: 'q6' },
+        { a: 4, b: 3, object: 'balloon', voice: 'q7' },
+        { a: 9, b: 5, object: 'balloon', voice: 'q8' },
+        { a: 8, b: 6, object: 'balloon', voice: 'q9' },
+        { a: 7, b: 1, object: 'balloon', voice: 'q10' }
+      ]
     },
 
     3: {

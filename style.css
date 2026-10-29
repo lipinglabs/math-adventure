@@ -868,7 +868,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 .tap-hint {
   position: absolute;
   left: 50%;
-  bottom: 6%;
+  bottom: 12%;
   color: #C7A681;
   opacity: 0;
   transform: translateX(-50%);
@@ -1134,3 +1134,90 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 }
 
 .q-story > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   气球（level-lv02）
+   ============================================================ */
+
+.balloon-slot {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.balloon {
+  color: #F58FA0;
+  height: calc(var(--s, 72px) * 1.18);
+}
+
+.balloon.is-bobbing {
+  animation: balloon-bob 3.4s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes balloon-bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1.6deg); }
+}
+
+.count-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #F08F72;
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.14);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 260ms var(--ease-soft), transform 320ms var(--ease-jelly);
+}
+
+.count-dot.is-on { opacity: 1; transform: scale(1); }
+
+.balloon-field {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 6px;
+  width: 264px;
+}
+
+.tut-row--balloons { gap: 8px; }
+.tut-row--tight { gap: 6px; }
+
+.dot-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #F08F72;
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.14), 0 2px 4px rgba(200, 120, 90, 0.18);
+}
+
+
+/* 教学卡片：给气球一个落点，避免大片留白 */
+.tut-frame--card {
+  width: 100%;
+  max-width: 340px;
+  min-height: 300px;
+  padding: 24px 16px;
+  border-radius: 34px;
+  background: rgba(255, 253, 248, 0.74);
+  box-shadow: 0 16px 34px rgba(150, 120, 90, 0.12), inset 0 2px 6px rgba(255, 255, 255, 0.9);
+}
+
+
+.tut-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
