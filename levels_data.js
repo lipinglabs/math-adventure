@@ -21,18 +21,19 @@ window.MATH_DATA = {
 
   map: {
     viewBox: { w: 390, h: 620 },
-    // 8 个节点：纵向步长 71 单位（实测 390×844 下 ≈ 87px），横向左右交替。
-    // 节点整块高 78px（圆盘 56 + 间距 4 + 标签 18），步长必须 > 78，否则标签会压下一颗圆盘。
+    // 9 个节点：纵向步长 62 单位（实测 390×844 下 ≈ 76px），横向左右交替。
+    // 节点整块高 70px（圆盘 50 + 间距 3 + 标签 17），步长必须 > 70，否则标签会压下一颗圆盘。
     // 最低点保证「圆盘 + 标签」不压到 .map-note，最高点不顶出 .map-wrap 上沿；改坐标必须同步改 index.html 的三条轨迹 path。
     spots: [
       { level: 1, x: 128, y: 537 },
-      { level: 2, x: 214, y: 466 },
-      { level: 3, x: 132, y: 395 },
-      { level: 4, x: 226, y: 324 },
-      { level: 5, x: 140, y: 253 },
-      { level: 6, x: 222, y: 182 },
-      { level: 7, x: 136, y: 111 },
-      { level: 8, x: 222, y: 40 }
+      { level: 2, x: 214, y: 475 },
+      { level: 3, x: 132, y: 413 },
+      { level: 4, x: 226, y: 351 },
+      { level: 5, x: 140, y: 289 },
+      { level: 6, x: 222, y: 227 },
+      { level: 7, x: 136, y: 165 },
+      { level: 8, x: 220, y: 103 },
+      { level: 9, x: 132, y: 41 }
     ]
   },
 
@@ -470,6 +471,52 @@ window.MATH_DATA = {
         { type: 'touch', a: 14, b: 3, options: [16, 17, 18], voice: ['c1_q'] },
         { type: 'touch', a: 12, b: 6, options: [17, 18, 19], voice: ['c2_q'] },
         { type: 'touch', a: 15, b: 4, options: [18, 19, 17], voice: ['c3_q'] }
+      ]
+    },
+
+    9: {
+      id: 9,
+      name: 'Quick Tap',
+      status: 'ready',
+      // 三种题型（§6.5）：tap = 3 个数字键；wrong = 3 个算式卡；flash = 3 个数字键 + 5 秒倒计时。
+      // 一律不进位：个位相加 ≤ 9。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv09/t1_a.mp3',
+          'lv09/t1_b.mp3',
+          'lv09/t2_a.mp3',
+          'lv09/t2_b.mp3',
+          'lv09/a1_q.mp3',
+          'lv09/a2_q.mp3',
+          'lv09/a3_q.mp3',
+          'lv09/a4_q.mp3',
+          'lv09/find_wrong.mp3',
+          'lv09/c1_q.mp3',
+          'lv09/c2_q.mp3',
+          'lv09/c3_q.mp3'
+        ],
+        images: []
+      },
+      // tap：a + b，三选一。
+      // wrong：三个算式里恰好一个 a + b ≠ shown，孩子要把它找出来。
+      // flash：5 秒倒计时，超时或点错都原地重做（进度条重置）。
+      questions: [
+        { type: 'tap', a: 14, b: 3, options: [16, 17, 18], voice: ['a1_q'] },
+        { type: 'tap', a: 11, b: 5, options: [15, 16, 17], voice: ['a2_q'] },
+        { type: 'tap', a: 13, b: 5, options: [17, 18, 19], voice: ['a3_q'] },
+        { type: 'tap', a: 12, b: 7, options: [18, 19, 17], voice: ['a4_q'] },
+
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 11, b: 3, shown: 14 }, { a: 12, b: 5, shown: 17 }, { a: 13, b: 4, shown: 16 }] },
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 11, b: 7, shown: 18 }, { a: 14, b: 3, shown: 18 }, { a: 12, b: 5, shown: 17 }] },
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 13, b: 6, shown: 19 }, { a: 12, b: 6, shown: 19 }, { a: 11, b: 5, shown: 16 }] },
+
+        { type: 'flash', a: 11, b: 6, options: [16, 17, 18], voice: ['c1_q'] },
+        { type: 'flash', a: 13, b: 6, options: [18, 19, 17], voice: ['c2_q'] },
+        { type: 'flash', a: 14, b: 4, options: [17, 18, 19], voice: ['c3_q'] }
       ]
     }
   }

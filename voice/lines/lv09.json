@@ -1,0 +1,29 @@
+{
+  "level": "lv09",
+  "status": "draft",
+  "note": "Quick Tap (teen numbers plus ones, no carry, pure digits). English only. Teaching has no question, so nothing to self-answer; the 1s pauses are beats before the next action. Type A (tap) = a*_q, one equation and three number keys. Type B (wrong) = the single shared find_wrong line, three number sentences with exactly one wrong. Type C (flash) = c*_q, five-second timer bar and three number keys. Runtime shuffles the ten questions and every option set.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look at the blocks. One ten and three ones. That's thirteen.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Now, we see the numbers. Ten plus three equals thirteen.", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "Let's add the ones. Two plus five equals seven.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "One ten and seven ones make seventeen.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Fourteen plus three. Tap the right answer.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Eleven plus five. Tap the right answer.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Thirteen plus five. Tap the right answer.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Twelve plus seven. Tap the right answer.", "mood": "ask" },
+
+    { "key": "find_wrong", "lang": "en", "text": "Find the wrong number sentence.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Quick! Eleven plus six equals what?", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Quick! Thirteen plus six equals what?", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Quick! Fourteen plus four equals what?", "mood": "ask" }
+  ]
+}
