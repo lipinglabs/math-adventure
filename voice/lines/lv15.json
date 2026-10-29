@@ -1,0 +1,28 @@
+{
+  "level": "lv15",
+  "status": "draft",
+  "note": "Stage 2 final challenge. English only. Scene one recaps ten-and-ones, adding and taking away, then asks a question and answers it after one second. Scene two shows the stage trophy. Answer phase mixes three types (listen and tap / drag the blocks / find the wrong sentence) with no self-answer. Gold run plays a graduation line after the gold line.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "You have learned so much! Tens and ones, adding, and taking away.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Are you ready for the final challenge of this stage?", "mood": "ask" },
+    { "key": "t1_c", "lang": "en", "text": "Yes! Let's go!", "mood": "praise" },
+    { "key": "t2_a", "lang": "en", "text": "This is the stage two trophy.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Get all ten right, and it is yours!", "mood": "ask" },
+
+    { "key": "a1_q", "lang": "en", "text": "Fifteen plus three. Tap the right answer.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Twelve plus four. Tap the right answer.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Seventeen minus five. Tap the right answer.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Eleven plus six. Tap the right answer.", "mood": "ask" },
+
+    { "key": "b_q", "lang": "en", "text": "Match the blocks to the right number.", "mood": "ask" },
+    { "key": "c_q", "lang": "en", "text": "Find the wrong number sentence.", "mood": "ask" },
+
+    { "key": "win", "lang": "en", "text": "Stage two champion! Here is your trophy!", "mood": "praise" }
+  ]
+}

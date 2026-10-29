@@ -5475,3 +5475,650 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l14-card--num { width: 96px; }
   .l14-card--solo { width: 102px; }
 }
+
+/* ============================================================
+   Final Challenge（level-lv15）：二阶结业挑战 + 结业仪式
+   ------------------------------------------------------------
+   教学：三连回顾（十格阵 / 积木加法 / 小鸟减法）→ 亮出二阶奖杯；
+   答题：听音点选、看图拖拽、找错误算式三型混合；
+   结论：金星后叠加「彩带 + 奖杯 + 专属语音」的结业仪式（§6.13），
+        彩带只跑 transform / opacity，动画结束整体销毁。
+   ============================================================ */
+
+/* ---------------- 教学第一幕：三连回顾 ---------------- */
+
+.l15-recap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 300px;
+}
+
+.l15-recap > * { grid-area: 1 / 1; }
+
+.l15-flash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 306px;
+  min-height: 132px;
+  padding: 14px 12px;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+  transition: opacity 200ms var(--ease-soft), transform 200ms var(--ease-soft);
+}
+
+.l15-flash.is-hidden { opacity: 0; pointer-events: none; }
+
+.l15-flash.is-out { opacity: 0; transform: scale(0.92); }
+
+.l15-flash.is-go {
+  box-shadow: 0 6px 0 #E7D0AE, 0 0 0 4px rgba(247, 183, 49, 0.42),
+              0 14px 26px rgba(210, 160, 60, 0.24),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+/* ---------------- 积木 / 小鸟（回顾与拖拽题共用） ---------------- */
+
+.l15-pile {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+}
+
+.l15-pack {
+  display: grid;
+  grid-template-columns: repeat(5, var(--c, 13px));
+  grid-auto-rows: var(--c, 13px);
+  gap: 2px;
+  padding: 4px;
+  border-radius: 9px;
+  background: rgba(255, 246, 226, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(214, 182, 138, 0.7),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l15-cube {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(160deg, #FFE3B8 0%, #F2BC72 62%, #DFA055 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+              inset 0 -1px 2px rgba(160, 100, 40, 0.22),
+              0 1px 0 rgba(190, 130, 60, 0.35);
+  transform-origin: 50% 100%;
+}
+
+.l15-slots {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), var(--c, 15px));
+  grid-auto-rows: var(--c, 15px);
+  gap: 3px;
+  align-content: end;
+}
+
+.l15-slot {
+  display: grid;
+  place-items: center;
+  width: var(--c, 15px);
+  height: var(--c, 15px);
+}
+
+.l15-flock {
+  display: grid;
+  grid-template-columns: repeat(4, 26px);
+  grid-auto-rows: 23px;
+  gap: 3px;
+  align-content: end;
+}
+
+.l15-fslot {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 23px;
+}
+
+.l15-bird {
+  display: block;
+  width: 26px;
+  height: 22px;
+}
+
+.l15-bird svg { width: 100%; height: 100%; display: block; }
+
+/* ---------------- 教学第二幕：奖杯预览 ---------------- */
+
+.l15-prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.l15-trophy {
+  position: relative;
+  width: 150px;
+  height: 176px;
+}
+
+.l15-trophy .l15-cup {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.l15-prize .l15-trophy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 92, 0.42) 0%, rgba(255, 214, 92, 0) 68%);
+  animation: l15-halo 2.6s ease-in-out infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.l15-ribbon {
+  padding: 7px 20px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #7A4A0C;
+  background: linear-gradient(180deg, #FFE9A8 0%, #FFC55A 100%);
+  box-shadow: 0 4px 0 #D89A2C, 0 8px 16px rgba(180, 130, 40, 0.22),
+              inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ---------------- 题型 1：听音点选 ---------------- */
+
+.l15-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l15-tile {
+  display: grid;
+  place-items: center;
+  min-width: 64px;
+  height: 74px;
+  padding: 0 12px;
+  border-radius: 22px;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 160ms var(--ease-soft), color 160ms var(--ease-soft),
+              box-shadow 160ms var(--ease-soft);
+}
+
+.l15-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l15-tile.is-filled {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E4F8EF 0%, #B7E7D3 100%);
+  border: none;
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.22),
+              0 8px 16px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l15-op {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l15-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l15-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l15-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l15-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 题型 2：看图拖拽 ---------------- */
+
+.l15-board {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  width: 100%;
+}
+
+.l15-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.l15-col--single { justify-content: center; }
+
+.l15-blockcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 15px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 10px 18px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: grab;
+  transition: transform 130ms var(--ease-jelly), opacity 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft);
+}
+
+.l15-blockcard.is-armed {
+  transform: scale(1.05);
+  box-shadow: 0 6px 0 #E3CDAA, 0 0 0 4px rgba(232, 160, 70, 0.42),
+              0 12px 20px rgba(150, 120, 90, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l15-blockcard.is-dragging { opacity: 0.26; }
+
+.l15-blockcard.is-used { opacity: 0.55; }
+
+.l15-numcard {
+  position: relative;
+  width: 104px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF3D6 0%, #FFD98E 100%);
+  box-shadow: 0 5px 0 #E3B25E, 0 9px 16px rgba(160, 120, 60, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: background 180ms var(--ease-soft), color 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft);
+}
+
+.l15-num {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.55);
+}
+
+.l15-numcard.is-matched {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E6F8F0 0%, #B7E7D3 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.26),
+              0 10px 18px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l15-numcard.is-bad {
+  box-shadow: 0 5px 0 #DE8B84, 0 0 0 4px rgba(201, 80, 74, 0.26),
+              0 9px 16px rgba(190, 110, 100, 0.2);
+}
+
+.l15-check {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: #4FB07C;
+  box-shadow: 0 2px 0 #3E9468, 0 4px 8px rgba(60, 130, 100, 0.3);
+}
+
+.l15-ghost {
+  position: fixed;
+  margin: 0;
+  transform: translate(-50%, -50%) scale(1.05);
+  pointer-events: none;
+  z-index: 900;
+  opacity: 0.98;
+  box-shadow: 0 14px 24px rgba(120, 90, 60, 0.26), 0 5px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* ---------------- 题型 3：找错误算式 ---------------- */
+
+.l15-sents {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.l15-scard {
+  position: relative;
+  width: 246px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l15-scard:active { transform: translateY(4px) scale(0.98); }
+
+.l15-scard.is-right {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l15-sent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.l15-stile {
+  min-width: 36px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  color: #6B4E31;
+  background: #FFF9EE;
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 2px 0 rgba(198, 168, 128, 0.4);
+  transition: transform 240ms var(--ease-soft), opacity 200ms var(--ease-soft),
+              background 220ms var(--ease-soft), color 220ms var(--ease-soft);
+}
+
+.l15-stile--res {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+}
+
+.l15-sop {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+/* 点对后：错误结果翻一下，换成正确答案（§6.11 改正演示） */
+.l15-stile.is-flip {
+  transform: rotateX(88deg) scaleX(0.6);
+  opacity: 0;
+}
+
+.l15-stile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l15-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* ---------------- 二阶结业仪式（§6.13） ---------------- */
+
+.l15-ceremony {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #FFFBEC 0%, #FFF0CE 46%, #F9DFAE 100%);
+  animation: l15-cer-in 260ms ease-out both;
+}
+
+.l15-ceremony.is-out { animation: l15-cer-out 380ms ease-in both; }
+
+@keyframes l15-cer-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes l15-cer-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.l15-rays {
+  position: absolute;
+  width: 470px;
+  height: 470px;
+  border-radius: 50%;
+  opacity: 0.62;
+  background: repeating-conic-gradient(from 0deg,
+    rgba(255, 190, 62, 0.22) 0deg 6deg,
+    rgba(255, 190, 62, 0) 6deg 26deg);
+  animation: l15-spin 16s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes l15-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.l15-halo {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 92, 0.55) 0%, rgba(255, 214, 92, 0) 68%);
+  animation: l15-halo 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes l15-halo {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.l15-rings {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.l15-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 186, 60, 0.75);
+  animation: l15-ring 1.7s ease-out 200ms both;
+}
+
+.l15-ring--b { animation-delay: 560ms; }
+
+@keyframes l15-ring {
+  0% { transform: scale(0.35); opacity: 0; }
+  28% { opacity: 0.9; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.l15-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.l15-confetti-piece {
+  position: absolute;
+  top: -12%;
+  left: var(--x, 50%);
+  width: var(--w, 8px);
+  height: var(--h, 12px);
+  border-radius: 2px;
+  background: var(--c, #FFC94F);
+  opacity: 0;
+  animation: l15-fall var(--t, 2600ms) var(--d, 0ms) cubic-bezier(.3,.6,.45,1) both;
+}
+
+@keyframes l15-fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
+  6% { opacity: 1; }
+  100% { transform: translate3d(var(--dx, 0), 118vh, 0) rotate(var(--spin, 180deg)); opacity: 0.95; }
+}
+
+.l15-trophy--final {
+  position: relative;
+  z-index: 3;
+  width: 186px;
+  height: 216px;
+  animation: l15-rise 780ms cubic-bezier(.34,1.56,.64,1) both;
+  filter: drop-shadow(0 16px 22px rgba(180, 120, 20, 0.28));
+}
+
+@keyframes l15-rise {
+  0% { transform: translateY(52px) scale(0.58); opacity: 0; }
+  62% { transform: translateY(-9px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.l15-ribbon--final {
+  position: relative;
+  z-index: 4;
+  margin-top: 2px;
+  padding: 9px 26px;
+  font-size: 21px;
+  letter-spacing: 0.16em;
+  animation: l15-ribbon-in 560ms cubic-bezier(.34,1.56,.64,1) 400ms both;
+}
+
+@keyframes l15-ribbon-in {
+  0% { transform: translateY(16px) scale(0.6); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.l15-sparkles {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.l15-spark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #FFFDF0 0%, #FFD75E 55%, rgba(255, 215, 94, 0) 74%);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  animation: l15-twinkle 1.8s ease-in-out infinite;
+}
+
+.l15-spark--0 { left: 6%; top: 22%; animation-delay: 0s; }
+.l15-spark--1 { left: 84%; top: 16%; animation-delay: 0.3s; width: 12px; height: 12px; }
+.l15-spark--2 { left: 14%; top: 68%; animation-delay: 0.6s; width: 13px; height: 13px; }
+.l15-spark--3 { left: 78%; top: 62%; animation-delay: 0.9s; }
+.l15-spark--4 { left: 46%; top: 4%; animation-delay: 1.2s; width: 11px; height: 11px; }
+.l15-spark--5 { left: 52%; top: 86%; animation-delay: 1.5s; width: 12px; height: 12px; }
+
+@keyframes l15-twinkle {
+  0%, 100% { transform: scale(0.4); opacity: 0.15; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+/* 仪式结束后留在结算页上的小徽章 */
+.l15-grad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 6px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #FFF3C9 0%, #FFD778 100%);
+  box-shadow: 0 3px 0 #E0AC3F, 0 8px 14px rgba(180, 130, 40, 0.2),
+              inset 0 2px 0 rgba(255, 255, 255, 0.75);
+}
+
+.l15-grad-cup {
+  display: block;
+  width: 26px;
+  height: 30px;
+}
+
+.l15-grad-text {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #7A4A0C;
+}
+
+/* 窄屏：拖拽板两列收窄 */
+@media (max-width: 379px) {
+  .l15-board { gap: 18px; }
+  .l15-scard { width: 232px; }
+}

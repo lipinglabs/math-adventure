@@ -773,6 +773,64 @@ window.MATH_DATA = {
         { type: 'reverse', target: 16, voice: ['c3_q'],
           eqs: [{ a: 13, b: 3, op: '+' }, { a: 18, b: 4, op: '-' }, { a: 11, b: 6, op: '+' }] }
       ]
+    },
+    15: {
+      id: 15,
+      name: 'Final Challenge',
+      status: 'ready',
+      // 二阶结业挑战（§6.13）：10 题混合大考，题型与顺序全随机。
+      // tap    = 听音点选（算式卡 + 3 个数字键），4 题
+      // blocks = 看图拖拽（一捆十块 + n 块零散 → 拖到数字卡），3 题
+      // wrong  = 找错误算式（三句里恰好一句错，答对后翻成正确答案），3 题
+      // 一律不进位 / 不退位；金星后追加二阶结业仪式（彩带 + 奖杯 + 专属语音）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv15/t1_a.mp3',
+          'lv15/t1_b.mp3',
+          'lv15/t1_c.mp3',
+          'lv15/t2_a.mp3',
+          'lv15/t2_b.mp3',
+          'lv15/a1_q.mp3',
+          'lv15/a2_q.mp3',
+          'lv15/a3_q.mp3',
+          'lv15/a4_q.mp3',
+          'lv15/b_q.mp3',
+          'lv15/c_q.mp3',
+          'lv15/win.mp3'
+        ],
+        images: []
+      },
+      // wrong 题的三句里恰好一句 value ≠ shown，另外两句真的成立（§6.11）。
+      questions: [
+        { type: 'tap', a: 15, b: 3, op: '+', options: [18, 17, 19], voice: ['a1_q'] },
+        { type: 'tap', a: 12, b: 4, op: '+', options: [16, 15, 17], voice: ['a2_q'] },
+        { type: 'tap', a: 17, b: 5, op: '-', options: [12, 13, 11], voice: ['a3_q'] },
+        { type: 'tap', a: 11, b: 6, op: '+', options: [17, 16, 18], voice: ['a4_q'] },
+
+        { type: 'blocks', ones: 5, options: [15, 16, 17], voice: ['b_q'] },
+        { type: 'blocks', ones: 3, options: [13, 12, 14], voice: ['b_q'] },
+        { type: 'blocks', ones: 8, options: [18, 17, 19], voice: ['b_q'] },
+
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 11, b: 4, op: '+', shown: 15 },
+          { a: 16, b: 3, op: '-', shown: 13 },
+          { a: 19, b: 5, op: '-', shown: 15 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 12, b: 5, op: '+', shown: 17 },
+          { a: 18, b: 4, op: '-', shown: 14 },
+          { a: 13, b: 4, op: '+', shown: 15 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 11, b: 6, op: '+', shown: 17 },
+          { a: 18, b: 6, op: '-', shown: 12 },
+          { a: 12, b: 4, op: '+', shown: 18 }
+        ] }
+      ]
     }
   }
 };
