@@ -720,6 +720,59 @@ window.MATH_DATA = {
         { type: 'pic', ones: 4, options: [13, 14, 15], voice: ['c_q'] },
         { type: 'pic', ones: 8, options: [17, 18, 19], voice: ['c_q'] }
       ]
+    },
+    14: {
+      id: 14,
+      name: 'Match Maker',
+      status: 'ready',
+      // 拖拽配对（§6.5）：算式卡可拖，数字卡是落点，一律 3 个候选。
+      // pair   = 左 1 张算式 → 右边 3 个数字里拖到正确的那个（4 题）
+      // listen = 左 3 张算式，语音点名一张 → 拖到右边对应数字（3 题，干扰项不等于任何数字）
+      // reverse= 左边 1 个数字 → 把右边正确的算式拖过去（3 题，恰好一张成立）
+      // 一律不进位 / 不退位（二阶复习）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv14/t1_a.mp3',
+          'lv14/t1_b.mp3',
+          'lv14/t2_a.mp3',
+          'lv14/t2_b.mp3',
+          'lv14/t2_c.mp3',
+          'lv14/a_q.mp3',
+          'lv14/b1_q.mp3',
+          'lv14/b2_q.mp3',
+          'lv14/b3_q.mp3',
+          'lv14/c1_q.mp3',
+          'lv14/c2_q.mp3',
+          'lv14/c3_q.mp3'
+        ],
+        images: []
+      },
+      // 判对只看数学：算式值 === 数字卡。listen 的干扰算式故意不等于任何数字，
+      // 所以「拖错卡」永远是错的，孩子不会被「其实也对」绕晕。
+      questions: [
+        { type: 'pair', a: 14, b: 3, op: '+', numbers: [17, 18, 15], voice: ['a_q'] },
+        { type: 'pair', a: 16, b: 4, op: '-', numbers: [12, 13, 11], voice: ['a_q'] },
+        { type: 'pair', a: 11, b: 5, op: '+', numbers: [16, 17, 15], voice: ['a_q'] },
+        { type: 'pair', a: 18, b: 5, op: '-', numbers: [13, 14, 12], voice: ['a_q'] },
+
+        { type: 'listen', ask: 0, numbers: [12, 14, 17], voice: ['b1_q'],
+          eqs: [{ a: 16, b: 4, op: '-' }, { a: 11, b: 5, op: '+' }, { a: 18, b: 5, op: '-' }] },
+        { type: 'listen', ask: 0, numbers: [15, 18, 14], voice: ['b2_q'],
+          eqs: [{ a: 13, b: 5, op: '+' }, { a: 12, b: 4, op: '+' }, { a: 19, b: 6, op: '-' }] },
+        { type: 'listen', ask: 0, numbers: [11, 17, 13], voice: ['b3_q'],
+          eqs: [{ a: 16, b: 5, op: '-' }, { a: 12, b: 3, op: '+' }, { a: 19, b: 7, op: '-' }] },
+
+        { type: 'reverse', target: 18, voice: ['c1_q'],
+          eqs: [{ a: 10, b: 8, op: '+' }, { a: 12, b: 5, op: '+' }, { a: 19, b: 4, op: '-' }] },
+        { type: 'reverse', target: 14, voice: ['c2_q'],
+          eqs: [{ a: 11, b: 3, op: '+' }, { a: 16, b: 3, op: '-' }, { a: 12, b: 4, op: '+' }] },
+        { type: 'reverse', target: 16, voice: ['c3_q'],
+          eqs: [{ a: 13, b: 3, op: '+' }, { a: 18, b: 4, op: '-' }, { a: 11, b: 6, op: '+' }] }
+      ]
     }
   }
 };

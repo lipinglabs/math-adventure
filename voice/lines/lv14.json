@@ -1,0 +1,28 @@
+{
+  "level": "lv14",
+  "status": "draft",
+  "note": "Match Maker (drag an equation card onto the number card that equals it). English only. Scene one is a silent demo with a hand; scene two asks a question and answers itself after one second, then shows the drag. Answer phase never answers itself.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's match the math sentence to the answer.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Twelve plus three equals fifteen. They match!", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "Let's try another one. Eighteen minus five. Which card matches?", "mood": "ask" },
+    { "key": "t2_b", "lang": "en", "text": "The thirteen card!", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "Eighteen minus five equals thirteen.", "mood": "teach" },
+
+    { "key": "a_q", "lang": "en", "text": "Match the sentence to the right number.", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find sixteen minus four. Drag it to the right number.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find thirteen plus five. Drag it to the right number.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find sixteen minus five. Drag it to the right number.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Which sentence equals eighteen? Drag it here.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Which sentence equals fourteen? Drag it here.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Which sentence equals sixteen? Drag it here.", "mood": "ask" }
+  ]
+}

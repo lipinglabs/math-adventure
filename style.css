@@ -5287,3 +5287,191 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l13-card .l13-pack { --c: 11px; }
   .l13-card .l13-slots { --c: 13px; }
 }
+
+/* ============================================================
+   Match Maker（level-lv14）：拖拽算式卡 ↔ 数字卡配对
+   ------------------------------------------------------------
+   始终「算式可拖、数字是落点」：pair 左 1 拖到右 3；listen 左 3 选一张；
+   reverse 右边 3 张算式拖到左边那一个数字。
+   吸附 = 幽灵卡飞到目标中心 + 挤压回弹（§5.11），未命中 320ms 三段弹回（§5.9）。
+   ============================================================ */
+
+.l14-board {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.l14-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.l14-col--single { justify-content: center; }
+
+/* ---------------- 卡片 ---------------- */
+
+.l14-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 20px;
+  color: #6B4E31;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: grab;
+  transition: box-shadow 180ms var(--ease-soft), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), transform 130ms var(--ease-jelly),
+              opacity 180ms var(--ease-soft);
+}
+
+.l14-card--eq {
+  width: 160px;
+  height: 66px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l14-card--num {
+  width: 104px;
+  height: 66px;
+  background: linear-gradient(160deg, #FFF3D6 0%, #FFD98E 100%);
+  box-shadow: 0 5px 0 #E3B25E, 0 9px 16px rgba(160, 120, 60, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l14-card--solo {
+  width: 110px;
+  height: 92px;
+  border-radius: 26px;
+}
+
+.l14-eq-num {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.l14-eq-op {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l14-num {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.55);
+}
+
+.l14-card--solo .l14-num { font-size: 42px; }
+
+/* ---------------- 状态 ---------------- */
+
+/* 轻点选中：呼吸环，等第二下点在数字上 */
+.l14-card.is-armed { transform: scale(1.05); }
+
+.l14-card.is-armed::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 24px;
+  border: 3px solid rgba(232, 160, 70, 0.85);
+  pointer-events: none;
+  animation: l14-arm 1.1s ease-in-out infinite;
+}
+
+@keyframes l14-arm {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.035); }
+}
+
+/* 正在被拖走的那张：留在原位但压暗 */
+.l14-card.is-dragging { opacity: 0.24; }
+
+/* 拖拽中：数字卡亮出落点环 */
+.l14-board.is-dragging .l14-card--num {
+  box-shadow: 0 5px 0 #E3B25E, 0 0 0 3px rgba(240, 170, 90, 0.38),
+              0 9px 16px rgba(160, 120, 60, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* 配对成功：目标卡转绿 + 白勾 */
+.l14-card.is-matched {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E6F8F0 0%, #B7E7D3 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.26),
+              0 10px 18px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l14-card.is-matched .l14-eq-op { color: #62A98D; }
+
+/* 已用掉的算式卡：留在原位，淡淡发绿 */
+.l14-card.is-used {
+  color: #4E8A74;
+  background: linear-gradient(160deg, #F3FBF7 0%, #D7F0E4 100%);
+  box-shadow: 0 5px 0 #A8D8C2, 0 9px 16px rgba(80, 150, 130, 0.12);
+  opacity: 0.75;
+  cursor: default;
+}
+
+.l14-card.is-bad {
+  box-shadow: 0 5px 0 #DE8B84, 0 0 0 4px rgba(201, 80, 74, 0.26),
+              0 9px 16px rgba(190, 110, 100, 0.2);
+}
+
+.l14-check {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: #4FB07C;
+  box-shadow: 0 2px 0 #3E9468, 0 4px 8px rgba(60, 130, 100, 0.3);
+}
+
+/* ---------------- 幽灵卡与手势 ---------------- */
+
+.l14-ghost {
+  position: fixed;
+  margin: 0;
+  transform: translate(-50%, -50%) scale(1.06);
+  pointer-events: none;
+  z-index: 900;
+  opacity: 0.98;
+  box-shadow: 0 14px 24px rgba(120, 90, 60, 0.26), 0 5px 0 rgba(0, 0, 0, 0.06);
+}
+
+.l14-hand {
+  position: fixed;
+  z-index: 901;
+  transform: translate(-50%, -50%);
+  color: rgba(108, 84, 60, 0.95);
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(120, 90, 60, 0.22));
+}
+
+/* 窄屏（≤379px）：两列收窄一点，320 宽也不会挤出屏幕 */
+@media (max-width: 379px) {
+  .l14-board { gap: 18px; }
+  .l14-card--eq { width: 152px; }
+  .l14-card--num { width: 96px; }
+  .l14-card--solo { width: 102px; }
+}

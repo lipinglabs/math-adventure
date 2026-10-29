@@ -64,7 +64,7 @@
 | 关卡 | 名称 | 要点 |
 |---|---|---|
 | L13 | 两位数加减综合（Mix It Up）**（已实现）** | 点选 | 加减并排对比教学（积木飞入 / 飞走）+ 十格阵变数字；10 题纯数字点选：不进位加、不退位减、看图选数 |
-| L14 | 拖拽算式与答案配对 | 拖拽 |
+| L14 | 算式配对（Match Maker）**（已实现）** | 拖拽 | 算式卡拖到等值的数字卡上；三种题型：一对一 / 听音挑一张 / 反向挑算式（§5.14） |
 | L15 | 二阶结业挑战 | 综合 |
 
 ---
@@ -183,6 +183,6 @@
 | 阶段 / 知识点 | 仅用于文档与地图分区，不参与运行时逻辑 |
 | 三种教学形态 | `tutorial`（动画）→ `interactive`（场景互动）→ `quiz`（半抽象点选） |
 | 已实现 | L1 `Apple Addition`、L2 `Balloon Take Away`、L3 `Orchard Harvest`、L4 `Ten and Some More`、L5 `Cookie Party`、L6 `Number Link`、L7 `Block Build`、L8 `Car Garage`、L9 `Quick Tap`、L10 `Bird Branch`、L11 `Candy Share`、L12 `Lightning Math`（`level-lv12.js`） |
-| 待实现 | L14 起（拖拽算式配对、二阶结业挑战、20 以内进位与退位） |
+| 待实现 | L15 起（二阶结业挑战、20 以内进位与退位） |
 
 > 地图已按 5 大阶段分组（`levels_data.js` 的 `map.stages`），一屏只显示一个阶段；阶段内超过 6 关自动分页、左右滑动查看（铁律 §5.13）。因此后续关卡再多也不会挤。
