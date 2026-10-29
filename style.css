@@ -4379,10 +4379,10 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   100% { opacity: 0; transform: translate(-34px, 74px) scale(0.96); }
 }
 
-/* 手势悬在盘子上方，向下指着落点 */
+/* 手势在盘子下方，向上指着落点（不压「还要拖几颗」的圆点） */
 .tap-hint--plate {
   left: 50%;
-  top: -46px;
+  top: calc(100% + 4px);
   bottom: auto;
   animation: hint-in 500ms var(--ease-soft) 120ms forwards,
              hint-bob 1.8s ease-in-out 620ms infinite;
