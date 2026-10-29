@@ -253,7 +253,7 @@ svg { display: block; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 0;
   transition: transform 220ms var(--ease-jelly);
 }
@@ -264,8 +264,8 @@ svg { display: block; }
   position: relative;
   display: grid;
   place-items: center;
-  width: 76px;
-  height: 76px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
   background: linear-gradient(160deg, #ffe9c9 0%, var(--butter) 55%, var(--butter-deep) 100%);
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.07), 0 18px 26px rgba(140, 105, 70, 0.22), var(--inset-hi);
@@ -274,23 +274,23 @@ svg { display: block; }
 .node-disc::after {
   content: "";
   position: absolute;
-  inset: 9px;
+  inset: 7px;
   border-radius: 50%;
   border: 2px dashed rgba(255, 255, 255, 0.75);
 }
 
 .node-num {
   position: relative;
-  font-size: 27px;
+  font-size: 23px;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 3px 0 rgba(0, 0, 0, 0.14);
 }
 
 .node-label {
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--ink);
   background: rgba(255, 253, 248, 0.9);
@@ -314,12 +314,12 @@ svg { display: block; }
 
 .node-badge {
   position: absolute;
-  right: -6px;
-  bottom: -4px;
+  right: -4px;
+  bottom: -3px;
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 4px 8px rgba(140, 105, 70, 0.2);
@@ -2267,4 +2267,453 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   background: linear-gradient(160deg, #E9FAF2 0%, #CBEBD9 100%);
   box-shadow: 0 6px 0 #9FD3BA, 0 10px 18px rgba(80, 150, 130, 0.2),
               inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================
+   Block Build（level-lv07）：积木、捆绑、竖式、横式填空
+   ============================================================ */
+
+/* ---------------- 盘面 ---------------- */
+
+.l7-bench {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 13px;
+  padding: 6px 0;
+}
+
+/* 盘面下的柔和落影：让积木像放在桌面上，而不是浮在空中 */
+.l7-bench:not(.l7-bench--mini)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 88%;
+  height: 26px;
+  margin-left: -44%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 45%, rgba(150, 108, 66, 0.55) 0%, rgba(150, 108, 66, 0.18) 45%, rgba(150, 108, 66, 0) 78%);
+  pointer-events: none;
+}
+
+.l7-bench--solo { gap: 0; }
+.l7-bench--flat { gap: 11px; align-items: center; }
+
+.l7-bench--mini {
+  gap: 7px;
+  padding: 0;
+}
+
+.l7-plus {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+  padding-bottom: 10px;
+}
+
+.l7-bench--mini .l7-plus { font-size: 15px; padding-bottom: 4px; }
+.l7-bench--flat .l7-plus { padding-bottom: 0; align-self: center; }
+
+/* ---------------- 积木块 ---------------- */
+
+.l7-cube {
+  display: block;
+  border-radius: 5px;
+  background: linear-gradient(160deg, #FFE3B8 0%, #F2BC72 62%, #DFA055 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.8),
+              inset 0 -2px 3px rgba(160, 100, 40, 0.24),
+              0 2px 0 rgba(190, 130, 60, 0.38);
+}
+
+/* 新飞来的那几块：换个颜色，孩子一眼看出「又来了」 */
+.l7-cube--new {
+  background: linear-gradient(160deg, #FFD6CB 0%, #F5A78F 62%, #E08C74 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.8),
+              inset 0 -2px 3px rgba(170, 80, 60, 0.24),
+              0 2px 0 rgba(190, 120, 100, 0.38);
+}
+
+/* ---------------- 一捆（一个十） ---------------- */
+
+.l7-bundle {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, var(--cube, 20px));
+  grid-auto-rows: var(--cube, 20px);
+  gap: 2px;
+}
+
+.l7-bundle .l7-cube { width: var(--cube, 20px); height: var(--cube, 20px); }
+
+/* 扎带 + 绳结：一眼看出「这是捆在一起的一整捆」 */
+.l7-bundle::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: 50%;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #F7AFA5 0%, #E07F76 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(150, 80, 70, 0.28);
+}
+
+.l7-bundle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #FFCDC6 0%, #DE7C74 78%);
+  box-shadow: 0 1px 2px rgba(150, 80, 70, 0.32);
+}
+
+/* ---------------- 个位区（固定格位，动画期间不改坐标 §5.7） ---------------- */
+
+.l7-ones { position: relative; }
+
+.l7-slots {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cube, 20px));
+  grid-auto-rows: var(--cube, 20px);
+  gap: 3px;
+}
+
+.l7-slot {
+  border-radius: 5px;
+  background: rgba(206, 180, 148, 0.18);
+  box-shadow: inset 0 1px 2px rgba(150, 120, 90, 0.14);
+}
+
+.l7-slot.is-filled { background: transparent; box-shadow: none; }
+.l7-slot .l7-cube {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+
+/* ---------------- 散落 / 一小盘 ---------------- */
+
+.l7-loose {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cube, 20px));
+  gap: 4px;
+  align-content: center;
+}
+
+.l7-loose .l7-cube {
+  width: var(--cube, 20px);
+  height: var(--cube, 20px);
+  transform: rotate(-5deg);
+}
+
+.l7-loose .l7-cube:nth-child(2n) { transform: rotate(6deg); }
+
+.l7-pile {
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 2px dashed rgba(196, 166, 128, 0.55);
+  background: rgba(255, 253, 248, 0.55);
+}
+
+/* ---------------- 个位区的高亮状态 ---------------- */
+
+.l7-ones.is-focus::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 16px;
+  border: 3px dashed rgba(95, 184, 160, 0.9);
+  pointer-events: none;
+  animation: l7-focus 1.2s ease-in-out infinite;
+}
+
+@keyframes l7-focus {
+  0%, 100% { opacity: 0.45; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+.l7-ones.is-joined::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 16px;
+  border: 3px solid rgba(79, 176, 124, 0.95);
+  box-shadow: 0 0 0 7px rgba(79, 176, 124, 0.12);
+  pointer-events: none;
+  animation: l7-join 640ms var(--ease-jelly) both;
+}
+
+@keyframes l7-join {
+  from { opacity: 0; transform: scale(0.84); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.l7-badge {
+  position: absolute;
+  left: 50%;
+  top: -42px;
+  width: 44px;
+  margin-left: -22px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.l7-badge-chip {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  font-size: 23px;
+  font-weight: 800;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #B7E7D2 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* ---------------- 教学第三幕：一捆 + 竖式 ---------------- */
+
+.l7-sum {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.l7-stack { position: relative; display: inline-flex; }
+
+.l7-stack.is-ten-on::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 14px;
+  border: 3px solid rgba(255, 180, 60, 0.92);
+  pointer-events: none;
+  animation: l7-ten 1s ease-in-out infinite;
+}
+
+@keyframes l7-ten {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.l7-vert {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.l7-vrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l7-vrow--sum.is-hidden { opacity: 0; }
+.l7-vrow--sum.is-hidden .l7-vcell { pointer-events: none; }
+
+.l7-vsign {
+  width: 26px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l7-vcell {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 17px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 240ms var(--ease-soft), color 240ms var(--ease-soft);
+}
+
+.l7-vcell--blank {
+  background: transparent;
+  border: 2px dashed rgba(203, 178, 143, 0.5);
+  box-shadow: none;
+}
+
+.l7-vcell--sum {
+  color: #7A5A1E;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFD764 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 8px 14px rgba(190, 150, 60, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l7-vcell.is-ten {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF2C6 0%, #FFD46F 100%);
+  box-shadow: 0 5px 0 #DFA93F, 0 0 0 4px rgba(255, 190, 80, 0.35),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l7-vcell.is-ones {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.28),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l7-vcell.is-merged {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l7-vline {
+  align-self: stretch;
+  height: 5px;
+  margin-left: 33px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #D9BE99 0%, #C09B6B 100%);
+  transform-origin: left center;
+}
+
+/* ---------------- 横式填空 ---------------- */
+
+.l7-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l7-eq-tile {
+  display: grid;
+  place-items: center;
+  min-width: 54px;
+  height: 54px;
+  padding: 0 9px;
+  border-radius: 17px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l7-eq-op {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l7-eq-slot {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  border: 3px dashed #CBB28F;
+  background: rgba(255, 253, 248, 0.75);
+  color: #C0A582;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform 180ms var(--ease-jelly), border-color 180ms var(--ease-soft),
+              background 200ms var(--ease-soft);
+}
+
+.l7-eq-slot.is-near {
+  border-color: var(--mint-deep);
+  background: rgba(232, 250, 242, 0.95);
+  transform: scale(1.08);
+}
+
+.l7-eq-slot.is-filled {
+  border: 3px solid #9FD3BA;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l7-eq-slot.is-bad {
+  border-color: #E48B8B;
+  background: rgba(253, 236, 236, 0.95);
+  animation: l7-bad 460ms var(--ease-soft) both;
+}
+
+@keyframes l7-bad {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  55% { transform: translateX(5px); }
+  80% { transform: translateX(-2px); }
+}
+
+/* ---------------- 题型 B：三组积木卡 ---------------- */
+
+.l7-opts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+}
+
+.l7-opt {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 292px;
+  padding: 9px 12px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D3 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 10px 18px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l7-opt:active { transform: translateY(4px) scale(0.985); }
+
+.l7-opt.is-right {
+  background: linear-gradient(160deg, #E9FAF2 0%, #CBEBD9 100%);
+  box-shadow: 0 6px 0 #9FD3BA, 0 10px 18px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* ---------------- 拖数字进空格 ---------------- */
+
+.l7-key { touch-action: none; }
+
+.l7-key.is-dragging {
+  opacity: 0.32;
+  transform: scale(0.94);
+}
+
+.l7-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.08);
+  opacity: 0.96;
+  filter: drop-shadow(0 10px 14px rgba(140, 100, 60, 0.3));
 }

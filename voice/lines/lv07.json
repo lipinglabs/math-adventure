@@ -1,0 +1,40 @@
+{
+  "level": "lv07",
+  "status": "draft",
+  "note": "Block Build (teen numbers plus ones, no carry). English only. Teaching has no question, so nothing to self-answer; the 1s pauses are dramatic beats before the next action. Type A (count) = a*_a + a*_b + shared how_many: blocks appear, then more fly in, then the total is asked. a4_b reuses a2_b because both say the same sentence. Type B (pick) = b*_q, three block combos on screen. Type C (solve) = c*_q + shared put_num, tap or drag a number key into the empty box. Runtime shuffles the ten questions and every option set.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! Here is one ten and two ones. That's twelve.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Now, three more blocks come.", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "We add the ones first.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Two ones plus three ones equals five ones.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "So, twelve plus three equals fifteen! One ten and five ones.", "mood": "teach" },
+
+    { "key": "t3_a", "lang": "en", "text": "When we add, the ten stays the same.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "We only add the ones together.", "mood": "teach" },
+
+    { "key": "a1_a", "lang": "en", "text": "There are fourteen blocks.", "mood": "teach" },
+    { "key": "a1_b", "lang": "en", "text": "Two more blocks come.", "mood": "teach" },
+    { "key": "a2_a", "lang": "en", "text": "There are twelve blocks.", "mood": "teach" },
+    { "key": "a2_b", "lang": "en", "text": "Three more blocks come.", "mood": "teach" },
+    { "key": "a3_a", "lang": "en", "text": "There are thirteen blocks.", "mood": "teach" },
+    { "key": "a3_b", "lang": "en", "text": "Five more blocks come.", "mood": "teach" },
+    { "key": "a4_a", "lang": "en", "text": "There are sixteen blocks.", "mood": "teach" },
+    { "key": "how_many", "lang": "en", "text": "How many in total?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find ten plus two.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find ten plus six.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find ten plus seven.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Solve thirteen plus four.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Solve twelve plus six.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Solve fourteen plus five.", "mood": "ask" },
+    { "key": "put_num", "lang": "en", "text": "Put the number in the box.", "mood": "ask" }
+  ]
+}

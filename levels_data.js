@@ -21,16 +21,17 @@ window.MATH_DATA = {
 
   map: {
     viewBox: { w: 390, h: 620 },
-    // 6 个节点：纵向步长 93 单位（实测 390×844 下 ≈ 114px），横向左右交替。
-    // 节点整块高 104px（圆盘 76 + 间距 6 + 标签 22），步长必须 > 104，否则标签会压下一颗圆盘。
+    // 7 个节点：纵向步长 80 单位（实测 390×844 下 ≈ 98px），横向左右交替。
+    // 节点整块高 87px（圆盘 62 + 间距 5 + 标签 20），步长必须 > 87，否则标签会压下一颗圆盘。
     // 最低点保证「圆盘 + 标签」不压到 .map-note，最高点不顶出 .map-wrap 上沿；改坐标必须同步改 index.html 的三条轨迹 path。
     spots: [
-      { level: 1, x: 128, y: 526 },
-      { level: 2, x: 214, y: 433 },
-      { level: 3, x: 132, y: 340 },
-      { level: 4, x: 226, y: 247 },
-      { level: 5, x: 140, y: 154 },
-      { level: 6, x: 222, y: 61 }
+      { level: 1, x: 128, y: 531 },
+      { level: 2, x: 214, y: 451 },
+      { level: 3, x: 132, y: 370 },
+      { level: 4, x: 226, y: 290 },
+      { level: 5, x: 140, y: 209 },
+      { level: 6, x: 222, y: 128 },
+      { level: 7, x: 136, y: 48 }
     ]
   },
 
@@ -357,6 +358,61 @@ window.MATH_DATA = {
         { type: 'fill', ones: 9, options: [19, 18, 16], voice: ['c1_a', 'how_many', 'touch_num'] },
         { type: 'fill', ones: 6, options: [16, 18, 14], voice: ['c2_a', 'how_many', 'touch_num'] },
         { type: 'fill', ones: 8, options: [18, 16, 19], voice: ['c3_a', 'how_many', 'touch_num'] }
+      ]
+    },
+
+    7: {
+      id: 7,
+      name: 'Block Build',
+      status: 'ready',
+      // 三种题型（§6.5）：count = 3 个数字键；pick = 3 组积木卡；solve = 3 个可拖拽的数字键。
+      // 一律不进位：个位相加 ≤ 9，十位始终是「一捆 10 块」不动。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv07/t1_a.mp3',
+          'lv07/t1_b.mp3',
+          'lv07/t2_a.mp3',
+          'lv07/t2_b.mp3',
+          'lv07/t2_c.mp3',
+          'lv07/t3_a.mp3',
+          'lv07/t3_b.mp3',
+          'lv07/a1_a.mp3',
+          'lv07/a1_b.mp3',
+          'lv07/a2_a.mp3',
+          'lv07/a2_b.mp3',
+          'lv07/a3_a.mp3',
+          'lv07/a3_b.mp3',
+          'lv07/a4_a.mp3',
+          'lv07/how_many.mp3',
+          'lv07/b1_q.mp3',
+          'lv07/b2_q.mp3',
+          'lv07/b3_q.mp3',
+          'lv07/c1_q.mp3',
+          'lv07/c2_q.mp3',
+          'lv07/c3_q.mp3',
+          'lv07/put_num.mp3'
+        ],
+        images: []
+      },
+      // ones = 已有零散块数，add = 又飞来的块数；options 三选一，答案 = 10 + ones + add。
+      // pick 题的 combos 是三组「10 + n」，target 是听到的那个 n；solve 题答案 = a + b。
+      questions: [
+        { type: 'count', ones: 4, add: 2, options: [15, 16, 18], voice: ['a1_a', 'a1_b', 'how_many'] },
+        { type: 'count', ones: 2, add: 3, options: [13, 15, 18], voice: ['a2_a', 'a2_b', 'how_many'] },
+        { type: 'count', ones: 3, add: 5, options: [16, 18, 19], voice: ['a3_a', 'a3_b', 'how_many'] },
+        { type: 'count', ones: 6, add: 3, options: [17, 18, 19], voice: ['a4_a', 'a2_b', 'how_many'] },
+
+        { type: 'pick', target: 12, combos: [2, 5, 8], voice: ['b1_q'] },
+        { type: 'pick', target: 16, combos: [4, 6, 9], voice: ['b2_q'] },
+        { type: 'pick', target: 17, combos: [3, 7, 8], voice: ['b3_q'] },
+
+        { type: 'solve', a: 13, b: 4, options: [16, 17, 18], voice: ['c1_q', 'put_num'] },
+        { type: 'solve', a: 12, b: 6, options: [17, 18, 19], voice: ['c2_q', 'put_num'] },
+        { type: 'solve', a: 14, b: 5, options: [18, 19, 17], voice: ['c3_q', 'put_num'] }
       ]
     }
   }
