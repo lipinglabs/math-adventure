@@ -1,0 +1,18 @@
+{
+  "level": "common",
+  "status": "draft",
+  "note": "跨关共用语音。台词见 docs/LEVEL_01_DESIGN.md §6.1，确认后执行 tools/gen_tts.py 生成。",
+  "rate": -15,
+  "pitch": 2,
+  "sampleRate": 24000,
+  "voice": {
+    "zh": "zh_female_xiaoxue_uranus_bigtts",
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "try_again", "lang": "zh", "text": "再数一数，不着急。", "mood": "encourage" },
+    { "key": "gold", "lang": "zh", "text": "全部答对！金星送给你！", "mood": "praise", "pitch": 3 },
+    { "key": "silver", "lang": "zh", "text": "做完啦。再挑战一次，就能拿到金星哦。", "mood": "encourage" },
+    { "key": "coming", "lang": "zh", "text": "这一关还在路上，先去玩前面的吧。", "mood": "encourage" }
+  ]
+}

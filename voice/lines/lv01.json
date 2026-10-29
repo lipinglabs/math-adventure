@@ -1,0 +1,37 @@
+{
+  "level": "lv01",
+  "status": "draft",
+  "note": "第一关台词（待确认稿）。确认后执行：python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01",
+  "rate": -15,
+  "pitch": 2,
+  "sampleRate": 24000,
+  "voice": {
+    "zh": "zh_female_xiaoxue_uranus_bigtts",
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "zh", "text": "看，这里有一个苹果。", "mood": "teach" },
+    { "key": "t1_b", "lang": "zh", "text": "又来了一个。", "mood": "teach" },
+    { "key": "t1_c", "lang": "zh", "text": "一，二。一共两个。", "mood": "count" },
+
+    { "key": "t2_a", "lang": "zh", "text": "篮子里有两个苹果。", "mood": "teach" },
+    { "key": "t2_b", "lang": "zh", "text": "又放进两个。", "mood": "teach" },
+    { "key": "t2_c", "lang": "zh", "text": "一，二，三，四。一共四个。", "mood": "count" },
+
+    { "key": "t3_a", "lang": "zh", "text": "加号，就是把这些合在一起。", "mood": "teach" },
+    { "key": "t3_b", "lang": "zh", "text": "一加一，等于二。", "mood": "teach" },
+
+    { "key": "ready", "lang": "zh", "text": "准备好了吗？我们开始吧。", "mood": "ask" },
+
+    { "key": "q1", "lang": "zh", "text": "一个苹果，又来了一个。一共几个？", "mood": "ask" },
+    { "key": "q2", "lang": "zh", "text": "一个气球，又飘来两个。一共几个？", "mood": "ask" },
+    { "key": "q3", "lang": "zh", "text": "两条小鱼，又游来一条。一共几条？", "mood": "ask" },
+    { "key": "q4", "lang": "zh", "text": "一个苹果，又来了三个。一共几个？", "mood": "ask" },
+    { "key": "q5", "lang": "zh", "text": "三颗星星，又亮起一颗。一共几颗？", "mood": "ask" },
+    { "key": "q6", "lang": "zh", "text": "两个气球，又飘来两个。一共几个？", "mood": "ask" },
+    { "key": "q7", "lang": "zh", "text": "一条小鱼，又游来四条。一共几条？", "mood": "ask" },
+    { "key": "q8", "lang": "zh", "text": "四颗星星，又亮起一颗。一共几颗？", "mood": "ask" },
+    { "key": "q9", "lang": "zh", "text": "两个苹果，又来了三个。一共几个？", "mood": "ask" },
+    { "key": "q10", "lang": "zh", "text": "三个气球，又飘来两个。一共几个？", "mood": "ask" }
+  ]
+}
