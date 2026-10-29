@@ -1,0 +1,40 @@
+{
+  "level": "lv08",
+  "status": "draft",
+  "note": "Car Garage (teen numbers plus ones, no carry). English only. Teaching has no question, so nothing to self-answer; the 1s pauses are beats before the next action. Type A (drag) = a*_a + a*_b + shared how_many: count the cars, drag the new ones into the ones garage, then answer the total. a4_b reuses a1_b because both say the same sentence. Type B (pick) = b*_q, three garage cards mixing parked and incoming cars. Type C (touch) = c*_q, one sentence pair per file. Runtime shuffles the ten questions and every option set.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look at the garage! Here is one full row of ten cars.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "And two more cars. That's twelve cars.", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "Now, three new cars are coming.", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "We put the new cars in the ones garage.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Two cars plus three cars equals five cars.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "So, twelve plus three equals fifteen! One ten and five ones.", "mood": "teach" },
+
+    { "key": "t3_a", "lang": "en", "text": "When we add, the ten garage stays the same.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "We only add the ones garage.", "mood": "teach" },
+
+    { "key": "a1_a", "lang": "en", "text": "There are thirteen cars.", "mood": "teach" },
+    { "key": "a1_b", "lang": "en", "text": "Drag two more cars into the ones garage.", "mood": "ask" },
+    { "key": "a2_a", "lang": "en", "text": "There are fourteen cars.", "mood": "teach" },
+    { "key": "a2_b", "lang": "en", "text": "Drag three more cars into the ones garage.", "mood": "ask" },
+    { "key": "a3_a", "lang": "en", "text": "There are eleven cars.", "mood": "teach" },
+    { "key": "a3_b", "lang": "en", "text": "Drag five more cars into the ones garage.", "mood": "ask" },
+    { "key": "a4_a", "lang": "en", "text": "There are sixteen cars.", "mood": "teach" },
+    { "key": "how_many", "lang": "en", "text": "How many cars in total?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find twelve plus three.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find thirteen plus four.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find eleven plus five.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Fourteen plus three. Touch the correct number.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Twelve plus six. Touch the correct number.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Fifteen plus four. Touch the correct number.", "mood": "ask" }
+  ]
+}

@@ -21,17 +21,18 @@ window.MATH_DATA = {
 
   map: {
     viewBox: { w: 390, h: 620 },
-    // 7 个节点：纵向步长 80 单位（实测 390×844 下 ≈ 98px），横向左右交替。
-    // 节点整块高 87px（圆盘 62 + 间距 5 + 标签 20），步长必须 > 87，否则标签会压下一颗圆盘。
+    // 8 个节点：纵向步长 71 单位（实测 390×844 下 ≈ 87px），横向左右交替。
+    // 节点整块高 78px（圆盘 56 + 间距 4 + 标签 18），步长必须 > 78，否则标签会压下一颗圆盘。
     // 最低点保证「圆盘 + 标签」不压到 .map-note，最高点不顶出 .map-wrap 上沿；改坐标必须同步改 index.html 的三条轨迹 path。
     spots: [
-      { level: 1, x: 128, y: 531 },
-      { level: 2, x: 214, y: 451 },
-      { level: 3, x: 132, y: 370 },
-      { level: 4, x: 226, y: 290 },
-      { level: 5, x: 140, y: 209 },
-      { level: 6, x: 222, y: 128 },
-      { level: 7, x: 136, y: 48 }
+      { level: 1, x: 128, y: 537 },
+      { level: 2, x: 214, y: 466 },
+      { level: 3, x: 132, y: 395 },
+      { level: 4, x: 226, y: 324 },
+      { level: 5, x: 140, y: 253 },
+      { level: 6, x: 222, y: 182 },
+      { level: 7, x: 136, y: 111 },
+      { level: 8, x: 222, y: 40 }
     ]
   },
 
@@ -413,6 +414,62 @@ window.MATH_DATA = {
         { type: 'solve', a: 13, b: 4, options: [16, 17, 18], voice: ['c1_q', 'put_num'] },
         { type: 'solve', a: 12, b: 6, options: [17, 18, 19], voice: ['c2_q', 'put_num'] },
         { type: 'solve', a: 14, b: 5, options: [18, 19, 17], voice: ['c3_q', 'put_num'] }
+      ]
+    },
+
+    8: {
+      id: 8,
+      name: 'Car Garage',
+      status: 'ready',
+      // 三种题型（§6.5）：drag = 3 个数字键（先拖车）；pick = 3 张车库卡；touch = 3 个数字键。
+      // 一律不进位：个位相加 ≤ 9，十位车库永远是停满的 10 辆。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv08/t1_a.mp3',
+          'lv08/t1_b.mp3',
+          'lv08/t1_c.mp3',
+          'lv08/t2_a.mp3',
+          'lv08/t2_b.mp3',
+          'lv08/t2_c.mp3',
+          'lv08/t3_a.mp3',
+          'lv08/t3_b.mp3',
+          'lv08/a1_a.mp3',
+          'lv08/a1_b.mp3',
+          'lv08/a2_a.mp3',
+          'lv08/a2_b.mp3',
+          'lv08/a3_a.mp3',
+          'lv08/a3_b.mp3',
+          'lv08/a4_a.mp3',
+          'lv08/how_many.mp3',
+          'lv08/b1_q.mp3',
+          'lv08/b2_q.mp3',
+          'lv08/b3_q.mp3',
+          'lv08/c1_q.mp3',
+          'lv08/c2_q.mp3',
+          'lv08/c3_q.mp3'
+        ],
+        images: []
+      },
+      // drag：ones = 个位车库已有辆数，add = 车道上要拖进去的辆数，答案 = 10 + ones + add。
+      // pick：a = 个位车库停着几辆，b = 车道上有几辆（题干念 10 + a 再加 b），三张卡的 (a, b) 互不相同。
+      // touch：a + b，三选一。
+      questions: [
+        { type: 'drag', ones: 3, add: 2, options: [14, 15, 16], voice: ['a1_a', 'a1_b', 'how_many'] },
+        { type: 'drag', ones: 4, add: 3, options: [16, 17, 18], voice: ['a2_a', 'a2_b', 'how_many'] },
+        { type: 'drag', ones: 1, add: 5, options: [15, 16, 17], voice: ['a3_a', 'a3_b', 'how_many'] },
+        { type: 'drag', ones: 6, add: 2, options: [17, 18, 19], voice: ['a4_a', 'a1_b', 'how_many'] },
+
+        { type: 'pick', a: 2, b: 3, voice: ['b1_q'], options: [{ a: 2, b: 3 }, { a: 1, b: 3 }, { a: 2, b: 4 }] },
+        { type: 'pick', a: 3, b: 4, voice: ['b2_q'], options: [{ a: 3, b: 4 }, { a: 3, b: 3 }, { a: 2, b: 4 }] },
+        { type: 'pick', a: 1, b: 5, voice: ['b3_q'], options: [{ a: 1, b: 5 }, { a: 1, b: 4 }, { a: 2, b: 5 }] },
+
+        { type: 'touch', a: 14, b: 3, options: [16, 17, 18], voice: ['c1_q'] },
+        { type: 'touch', a: 12, b: 6, options: [17, 18, 19], voice: ['c2_q'] },
+        { type: 'touch', a: 15, b: 4, options: [18, 19, 17], voice: ['c3_q'] }
       ]
     }
   }

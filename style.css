@@ -253,7 +253,7 @@ svg { display: block; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   padding: 0;
   transition: transform 220ms var(--ease-jelly);
 }
@@ -264,8 +264,8 @@ svg { display: block; }
   position: relative;
   display: grid;
   place-items: center;
-  width: 62px;
-  height: 62px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: linear-gradient(160deg, #ffe9c9 0%, var(--butter) 55%, var(--butter-deep) 100%);
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.07), 0 18px 26px rgba(140, 105, 70, 0.22), var(--inset-hi);
@@ -274,23 +274,23 @@ svg { display: block; }
 .node-disc::after {
   content: "";
   position: absolute;
-  inset: 7px;
+  inset: 6px;
   border-radius: 50%;
   border: 2px dashed rgba(255, 255, 255, 0.75);
 }
 
 .node-num {
   position: relative;
-  font-size: 23px;
+  font-size: 21px;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 3px 0 rgba(0, 0, 0, 0.14);
 }
 
 .node-label {
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   color: var(--ink);
   background: rgba(255, 253, 248, 0.9);
@@ -314,12 +314,12 @@ svg { display: block; }
 
 .node-badge {
   position: absolute;
-  right: -4px;
-  bottom: -3px;
+  right: -3px;
+  bottom: -2px;
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 4px 8px rgba(140, 105, 70, 0.2);
@@ -2716,4 +2716,493 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   transform: translate(-50%, -50%) scale(1.08);
   opacity: 0.96;
   filter: drop-shadow(0 10px 14px rgba(140, 100, 60, 0.3));
+}
+
+/* ============================================================
+   Car Garage（level-lv08）：车库、车位、车道、竖式、横式
+   ============================================================ */
+
+.l8-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.l8-scene--sum { gap: 16px; }
+
+/* A 题：数字键迟一步出现，托盘要预留高度，避免车库被顶起来 */
+.lv-tray--reserved { min-height: 104px; }
+
+/* ---------------- 车库建筑 ---------------- */
+
+.l8-block {
+  position: relative;
+  padding: 10px;
+  border-radius: 22px;
+  /* 顶部那条是屋顶檐口，下面才是车位地面 */
+  background: linear-gradient(180deg, #F3C085 0%, #F3C085 8%, #FFF6E6 8%, #FBE9CC 100%);
+  box-shadow: 0 8px 0 rgba(214, 186, 150, 0.45), 0 14px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 8px rgba(255, 255, 255, 0.85);
+}
+
+.l8-block--mini { padding: 7px; border-radius: 18px; }
+
+/* 车库下方的柔和落影：让楼坐在地上，不浮空 */
+.l8-block::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  width: 86%;
+  height: 24px;
+  margin-left: -43%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, rgba(150, 108, 66, 0.28) 0%, rgba(150, 108, 66, 0) 74%);
+  pointer-events: none;
+}
+
+.l8-bays {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.l8-bay {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 14px;
+  transition: transform 180ms var(--ease-jelly), box-shadow 180ms var(--ease-soft);
+}
+
+.l8-bay--ten {
+  background: linear-gradient(180deg, #F5EAD6 0%, #E7D7B9 100%);
+  box-shadow: inset 0 2px 6px rgba(150, 120, 90, 0.16), inset 0 -2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.l8-bay--ones {
+  background: linear-gradient(180deg, #EAF4EE 0%, #D9EADD 100%);
+  box-shadow: inset 0 2px 6px rgba(110, 150, 125, 0.18), inset 0 -2px 0 rgba(255, 255, 255, 0.5);
+}
+
+.l8-lot { display: grid; }
+
+.l8-lot--ten {
+  grid-template-columns: repeat(10, var(--cw, 18px));
+  gap: 1px;
+  /* 车位分隔线：只在车与车之间露出来，读作「一排停车位」 */
+  background-image: repeating-linear-gradient(90deg,
+    rgba(160, 130, 95, 0.18) 0 1px, transparent 1px 19px);
+}
+
+.l8-lot--ones {
+  grid-template-columns: repeat(3, var(--cw, 18px));
+  gap: 2px;
+}
+
+.l8-spot {
+  display: grid;
+  place-items: center;
+  width: var(--cw, 18px);
+  height: var(--ch, 25px);
+  border-radius: 5px;
+  border: 1.5px dashed rgba(146, 190, 170, 0.7);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.l8-spot.is-filled {
+  border-color: transparent;
+  background: transparent;
+}
+
+/* ---------------- 小汽车 ---------------- */
+
+.l8-car {
+  display: block;
+  width: var(--cw, 18px);
+  height: var(--ch, 25px);
+  color: #9FD8C4;
+}
+
+.l8-car svg { display: block; width: 100%; height: 100%; }
+
+.l8-car--mint { color: #96D3BD; }
+.l8-car--sky { color: #9CC9EA; }
+.l8-car--butter { color: #F0C377; }
+.l8-car--lilac { color: #C0B2E4; }
+.l8-car--new { color: #EF937E; }
+
+/* ---------------- 车道（待进车库的新车） ---------------- */
+
+.l8-lane {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #F1E8DA 0%, #E4D8C6 100%);
+  box-shadow: inset 0 2px 5px rgba(150, 120, 90, 0.14), inset 0 -2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 车道中间那条虚线，读作「还没停进去」 */
+/* 车都进库后，车道淡出（保留占位） */
+.l8-lane.is-clear {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms var(--ease-soft);
+}
+
+.l8-lane::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 5px;
+  height: 0;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+
+.l8-pick {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 56px;
+  padding: 0;
+  border-radius: 16px;
+  background: rgba(255, 253, 248, 0.85);
+  box-shadow: 0 3px 0 rgba(198, 170, 136, 0.4), 0 5px 10px rgba(150, 120, 90, 0.12);
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--ease-jelly), opacity 200ms var(--ease-soft);
+}
+
+.l8-pick .l8-car { width: 26px; height: 35px; }
+
+.l8-pick:active { transform: scale(0.96); }
+
+.l8-pick.is-dragging { opacity: 0.34; }
+
+/* 已经停进车库的那辆：占位保留，只是看不见（§5.7 不得 reflow） */
+.l8-pick.is-gone {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.l8-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  width: 26px;
+  height: 35px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.02);
+  filter: drop-shadow(0 8px 10px rgba(150, 110, 80, 0.3));
+}
+
+.l8-ghost .l8-car { width: 100%; height: 100%; }
+
+/* ---------------- 车库状态 ---------------- */
+
+.l8-bay--ones.is-near {
+  transform: scale(1.04);
+  box-shadow: 0 0 0 3px rgba(95, 184, 160, 0.55), inset 0 2px 6px rgba(110, 150, 125, 0.18);
+}
+
+.l8-bay--ones.is-joined::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 18px;
+  border: 3px solid rgba(79, 176, 124, 0.95);
+  box-shadow: 0 0 0 6px rgba(79, 176, 124, 0.12);
+  pointer-events: none;
+  animation: l8-join 620ms var(--ease-jelly) both;
+}
+
+@keyframes l8-join {
+  from { opacity: 0; transform: scale(0.86); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.l8-bay--ten.is-ten-on::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 18px;
+  border: 3px solid rgba(255, 180, 60, 0.95);
+  pointer-events: none;
+  animation: l8-ten 1s ease-in-out infinite;
+}
+
+@keyframes l8-ten {
+  0%, 100% { opacity: 0.42; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+.l8-bay--ones.is-ones-on::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 18px;
+  border: 3px solid rgba(79, 176, 124, 0.9);
+  pointer-events: none;
+  animation: l8-ten 1s ease-in-out infinite;
+}
+
+/* ---------------- 小徽标 ---------------- */
+
+.l8-badge {
+  position: absolute;
+  left: 50%;
+  top: -40px;
+  width: 44px;
+  margin-left: -22px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.l8-badge-chip {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  font-size: 23px;
+  font-weight: 800;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #B7E7D2 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* ---------------- 教学第三幕：竖式 ---------------- */
+
+.l8-vert {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.l8-vrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l8-vrow--sum.is-hidden { opacity: 0; }
+
+.l8-vsign {
+  width: 26px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l8-vcell {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 240ms var(--ease-soft), color 240ms var(--ease-soft);
+}
+
+.l8-vcell--blank {
+  background: transparent;
+  border: 2px dashed rgba(203, 178, 143, 0.5);
+  box-shadow: none;
+}
+
+.l8-vcell--sum {
+  color: #7A5A1E;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFD764 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 8px 14px rgba(190, 150, 60, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l8-vcell.is-ten {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF2C6 0%, #FFD46F 100%);
+  box-shadow: 0 5px 0 #DFA93F, 0 0 0 4px rgba(255, 190, 80, 0.35),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l8-vcell.is-ones {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.28),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l8-vline {
+  align-self: stretch;
+  height: 5px;
+  margin-left: 33px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #D9BE99 0%, #C09B6B 100%);
+  transform-origin: left center;
+}
+
+/* ---------------- 横式 ---------------- */
+
+.l8-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l8-eq-tile {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 56px;
+  padding: 0 10px;
+  border-radius: 18px;
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l8-eq-op {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l8-eq-slot {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
+  border: 3px dashed #CBB28F;
+  background: rgba(255, 253, 248, 0.75);
+  color: #C0A582;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform 180ms var(--ease-jelly), background 200ms var(--ease-soft);
+}
+
+.l8-eq-slot.is-filled {
+  border: 3px solid #9FD3BA;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l8-eq-slot.is-bad {
+  border-color: #E48B8B;
+  background: rgba(253, 236, 236, 0.95);
+  animation: l8-bad 460ms var(--ease-soft) both;
+}
+
+@keyframes l8-bad {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  55% { transform: translateX(5px); }
+  80% { transform: translateX(-2px); }
+}
+
+/* ---------------- 题型 B：三张车库卡 ---------------- */
+
+.l8-opts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.l8-opt {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 292px;
+  padding: 10px 14px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D3 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 10px 18px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l8-opt:active { transform: translateY(4px) scale(0.985); }
+
+.l8-opt.is-right {
+  background: linear-gradient(160deg, #E9FAF2 0%, #CBEBD9 100%);
+  box-shadow: 0 6px 0 #9FD3BA, 0 10px 18px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l8-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.l8-ten-chip {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 34px;
+  border-radius: 10px;
+  /* 卷帘门横条 + 门体渐变 */
+  background:
+    repeating-linear-gradient(180deg, rgba(175, 145, 105, 0.18) 0 1.5px, transparent 1.5px 7px),
+    linear-gradient(180deg, #F5EAD6 0%, #E6D5B7 100%);
+  box-shadow: inset 0 2px 4px rgba(150, 120, 90, 0.18), inset 0 -2px 0 rgba(255, 255, 255, 0.5);
+}
+
+.l8-ten-num {
+  font-size: 16px;
+  font-weight: 800;
+  color: #8A6A3E;
+  line-height: 1;
+}
+
+.l8-mini-lot {
+  display: grid;
+  gap: 2px;
+  align-content: center;
+}
+
+.l8-mini-lot--ones { grid-template-columns: repeat(2, 14px); }
+
+.l8-mini-lot--new { grid-template-columns: repeat(3, 14px); }
+
+.l8-mini-lot .l8-car { width: 14px; height: 19px; }
+
+.l8-plus {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
 }
