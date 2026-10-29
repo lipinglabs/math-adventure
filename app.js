@@ -3,10 +3,11 @@
    ------------------------------------------------------------
    只做三件事：
      1. 把 levels_data.js 渲染成地图
-     2. 地图 ↔ 关卡 的切换（进入前必须过加载闸门）
+     2. 地图 ↔ 关卡 的切换（进入前必须过加载闸门），并把关卡模块挂上去
      3. 云存档面板的交互
 
    任何题面、判定、动画细节都不写在这里。
+   语言：English only（PROJECT_MATH_RULES §5.5）
    ============================================================ */
 
 (function (global) {
@@ -14,6 +15,7 @@
 
   var DATA = global.MATH_DATA;
   var currentLevel = null;
+  var currentModule = null;
   var entering = false;
 
   function byId(id) { return document.getElementById(id); }
@@ -59,8 +61,8 @@
       node.style.setProperty('--x', (spot.x / viewBox.w * 100).toFixed(3) + '%');
       node.style.setProperty('--y', (spot.y / viewBox.h * 100).toFixed(3) + '%');
       node.setAttribute('aria-label',
-        '第 ' + level.id + ' 关 ' + level.name +
-        (state === 'coming' ? '，尚未开放' : state === 'locked' ? '，未解锁' : ''));
+        'Level ' + level.id + ', ' + level.name +
+        (state === 'coming' ? ', coming soon' : state === 'locked' ? ', locked' : ''));
 
       var disc = document.createElement('span');
       disc.className = 'node-disc';
@@ -72,14 +74,12 @@
 
       var badge = document.createElement('span');
       badge.className = 'node-badge' + (state === 'locked' || state === 'coming' ? ' node-badge--lock' : '');
-      badge.innerHTML = state === 'gold' || state === 'open' ? STAR_SVG
-        : state === 'silver' ? STAR_SVG
-        : LOCK_SVG;
+      badge.innerHTML = state === 'locked' || state === 'coming' ? LOCK_SVG : STAR_SVG;
       disc.appendChild(badge);
 
       var label = document.createElement('span');
       label.className = 'node-label';
-      label.textContent = state === 'coming' ? '敬请期待' : level.name;
+      label.textContent = state === 'coming' ? 'Coming soon' : level.name;
 
       node.appendChild(disc);
       node.appendChild(label);
@@ -89,7 +89,7 @@
     var gold = Progress.summary().gold;
     var note = byId('map-note');
     if (note) {
-      note.textContent = gold > 0 ? '已收集 ' + gold + ' 颗金星' : '第一座岛正在建造中';
+      note.textContent = gold > 0 ? 'Gold stars: ' + gold : 'Tap a level to play';
     }
   }
 
@@ -103,11 +103,117 @@
     level.classList.toggle('is-active', name === 'level');
   }
 
-  /* ---------------- 进入关卡 ---------------- */
+  /* ---------------- 关卡 ---------------- */
 
   function demoMode() {
     var m = /[?&]demo=([\w-]+)/.exec(location.search);
     return m ? m[1] : '';
+  }
+
+  function renderStars(level) {
+    var host = byId('level-stars');
+    host.innerHTML = '';
+    var star = Progress.starOf(level.id);
+    if (star === 'none') return;
+
+    var badge = document.createElement('span');
+    badge.className = 'node-badge';
+    badge.style.position = 'static';
+    badge.style.boxShadow = 'none';
+    badge.style.color = star === 'gold' ? 'var(--gold)' : '#a9b4bd';
+    badge.innerHTML = STAR_SVG;
+    host.appendChild(badge);
+  }
+
+  function renderDots(count) {
+    var dots = byId('level-dots');
+    dots.innerHTML = '';
+    for (var i = 0; i < count; i += 1) dots.appendChild(document.createElement('i'));
+  }
+
+  function setStep(n) {
+    var dots = byId('level-dots');
+    if (!dots) return;
+    Array.prototype.forEach.call(dots.children, function (dot, i) {
+      dot.className = i < n ? 'is-done' : (i === n ? 'is-now' : '');
+    });
+  }
+
+  function buildContext(level) {
+    return {
+      level: level,
+      // 仅供验收：?quick=1 跳过三幕教学，直接进题
+      quick: /[?&]quick=1/.test(location.search),
+      audio: {
+        play: function (key) {
+          return Engine.audio.play(key + '.mp3', { base: DATA.meta.audioBase });
+        }
+      },
+      sfx: Engine.sfx,
+      anim: Engine.anim,
+      step: setStep,
+      complete: function (star) {
+        Progress.record(level.id, star);
+        Cloud.schedulePush();
+      },
+      exit: exitLevel,
+      restart: function () {
+        unmountCurrent();
+        mountLevel(level);
+      }
+    };
+  }
+
+  function unmountCurrent() {
+    if (currentModule && typeof currentModule.unmount === 'function') {
+      currentModule.unmount();
+    }
+    currentModule = null;
+  }
+
+  function renderWip(level) {
+    var stage = byId('stage');
+    var card = document.createElement('div');
+    card.className = 'wip';
+    card.innerHTML =
+      '<div class="wip-emoji">+</div>' +
+      '<h2>Level ' + level.id + ' · ' + level.name + '</h2>' +
+      '<p>This level is still being built.</p>';
+
+    var actions = document.createElement('div');
+    actions.className = 'wip-actions';
+
+    var back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'btn btn--mint';
+    back.textContent = 'Back to map';
+    back.addEventListener('click', exitLevel);
+    actions.appendChild(back);
+
+    card.appendChild(actions);
+    stage.appendChild(card);
+    Engine.anim.play(card, 'pop', 420);
+  }
+
+  function mountLevel(level) {
+    var stage = byId('stage');
+    stage.innerHTML = '';
+
+    byId('level-index').textContent = 'Level ' + level.id;
+    byId('level-name').textContent = level.name;
+    renderStars(level);
+
+    var total = (level.questions && level.questions.length) || 10;
+    renderDots(Math.min(total, 10));
+    setStep(0);
+
+    var mod = global.LEVELS && global.LEVELS[level.id];
+    if (!mod || typeof mod.mount !== 'function') {
+      renderWip(level);
+      return;
+    }
+
+    currentModule = mod.mount(stage, buildContext(level));
   }
 
   function enterLevel(id) {
@@ -119,11 +225,8 @@
     var demo = demoMode();
     var options = {};
 
-    if (demo === 'loader' && level.demoAssets) options.simulate = level.demoAssets;
-    if (demo === 'fail' && level.demoAssets) {
-      options.simulate = level.demoAssets;
-      options.simulateFail = true;
-    }
+    if (demo === 'loader' || demo === 'fail') options.simulate = 12;
+    if (demo === 'fail') options.simulateFail = true;
 
     options.onRetry = function () {
       entering = false;
@@ -133,85 +236,17 @@
     Engine.loadLevel(level, options).then(function (result) {
       entering = false;
       if (!result.ok) {
-        Engine.toast('素材没加载成功，请检查网络后重试');
+        Engine.toast('Could not load the sounds. Try again?');
         return;
       }
       currentLevel = level;
       showScreen('level');
-      renderLevel(level, result);
+      mountLevel(level);
     });
-  }
-
-  function renderLevel(level, result) {
-    byId('level-index').textContent = '第 ' + level.id + ' 关';
-    byId('level-name').textContent = level.name;
-
-    // 星级
-    var stars = byId('level-stars');
-    stars.innerHTML = '';
-    var star = Progress.starOf(level.id);
-    if (star !== 'none') {
-      var span = document.createElement('span');
-      span.className = 'node-badge';
-      span.style.position = 'static';
-      span.style.boxShadow = 'none';
-      span.innerHTML = STAR_SVG;
-      span.style.color = star === 'gold' ? 'var(--gold)' : '#a9b4bd';
-      stars.appendChild(span);
-    }
-
-    // 10 个进度点
-    var dots = byId('level-dots');
-    dots.innerHTML = '';
-    for (var i = 0; i < 10; i += 1) dots.appendChild(document.createElement('i'));
-
-    var stage = byId('stage');
-    stage.innerHTML = '';
-
-    // Three.js 扩展位：当前返回 null，说明走的是 DOM 渲染
-    var canvasHost = document.createElement('div');
-    canvasHost.className = 'stage-3d';
-    canvasHost.style.cssText = 'position:absolute;inset:0;pointer-events:none;';
-    stage.appendChild(canvasHost);
-    Engine.three.mount(canvasHost);
-
-    var card = document.createElement('div');
-    card.className = 'wip';
-    card.innerHTML =
-      '<div class="wip-emoji">＋</div>' +
-      '<h2>第 ' + level.id + ' 关 · ' + level.name + '</h2>' +
-      '<p>关卡内容正在搭建。台词与动画方案确认后，这一屏会替换成教学幕和答题区。</p>';
-
-    var meta = document.createElement('p');
-    meta.style.cssText = 'margin-top:10px;font-size:12px;color:var(--ink-faint)';
-    meta.textContent = '本次加载 ' + result.total + ' 个素材，耗时 ' + result.ms + ' 毫秒';
-    card.appendChild(meta);
-
-    var actions = document.createElement('div');
-    actions.className = 'wip-actions';
-
-    var back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'btn btn--mint';
-    back.textContent = '回到地图';
-    back.addEventListener('click', exitLevel);
-    actions.appendChild(back);
-
-    var replay = document.createElement('button');
-    replay.type = 'button';
-    replay.className = 'btn btn--ghost';
-    replay.textContent = '重看加载';
-    replay.addEventListener('click', function () {
-      enterLevel(level.id);
-    });
-    actions.appendChild(replay);
-
-    card.appendChild(actions);
-    stage.appendChild(card);
-    Engine.anim.play(card, 'pop', 420);
   }
 
   function exitLevel() {
+    unmountCurrent();
     Engine.audio.releaseLevel();
     Engine.anim.clear(document);
     currentLevel = null;
@@ -222,7 +257,7 @@
   /* ---------------- 云存档面板 ---------------- */
 
   function formatTime(ts) {
-    if (!ts) return '尚未同步';
+    if (!ts) return 'not synced yet';
     var d = new Date(ts);
     var p = function (n) { return n < 10 ? '0' + n : String(n); };
     return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
@@ -233,53 +268,53 @@
     var summary = Progress.summary();
 
     var body = info.connected
-      ? '<div class="field-label">当前账号</div><p style="font-size:15px;font-weight:700">' + info.login + '</p>' +
-        '<div class="field-label" style="margin-top:14px">同步状态</div>' +
-        '<p style="font-size:13px;color:var(--ink-soft)">' + (info.message || '待同步') +
-        ' · 上次 ' + formatTime(info.lastSync) + '</p>' +
+      ? '<div class="field-label">Account</div><p style="font-size:15px;font-weight:700">' + info.login + '</p>' +
+        '<div class="field-label" style="margin-top:14px">Status</div>' +
+        '<p style="font-size:13px;color:var(--ink-soft)">' + (info.message || 'Waiting') +
+        ' · last ' + formatTime(info.lastSync) + '</p>' +
         '<p style="margin-top:12px;font-size:13px;color:var(--ink-soft)">' +
-        '金星 ' + summary.gold + ' 颗 · 银星 ' + summary.silver + ' 颗 · 已解锁到第 ' +
-        summary.unlockedLevel + ' 关</p>'
+        'Gold ' + summary.gold + ' · Silver ' + summary.silver +
+        ' · unlocked to Level ' + summary.unlockedLevel + '</p>'
       : '<p style="font-size:13px;line-height:1.7;color:var(--ink-soft)">' +
-        '填入仅带 gist 权限的令牌后，进度会自动在设备之间同步。令牌只存在这台设备上。</p>' +
-        '<label class="field-label" style="margin-top:14px" for="cloud-token">访问令牌</label>' +
-        '<input id="cloud-token" class="field" type="password" autocomplete="off" placeholder="ghp_… 或 github_pat_…" />' +
-        '<label class="field-label" style="margin-top:12px" for="cloud-gist">已有存档编号（可留空）</label>' +
-        '<input id="cloud-gist" class="field" type="text" autocomplete="off" placeholder="留空则自动创建" />' +
+        'Sync progress across devices. The token stays on this device only.</p>' +
+        '<label class="field-label" style="margin-top:14px" for="cloud-token">Access token</label>' +
+        '<input id="cloud-token" class="field" type="password" autocomplete="off" placeholder="ghp_… or github_pat_…" />' +
+        '<label class="field-label" style="margin-top:12px" for="cloud-gist">Save ID (optional)</label>' +
+        '<input id="cloud-gist" class="field" type="text" autocomplete="off" placeholder="Leave empty to create one" />' +
         '<p id="cloud-msg" style="margin-top:12px;font-size:12px;color:#c2593f;min-height:16px"></p>';
 
     var actions = info.connected
       ? [
-          { label: '关闭', kind: 'ghost' },
+          { label: 'Close', kind: 'ghost' },
           {
-            label: '立即同步',
+            label: 'Sync now',
             onClick: function (api) {
               Cloud.syncNow();
               api.close();
-              Engine.toast('正在同步…');
+              Engine.toast('Syncing…');
             }
           },
           {
-            label: '断开',
+            label: 'Disconnect',
             onClick: function () {
               Cloud.disconnect();
-              Engine.toast('已断开云存档');
+              Engine.toast('Disconnected');
             }
           }
         ]
       : [
-          { label: '取消', kind: 'ghost' },
+          { label: 'Cancel', kind: 'ghost' },
           {
-            label: '连接',
+            label: 'Connect',
             onClick: function (api) {
               var token = (byId('cloud-token') || {}).value || '';
               var gist = (byId('cloud-gist') || {}).value || '';
               var msg = byId('cloud-msg');
-              if (msg) msg.textContent = '正在验证…';
+              if (msg) msg.textContent = 'Checking…';
 
               Cloud.connect(token, gist).then(function (res) {
                 api.close();
-                Engine.toast('已连接 ' + res.login);
+                Engine.toast('Connected as ' + res.login);
               }).catch(function (err) {
                 if (msg) msg.textContent = String(err.message || err);
                 Engine.sfx.deny();
@@ -290,8 +325,8 @@
         ];
 
     Engine.modal({
-      title: '云存档',
-      text: info.connected ? '' : '跨设备同步需要联网。',
+      title: 'Cloud save',
+      text: info.connected ? '' : 'An internet connection is required.',
       bodyHTML: body,
       actions: actions
     });
@@ -302,7 +337,7 @@
     if (!btn) return;
     var info = Cloud.info();
     btn.classList.toggle('is-linked', !!info.connected);
-    btn.setAttribute('aria-label', info.connected ? '云存档已连接，点按管理' : '云存档未连接，点按设置');
+    btn.setAttribute('aria-label', info.connected ? 'Cloud save connected' : 'Cloud save not connected');
   }
 
   /* ---------------- 事件绑定 ---------------- */
@@ -331,11 +366,11 @@
       if (!level) return;
 
       if (level.status === 'coming') {
-        Engine.toast('这一关还在路上');
+        Engine.toast('Coming soon');
         return;
       }
       if (!Progress.isUnlocked(id)) {
-        Engine.toast('先拿到上一关的金星吧');
+        Engine.toast('Finish the previous level first');
         Engine.anim.play(node, 'shake', 420);
         return;
       }
@@ -345,6 +380,7 @@
     document.addEventListener('progress:change', function () {
       renderMap();
       updateSaveButton();
+      if (currentLevel) renderStars(currentLevel);
     });
 
     document.addEventListener('cloud:change', function () {
@@ -362,12 +398,6 @@
     Cloud.init();
     Sandbox.install();
     updateSaveButton();
-
-    // 演示模式：方便验收进度条，不影响正常入口
-    var demo = demoMode();
-    if (demo === 'loader' || demo === 'fail') {
-      setTimeout(function () { enterLevel(1); }, 500);
-    }
   }
 
   global.App = {

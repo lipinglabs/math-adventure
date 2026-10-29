@@ -74,7 +74,7 @@ window.Cloud = (function () {
 
   async function api(path, options) {
     options = options || {};
-    if (!token) throw new Error('尚未连接云端');
+    if (!token) throw new Error('Not connected to cloud save');
 
     var headers = {
       Accept: 'application/vnd.github+json',
@@ -91,11 +91,11 @@ window.Cloud = (function () {
     });
 
     if (res.status === 401 || res.status === 403) {
-      throw new Error('令牌无效或权限不足（需要 gist 权限）');
+      throw new Error('Invalid token, or the token lacks gist permission');
     }
     if (!res.ok) {
       var text = await res.text();
-      throw new Error('HTTP ' + res.status + '：' + text.slice(0, 120));
+      throw new Error('HTTP ' + res.status + ': ' + text.slice(0, 120));
     }
     if (res.status === 204) return null;
     return res.json();
@@ -145,7 +145,7 @@ window.Cloud = (function () {
     // 单文件超过 1MB 时 GitHub 会截断，需要走 raw_url
     if (file.truncated && file.raw_url) {
       var res = await fetch(file.raw_url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('读取云存档失败');
+      if (!res.ok) throw new Error('Could not read the cloud save');
       return JSON.parse(await res.text());
     }
     if (!file.content) return null;
@@ -201,11 +201,11 @@ window.Cloud = (function () {
 
   async function syncNow() {
     if (!token || sandboxed()) return;
-    setStatus('syncing', '正在同步…');
+    setStatus('syncing', 'Syncing…');
     try {
       await pull();
       await push();
-      setStatus('ok', '已同步');
+      setStatus('ok', 'Synced');
     } catch (err) {
       setStatus('error', String(err.message || err));
       scheduleRetry();
@@ -223,7 +223,7 @@ window.Cloud = (function () {
 
   async function connect(nextToken, nextGistId) {
     var clean = String(nextToken || '').trim();
-    if (!clean) throw new Error('请先填写令牌');
+    if (!clean) throw new Error('Please enter a token');
 
     token = clean;
     status = 'connecting';
@@ -236,7 +236,7 @@ window.Cloud = (function () {
       saveCredentials();
       await pull();
       await push();
-      setStatus('ok', '已连接 ' + login);
+      setStatus('ok', 'Connected as ' + login);
       return info();
     } catch (err) {
       token = '';
@@ -255,7 +255,7 @@ window.Cloud = (function () {
     clearTimeout(pushTimer);
     clearTimeout(backoffTimer);
     try { localStorage.removeItem(LS_KEY); } catch (e) { /* noop */ }
-    setStatus('idle', '已断开');
+    setStatus('idle', 'Disconnected');
   }
 
   /** 通关后调用：合并写云端，500ms 防抖 */
@@ -264,7 +264,7 @@ window.Cloud = (function () {
     clearTimeout(pushTimer);
     pushTimer = setTimeout(function () {
       push().then(function () {
-        setStatus('ok', '已同步');
+        setStatus('ok', 'Synced');
       }).catch(function (err) {
         setStatus('error', String(err.message || err));
         scheduleRetry();
@@ -275,7 +275,7 @@ window.Cloud = (function () {
   function init() {
     loadCredentials();
     if (token) {
-      setStatus('idle', '待同步');
+      setStatus('idle', 'Waiting to sync');
       syncNow();
     }
     document.addEventListener('visibilitychange', function () {

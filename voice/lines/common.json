@@ -1,18 +1,17 @@
 {
   "level": "common",
-  "status": "draft",
-  "note": "跨关共用语音。台词见 docs/LEVEL_01_DESIGN.md §6.1，确认后执行 tools/gen_tts.py 生成。",
+  "status": "ready",
+  "note": "Cross-level voice lines. English only (PROJECT_MATH_RULES 2.3).",
   "rate": -15,
-  "pitch": 2,
+  "pitch": 0,
   "sampleRate": 24000,
   "voice": {
-    "zh": "zh_female_xiaoxue_uranus_bigtts",
     "en": "en_female_allison_uranus_bigtts"
   },
   "lines": [
-    { "key": "try_again", "lang": "zh", "text": "再数一数，不着急。", "mood": "encourage" },
-    { "key": "gold", "lang": "zh", "text": "全部答对！金星送给你！", "mood": "praise", "pitch": 3 },
-    { "key": "silver", "lang": "zh", "text": "做完啦。再挑战一次，就能拿到金星哦。", "mood": "encourage" },
-    { "key": "coming", "lang": "zh", "text": "这一关还在路上，先去玩前面的吧。", "mood": "encourage" }
+    { "key": "ready", "lang": "en", "text": "Are you ready? Let's play!", "mood": "ask" },
+    { "key": "try_again", "lang": "en", "text": "Try again, you can do it!", "mood": "encourage" },
+    { "key": "gold", "lang": "en", "text": "Perfect! Gold star for you!", "mood": "praise" },
+    { "key": "silver", "lang": "en", "text": "Good job! Try again for a gold star!", "mood": "encourage" }
   ]
 }

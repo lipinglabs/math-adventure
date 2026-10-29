@@ -25,7 +25,7 @@ window.Sandbox = (function () {
 
   function built() {
     if (document.getElementById('sandbox-chip')) return;
-    chip = Engine.util.el('button', 'sandbox-chip', '沙盒 · 全解锁');
+    chip = Engine.util.el('button', 'sandbox-chip', 'SANDBOX');
     chip.id = 'sandbox-chip';
     chip.type = 'button';
     chip.addEventListener('click', askExit);
@@ -49,17 +49,17 @@ window.Sandbox = (function () {
     Engine.sfx.tap();
 
     pinModal = Engine.modal({
-      title: '开发者入口',
-      text: '请输入口令。此模式下的进度不会保存，也不会同步到云端。',
+      title: 'Developer access',
+      text: 'Enter the passcode. Progress is not saved or synced in this mode.',
       dismissible: true,
       onClose: function () { pinModal = null; },
       bodyHTML:
-        '<label class="field-label" for="sandbox-pin">口令</label>' +
+        '<label class="field-label" for="sandbox-pin">Passcode</label>' +
         '<input id="sandbox-pin" class="field" type="password" inputmode="numeric" ' +
-        'autocomplete="off" maxlength="8" placeholder="请输入口令" />',
+        'autocomplete="off" maxlength="8" placeholder="Passcode" />',
       actions: [
-        { label: '取消', kind: 'ghost' },
-        { label: '进入', onClick: submit }
+        { label: 'Cancel', kind: 'ghost' },
+        { label: 'Enter', onClick: submit }
       ]
     });
 
@@ -81,7 +81,7 @@ window.Sandbox = (function () {
       Engine.anim.play(input, 'shake', 420);
       if (input) {
         input.value = '';
-        input.placeholder = '口令不对，再试一次';
+        input.placeholder = 'Wrong passcode, try again';
       }
       return false;   // 不关闭弹层，让用户重输
     }
@@ -101,16 +101,16 @@ window.Sandbox = (function () {
     document.body.classList.add('is-sandbox');
     built();
     Engine.sfx.star();
-    Engine.toast('沙盒已开启：全部关卡解锁，进度不会保存', 2600);
+    Engine.toast('Sandbox on: all levels unlocked, progress is not saved', 2600);
   }
 
   function askExit() {
     Engine.modal({
-      title: '退出沙盒',
-      text: '将恢复进入前的存档，并重新连接云端。',
+      title: 'Leave sandbox',
+      text: 'Your previous save will be restored and cloud sync resumed.',
       actions: [
-        { label: '继续调试', kind: 'ghost' },
-        { label: '退出', onClick: deactivate }
+        { label: 'Keep playing', kind: 'ghost' },
+        { label: 'Leave', onClick: deactivate }
       ]
     });
   }
@@ -120,7 +120,7 @@ window.Sandbox = (function () {
     active = false;
     Progress.exitSandbox();
     document.body.classList.remove('is-sandbox');
-    Engine.toast('已退出沙盒，存档已恢复');
+    Engine.toast('Sandbox off: save restored');
   }
 
   function install() {

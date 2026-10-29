@@ -6,7 +6,7 @@
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `try_again` | zh | 再数一数，不着急。 | 待生成 |
-| `gold` | zh | 全部答对！金星送给你！ | 待生成 |
-| `silver` | zh | 做完啦。再挑战一次，就能拿到金星哦。 | 待生成 |
-| `coming` | zh | 这一关还在路上，先去玩前面的吧。 | 待生成 |
+| `ready` | en | Are you ready? Let's play! | 21165 B |
+| `try_again` | en | Try again, you can do it! | 19245 B |
+| `gold` | en | Perfect! Gold star for you! | 25005 B |
+| `silver` | en | Good job! Try again for a gold star! | 28845 B |

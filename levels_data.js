@@ -1,18 +1,20 @@
 /* ============================================================
    levels_data.js · 关卡与地图配置（纯数据，不含逻辑）
    ------------------------------------------------------------
-   一个关卡 = 地图坐标 + 素材清单 + 教学分镜 + 10 道题。
+   一个关卡 = 地图坐标 + 素材清单 + 题目数据。
    新增关卡只需在本文件追加条目并补 voice/<lv>/ 下的音频，
    不得为了加关卡去改 engine.js 或 app.js。
 
    坐标系统：与 index.html 里 <svg viewBox="0 0 390 620"> 完全一致，
    单位是 SVG 用户单位，由 app.js 换算成百分比定位。
+
+   语言铁律：name / 题面一律英文，禁止中文字符（PROJECT_MATH_RULES §5.5）。
    ============================================================ */
 
 window.MATH_DATA = {
   meta: {
-    title: '数学冒险',
-    version: '0.1.0',
+    title: 'Math Adventure',
+    version: '0.2.0',
     // 音频根目录。页面运行时按关拼路径，只请求当前关用到的文件。
     audioBase: 'voice/'
   },
@@ -26,42 +28,68 @@ window.MATH_DATA = {
     ]
   },
 
-  /* 公共语音：只在首次交互后预热，不阻塞首屏。
-     文件尚未生成时 loadAudio 会失败，引擎按「非致命」处理。 */
-  commonAudio: [
-    // 'common/coming.mp3',
-    // 'common/win_gold.mp3',
-    // 'common/win_silver.mp3'
-  ],
-
   levels: {
     1: {
       id: 1,
-      name: '5 以内加法',
-      subtitle: '数一数，合起来是几',
-      // wip = 尚未实现内容；进入后显示占位卡，但加载流程与真实关卡完全一致
-      status: 'wip',
-      // 本关素材清单（相对 meta.audioBase）。第一关音频待台词确认后生成。
+      name: 'Apple Addition',
+      status: 'ready',
+      // 本关全部素材（相对 meta.audioBase）。只加载这一组，别的一律不碰。
       assets: {
-        audio: [],
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv01/t1_a.mp3',
+          'lv01/t1_b.mp3',
+          'lv01/t1_c.mp3',
+          'lv01/t1_d.mp3',
+          'lv01/t2_a.mp3',
+          'lv01/t2_b.mp3',
+          'lv01/t2_c.mp3',
+          'lv01/t2_d.mp3',
+          'lv01/t3_a.mp3',
+
+          'lv01/q1.mp3',
+          'lv01/q2.mp3',
+          'lv01/q3.mp3',
+          'lv01/q4.mp3',
+          'lv01/q5.mp3',
+          'lv01/q6.mp3',
+          'lv01/q7.mp3',
+          'lv01/q8.mp3',
+          'lv01/q9.mp3',
+          'lv01/q10.mp3'
+        ],
         images: []
       },
-      // ?demo=loader 时用来演示进度条；真实素材接入后应删除该字段
-      demoAssets: 12,
-      tutorial: [],
-      questions: []
+      // 10 题：两个加数都 ≥ 1，和 ≤ 5，正好覆盖全部有序组合
+      // object 决定 SVG 实物；题干语音 key 为 q<index+1>
+      questions: [
+        { a: 1, b: 1, object: 'apple' },
+        { a: 1, b: 2, object: 'balloon' },
+        { a: 2, b: 1, object: 'fish' },
+        { a: 1, b: 3, object: 'apple' },
+        { a: 3, b: 1, object: 'star' },
+        { a: 2, b: 2, object: 'balloon' },
+        { a: 1, b: 4, object: 'fish' },
+        { a: 4, b: 1, object: 'star' },
+        { a: 2, b: 3, object: 'apple' },
+        { a: 3, b: 2, object: 'balloon' }
+      ]
     },
 
     2: {
       id: 2,
-      name: '5 以内减法',
+      name: 'Apple Take Away',
       status: 'coming',
       assets: { audio: [], images: [] }
     },
 
     3: {
       id: 3,
-      name: '10 以内加法',
+      name: 'Add to Ten',
       status: 'coming',
       assets: { audio: [], images: [] }
     }

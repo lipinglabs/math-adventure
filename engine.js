@@ -116,8 +116,8 @@
       token += 1;
       u.root.hidden = false;
       u.retry.hidden = true;
-      u.title.textContent = title || '素材加载中';
-      u.hint.textContent = '正在准备这一关的声音和画面…';
+      u.title.textContent = title || 'Loading';
+      u.hint.textContent = 'Getting the sounds ready…';
       u.pct.textContent = '0%';
       u.detail.textContent = '0 / 0';
       u.jar.style.height = '0%';
@@ -139,7 +139,7 @@
     function fail(text, onRetry) {
       var u = ensure();
       if (!u) return;
-      u.hint.textContent = text || '素材没加载成功，请检查网络后再试';
+      u.hint.textContent = text || 'Could not load the sounds. Please try again.';
       u.retry.hidden = false;
       u.retry.onclick = function () {
         if (typeof onRetry === 'function') onRetry();
@@ -406,6 +406,9 @@
       });
     },
 
+    /** 给 WAAPI 动画登记运动预算（关卡模块用） */
+    track: track,
+
     budgetLeft: budgetLeft
   };
 
@@ -614,7 +617,7 @@
     var done = 0;
     var failed = [];
 
-    loader.open(level && level.name ? '准备「' + level.name + '」' : '素材加载中');
+    loader.open(level && level.name ? 'Loading ' + level.name : 'Loading');
     loader.set(0, '0 / ' + tasks.length);
 
     function tick() {
@@ -633,7 +636,7 @@
     return Promise.all([work, sleep(LIMITS.loaderMinMs)]).then(function () {
       var ms = Date.now() - started;
       if (failed.length) {
-        loader.fail('有 ' + failed.length + ' 个素材没加载成功', function () {
+        loader.fail(failed.length + ' files could not load', function () {
           loader.close();
           if (typeof options.onRetry === 'function') options.onRetry();
         });

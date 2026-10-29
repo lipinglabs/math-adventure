@@ -763,3 +763,374 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 
 /* 云存档已连接 */
 .icon-btn.is-linked { color: var(--mint-deep); }
+
+/* ============================================================
+   关卡层（level-lv01.js 使用）
+   ============================================================ */
+
+.lv-root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 8px 16px calc(28px + var(--safe-bottom));
+}
+
+.lv {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.lv-story {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 0;
+}
+
+.lv-tray {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 0 6px;
+}
+
+/* ---------------- 实物 ---------------- */
+
+.obj {
+  display: inline-block;
+  width: var(--s, 56px);
+  height: var(--s, 56px);
+  will-change: transform;
+}
+
+.obj svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* ---------------- 教学 ---------------- */
+
+.tut-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 18px 10px;
+}
+
+.tut-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.tut-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tut-plate {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 300px;
+  height: 38px;
+  margin-left: -150px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 25%, #F7E8CE 0%, #E4CDA9 100%);
+  box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.75), 0 8px 16px rgba(150, 120, 90, 0.16);
+  z-index: 0;
+}
+
+.tut-dots {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 14px;
+}
+
+.tut-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #F08F72;
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.14), 0 2px 4px rgba(200, 120, 90, 0.2);
+}
+
+.tap-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  color: #C7A681;
+  opacity: 0;
+  transform: translateX(-50%);
+  animation: hint-in 500ms var(--ease-soft) 120ms forwards,
+             hint-bob 1.8s ease-in-out 620ms infinite;
+  pointer-events: none;
+}
+
+@keyframes hint-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 0.9; transform: translate(-50%, 0); }
+}
+
+@keyframes hint-bob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -7px); }
+}
+
+/* ---------------- 等式块 ---------------- */
+
+.eq {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tile {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 6px 0 #E3C9A4, 0 10px 16px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.tile--op {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #DEF5EC 0%, #9BDCC6 100%);
+  box-shadow: 0 6px 0 #6FBBA4, 0 10px 16px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.tile--total {
+  color: #7A5A1E;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFD764 100%);
+  box-shadow: 0 6px 0 #E0AE45, 0 10px 16px rgba(190, 150, 60, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+/* ---------------- 答题 ---------------- */
+
+.q-story {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.q-story::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  width: 74%;
+  height: 20px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(176, 146, 110, 0.2) 0%, rgba(176, 146, 110, 0) 72%);
+}
+
+.q-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 4px;
+  max-width: 262px;
+  transition: transform 320ms var(--ease-jelly);
+}
+
+.q-group.is-merged:first-child { transform: translateX(9px); }
+.q-group.is-merged:last-child { transform: translateX(-9px); }
+
+.q-plus {
+  font-size: 34px;
+  font-weight: 800;
+  color: #C79E6A;
+  transition: opacity 240ms var(--ease-soft), transform 280ms var(--ease-jelly);
+}
+
+.q-plus.is-gone {
+  opacity: 0;
+  transform: scale(0.4) rotate(90deg);
+}
+
+.q-replay {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  color: var(--ink-soft);
+  background: rgba(255, 253, 248, 0.86);
+  box-shadow: 0 4px 10px rgba(150, 120, 90, 0.14);
+  transition: transform 160ms var(--ease-jelly);
+}
+
+.q-replay:active { transform: scale(0.92); }
+
+.numkey {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border-radius: 26px;
+  color: #7A5A2E;
+  background: linear-gradient(160deg, #FFF6E6 0%, #FFD98E 100%);
+  box-shadow: 0 7px 0 #E3B25E, 0 12px 20px rgba(160, 120, 60, 0.2),
+              inset 0 4px 8px rgba(255, 255, 255, 0.8);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.numkey:active {
+  transform: translateY(5px) scale(0.97);
+  box-shadow: 0 2px 0 #E3B25E, 0 4px 10px rgba(160, 120, 60, 0.16),
+              inset 0 4px 8px rgba(255, 255, 255, 0.75);
+}
+
+.numkey.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 7px 0 #5FAF97, 0 12px 20px rgba(80, 150, 130, 0.22),
+              inset 0 4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.numkey-digit {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.burst-star {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  width: 66px;
+  height: 66px;
+  margin-left: -33px;
+  color: #F7B731;
+  pointer-events: none;
+  animation: burst-up 860ms var(--ease-soft) both;
+}
+
+@keyframes burst-up {
+  0% { opacity: 0; transform: translateY(6px) scale(0.4) rotate(-18deg); }
+  30% { opacity: 1; transform: translateY(-22px) scale(1.15) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(-84px) scale(0.9) rotate(14deg); }
+}
+
+/* ---------------- 结算 ---------------- */
+
+.result {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.result-star {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  color: #F7B731;
+}
+
+.result-star--silver { color: #C3CDD6; }
+
+.result-star > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 10px 18px rgba(200, 150, 40, 0.3));
+}
+
+.result-star--silver > svg {
+  filter: drop-shadow(0 10px 18px rgba(140, 155, 170, 0.3));
+}
+
+.result-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.result-ray {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 40px;
+  margin: -20px 0 0 -4px;
+  border-radius: 4px;
+  background: currentColor;
+  opacity: 0.42;
+  transform: rotate(calc(var(--i) * 360deg / var(--n))) translateY(-96px);
+}
+
+.result-actions { display: flex; gap: 24px; }
+
+.result-btn {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 26px;
+  color: var(--ink);
+  background: linear-gradient(160deg, #FFFDF8 0%, #F3E7D6 100%);
+  box-shadow: 0 7px 0 #E0D0BA, 0 12px 20px rgba(150, 120, 90, 0.18),
+              inset 0 4px 8px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.result-btn:active {
+  transform: translateY(5px) scale(0.97);
+  box-shadow: 0 2px 0 #E0D0BA, 0 4px 10px rgba(150, 120, 90, 0.14);
+}
+
+/* 地图节点被拒绝时的摇晃（必须保留 translate(-50%,-50%) 定位） */
+.node.anim--shake { animation: node-shake 420ms var(--ease-soft) both; }
+
+@keyframes node-shake {
+  0%, 100% { transform: translate(-50%, -50%); }
+  22% { transform: translate(calc(-50% - 6px), -50%) rotate(-1.2deg); }
+  48% { transform: translate(calc(-50% + 5px), -50%) rotate(1deg); }
+  72% { transform: translate(calc(-50% - 2px), -50%); }
+}
+
+/* 题目卡片：把实物区托住，避免大片留白 */
+.q-story::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: clamp(200px, 34vh, 300px);
+  transform: translate(-50%, -50%);
+  border-radius: 34px;
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow: 0 14px 30px rgba(150, 120, 90, 0.1), inset 0 2px 6px rgba(255, 255, 255, 0.9);
+  z-index: 0;
+}
+
+.q-story > * { position: relative; z-index: 1; }

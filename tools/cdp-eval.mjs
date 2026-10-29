@@ -38,6 +38,17 @@ ws.addEventListener('message', (event) => {
 
 await new Promise((resolve) => ws.addEventListener('open', resolve));
 
+// 统一按 390×844 移动视口求值：Edge headless 默认视口约 492px，
+// 不设覆盖会导致「量出来是 492、截图是 390」的口径不一致。
+const vw = Number(process.argv[4] || 390);
+const vh = Number(process.argv[5] || 844);
+await send('Emulation.setDeviceMetricsOverride', {
+  width: vw,
+  height: vh,
+  deviceScaleFactor: 1,
+  mobile: true
+});
+
 const result = await send('Runtime.evaluate', {
   expression: expr,
   returnByValue: true,

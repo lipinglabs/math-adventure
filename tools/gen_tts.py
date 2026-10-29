@@ -13,8 +13,8 @@
     python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01 --force --only q1 q2
 
 探针（验证音色 / 语速，不写清单）：
-    python tools/gen_tts.py --probe --text "一加一等于二" \
-        --speaker zh_female_xiaoxue_uranus_bigtts --lang zh --out tmp/probe.mp3
+    python tools/gen_tts.py --probe --text "One plus one equals two." \
+        --lang en --mood teach --out tmp/probe.mp3
 """
 
 from __future__ import annotations
@@ -33,12 +33,11 @@ from pathlib import Path
 ENDPOINT = "https://openspeech.bytedance.com/api/v3/tts/unidirectional"
 RESOURCE_ID = "seed-tts-2.0"
 
-# 音色：与上一项目 lilearn-english 验证过的一致
-SPEAKER_ZH = "zh_female_xiaoxue_uranus_bigtts"          # 儿童绘本 2.0，温柔女声
+# 全英文铁律：唯一允许的音色（PROJECT_MATH_RULES §2.3）
+# 严禁任何 zh_female_* 中文音色。
 SPEAKER_EN = "en_female_allison_uranus_bigtts"          # Allison，英文温柔女声
 
-# 语速：0 = 1.0 倍，100 = 2.0 倍，近似 1 + rate/100
-# 0.85 倍 ≈ -15
+# 语速 0.85 倍：0 = 1.0 倍，100 = 2.0 倍，近似 1 + rate/100 → 0.85 ≈ -15
 DEFAULT_RATE = -15
 
 MOODS = {
@@ -183,6 +182,7 @@ def synthesize(api_key: str, text: str, speaker: str, rate: int, instruction: st
 # --------------------------------------------------------------------------
 
 DIGITS = re.compile(r"[0-9]")
+CJK = re.compile(r"[\u3000-\u303f\u3400-\u4dbf\u4e00-\u9fff\uff00-\uffef]")
 
 
 def audit(spec: dict, lines: list[dict]) -> list[str]:
@@ -193,13 +193,17 @@ def audit(spec: dict, lines: list[dict]) -> list[str]:
     for item in lines:
         key = item.get("key", "")
         text = item.get("text", "")
-        lang = item.get("lang", "zh")
+        lang = item.get("lang", "en")
 
         if not key or not re.fullmatch(r"[a-z0-9_]+", key):
             problems.append(f"key 非法（只允许小写字母/数字/下划线）：{key!r}")
         if key in seen_keys:
             problems.append(f"key 重复：{key}")
         seen_keys.add(key)
+
+        # 全英文铁律：任何非 en 语种都不允许
+        if lang != "en":
+            problems.append(f"{key}：lang={lang!r}，全英文铁律只允许 en")
 
         if not text.strip():
             problems.append(f"{key}：文本为空")
@@ -212,12 +216,17 @@ def audit(spec: dict, lines: list[dict]) -> list[str]:
         else:
             seen_text[(lang, norm)] = key
 
-        # 中文台词禁止阿拉伯数字：TTS 会读成「一 二」之外的奇怪节奏
-        if lang == "zh" and DIGITS.search(text):
-            problems.append(f"{key}：中文台词含阿拉伯数字，必须写成汉字「{text}」")
+        # 台词里不许出现中文字符（含中文标点）
+        if CJK.search(text):
+            problems.append(f"{key}：台词含中文字符，违反全英文铁律")
 
-        if len(text) > 60:
-            problems.append(f"{key}：单句过长（{len(text)} 字），建议拆句")
+        # 阿拉伯数字会被读成逐个数字，破坏连读节奏
+        if DIGITS.search(text):
+            problems.append(f"{key}：台词含阿拉伯数字，必须写成 One / Two 这类英文单词")
+
+        words = len(text.split())
+        if words > 14:
+            problems.append(f"{key}：单句 {words} 个单词，超过 14 词上限，建议拆句")
 
     # 语速范围
     rate = spec.get("rate", DEFAULT_RATE)
@@ -238,10 +247,10 @@ def load_spec(path: Path) -> dict:
 
 
 def voice_for(spec: dict, lang: str) -> str:
+    if lang != "en":
+        raise ValueError(f"全英文铁律：不允许 lang={lang}（只允许 en）")
     voice = spec.get("voice") or {}
-    if lang == "en":
-        return voice.get("en") or SPEAKER_EN
-    return voice.get("zh") or SPEAKER_ZH
+    return voice.get("en") or SPEAKER_EN
 
 
 def write_manifest(out_dir: Path, spec: dict, lines: list[dict]) -> Path:
@@ -272,8 +281,10 @@ def write_manifest(out_dir: Path, spec: dict, lines: list[dict]) -> Path:
 def run_probe(args: argparse.Namespace, api_key: str) -> int:
     if not args.text:
         sys.exit("--probe 需要 --text")
+    if args.lang != "en":
+        sys.exit("全英文铁律：只允许 --lang en")
 
-    speaker = args.speaker or (SPEAKER_EN if args.lang == "en" else SPEAKER_ZH)
+    speaker = args.speaker or SPEAKER_EN
     instruction = MOODS.get(args.mood, MOODS["teach"])
     audio = synthesize(api_key, args.text, speaker, args.rate, instruction,
                        pitch=args.pitch, sample_rate=args.sample_rate)
@@ -296,7 +307,7 @@ def main() -> int:
     parser.add_argument("--probe", action="store_true", help="单条试听探针")
     parser.add_argument("--text", help="探针文本")
     parser.add_argument("--speaker", help="探针音色")
-    parser.add_argument("--lang", default="zh", choices=["zh", "en"])
+    parser.add_argument("--lang", default="en", choices=["en"], help="全英文铁律，只允许 en")
     parser.add_argument("--mood", default="teach", choices=list(MOODS))
     parser.add_argument("--rate", type=int, default=DEFAULT_RATE)
     parser.add_argument("--pitch", type=int, default=0)
@@ -326,7 +337,7 @@ def main() -> int:
         for item in problems:
             print("  · " + item, file=sys.stderr)
         return 1
-    print("校验通过：key 唯一、文本无重复、中文台词无阿拉伯数字。")
+    print("校验通过：全英文、key 唯一、文本无重复、无阿拉伯数字。")
 
     rate = int(spec.get("rate", DEFAULT_RATE))
     pitch = int(spec.get("pitch", 0))

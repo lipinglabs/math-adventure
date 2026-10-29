@@ -6,22 +6,22 @@
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | zh | 看，这里有一个苹果。 | 待生成 |
-| `t1_b` | zh | 又来了一个。 | 待生成 |
-| `t1_c` | zh | 一，二。一共两个。 | 待生成 |
-| `t2_a` | zh | 篮子里有两个苹果。 | 待生成 |
-| `t2_b` | zh | 又放进两个。 | 待生成 |
-| `t2_c` | zh | 一，二，三，四。一共四个。 | 待生成 |
-| `t3_a` | zh | 加号，就是把这些合在一起。 | 待生成 |
-| `t3_b` | zh | 一加一，等于二。 | 待生成 |
-| `ready` | zh | 准备好了吗？我们开始吧。 | 待生成 |
-| `q1` | zh | 一个苹果，又来了一个。一共几个？ | 待生成 |
-| `q2` | zh | 一个气球，又飘来两个。一共几个？ | 待生成 |
-| `q3` | zh | 两条小鱼，又游来一条。一共几条？ | 待生成 |
-| `q4` | zh | 一个苹果，又来了三个。一共几个？ | 待生成 |
-| `q5` | zh | 三颗星星，又亮起一颗。一共几颗？ | 待生成 |
-| `q6` | zh | 两个气球，又飘来两个。一共几个？ | 待生成 |
-| `q7` | zh | 一条小鱼，又游来四条。一共几条？ | 待生成 |
-| `q8` | zh | 四颗星星，又亮起一颗。一共几颗？ | 待生成 |
-| `q9` | zh | 两个苹果，又来了三个。一共几个？ | 待生成 |
-| `q10` | zh | 三个气球，又飘来两个。一共几个？ | 待生成 |
+| `t1_a` | en | Look! One apple. | 19053 B |
+| `t1_b` | en | And one more. | 15405 B |
+| `t1_c` | en | Let's count. One, two. | 23085 B |
+| `t1_d` | en | One plus one equals two. | 21165 B |
+| `t2_a` | en | Here are two apples. | 21357 B |
+| `t2_b` | en | Add two more. | 15405 B |
+| `t2_c` | en | Let's count. One, two, three, four. | 34221 B |
+| `t2_d` | en | Two plus two equals four. | 22893 B |
+| `t3_a` | en | The plus sign means adding together. | 25005 B |
+| `q1` | en | One apple, and one more. How many altogether? | 36333 B |
+| `q2` | en | One balloon, and two more. How many altogether? | 32685 B |
+| `q3` | en | Two fish, and one more. How many altogether? | 34413 B |
+| `q4` | en | One apple, and three more. How many altogether? | 36333 B |
+| `q5` | en | Three stars, and one more. How many altogether? | 36141 B |
+| `q6` | en | Two balloons, and two more. How many altogether? | 36525 B |
+| `q7` | en | One fish, and four more. How many altogether? | 32685 B |
+| `q8` | en | Four stars, and one more. How many altogether? | 32685 B |
+| `q9` | en | Two apples, and three more. How many altogether? | 34221 B |
+| `q10` | en | Three balloons, and two more. How many altogether? | 36333 B |

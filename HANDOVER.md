@@ -1,7 +1,7 @@
 # HANDOVER.md · 交接文档
 
 > 接手顺序：先读 `PROJECT_MATH_RULES.md` 全文，再读本文件。
-> 本文件回答「环境长什么样、密钥在哪、怎么推送、怎么验收」。最后更新：2026-10-29。
+> 本文件回答「环境长什么样、密钥在哪、怎么推送、怎么验收」。最后更新：2026-10-29（v2 全英文）。
 
 ---
 
@@ -9,13 +9,13 @@
 
 | 项目 | 值 |
 |---|---|
-| 名称 | 数学冒险（math-adventure） |
-| 定位 | 3–6 岁幼儿数学启蒙游戏，纯静态网页 |
+| 名称 | Math Adventure（math-adventure） |
+| 定位 | 3–6 岁幼儿数学启蒙游戏，纯静态网页，**全英文** |
 | 仓库 | `lipinglabs/math-adventure`（public） |
 | 线上地址 | https://lipinglabs.github.io/math-adventure/ |
 | 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
-| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒；**第一关台词与分镜待确认** |
+| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **第一关 Apple Addition 已完成** |
 
 ---
 
@@ -67,28 +67,30 @@ python tools/push_via_api.py "提交说明" --dry-run   # 只看清单，不推�
 ```
 math-adventure/
 ├─ index.html              骨架：地图屏 / 关卡屏 / 加载遮罩 / 弹层
-├─ style.css               全部样式（果冻 / 粘土）
-├─ levels_data.js          地图坐标 + 关卡配置 + 素材清单（纯数据）
+├─ style.css               全部样式（果冻 / 粘土 + 关卡层）
+├─ levels_data.js          地图坐标 + 关卡配置 + 题目数据（纯数据）
 ├─ engine.js               资源加载 / 进度条 / 音频池 / 动画 / 判定 / 弹层 / 3D 扩展位
 ├─ progress.js             进度、星级、解锁、合并
 ├─ cloud.js                Gist 云存档
 ├─ sandbox.js              连点 5 次 + 口令 123 的开发者后门
 ├─ app.js                  启动、地图渲染、路由、云存档面板
+├─ level-lv01.js           第一关 Apple Addition：3 幕教学 + 10 题 + 结算
 ├─ PROJECT_MATH_RULES.md   项目铁律（最高约束）
 ├─ HANDOVER.md             本文件
 ├─ config/
 │  └─ secrets.local.json   本机密钥（gitignored，永不提交）
 ├─ voice/
-│  ├─ common/              跨关共用语音（鼓励 / 金星 / 银星 / 未开放提示）
-│  ├─ lv01/                第一关语音（待台词确认后生成）
+│  ├─ common/              4 条公共语音（ready / try_again / gold / silver）
+│  ├─ lv01/                19 条第一关语音
 │  └─ lines/               台词清单 JSON（生成脚本的输入）
 ├─ tools/
-│  ├─ gen_tts.py           豆包 TTS 批量生成（支持 --probe 试听、--dry-run 校验）
+│  ├─ gen_tts.py           豆包 TTS 批量生成（--probe 试听 / --dry-run 校验）
 │  ├─ push_via_api.py      Git Data API 推送
-│  ├─ cdp-eval.mjs         本地验收：在页面里执行表达式
-│  └─ cdp-shot.mjs         本地验收：390×844 移动视口截图
+│  ├─ cdp-eval.mjs         本地验收：390×844 视口下执行表达式
+│  ├─ cdp-shot.mjs         本地验收：移动视口截图
+│  └─ cdp-reload.mjs       本地验收：关缓存硬刷新
 └─ docs/
-   └─ LEVEL_01_DESIGN.md   第一关台词与动画方案（待确认稿）
+   └─ LEVEL_01_DESIGN.md   第一关台词与动画方案（已实现）
 ```
 
 ---
@@ -103,36 +105,37 @@ python -m http.server 8765 --bind 127.0.0.1
 
 不要用 `file://` 直接打开：`localStorage` 在部分浏览器会抛 `SecurityError`，云存档无法验证。
 
-### 演示参数（仅用于验收，不影响正常入口）
+### 验收参数（不影响正常入口）
 
 | URL | 效果 |
 |---|---|
-| `index.html?demo=loader` | 自动进入第一关，用 12 个假素材演示进度条 |
-| `index.html?demo=fail` | 演示加载失败与「重新加载」按钮 |
+| `index.html?quick=1` | 跳过三幕教学，直接进题（验收 10 题与结算用） |
+| `index.html?demo=loader` | 进入关卡时额外伪造 12 个素材，便于观察进度条 |
+| `index.html?demo=fail` | 伪造一个加载失败，验证「重新加载」按钮 |
 
 ---
 
-## 5. 语音生成流程
+## 5. 语音生成流程（全英文）
 
-1. 编辑台词清单：`voice/lines/lv01.json`（格式见文件内注释）。
+1. 编辑台词清单：`voice/lines/lv01.json`（English only，禁止中文字符与阿拉伯数字）。
 2. 先校验，不花钱：
 
 ```bash
 python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01 --dry-run
 ```
 
-3. 确认无误后生成：
+3. 确认无误后生成（音色固定 Allison，语速 -15）：
 
 ```bash
-python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01
 python tools/gen_tts.py voice/lines/common.json --out voice/common
+python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01
 ```
 
 4. 把生成的文件名写进 `levels_data.js` 对应关卡的 `assets.audio`。
 5. 单条试听（不写清单）：
 
 ```bash
-python tools/gen_tts.py --probe --text "一加一等于二" --lang zh --mood teach --out tmp/probe.mp3
+python tools/gen_tts.py --probe --text "One plus one equals two." --lang en --mood teach --out tmp/probe.mp3
 ```
 
 **注意**：已存在的 mp3 默认跳过；重做必须 `--force`，单条用 `--only`。豆包输出有随机性，同一句两次生成结果不同，不要反复重跑。
@@ -149,58 +152,64 @@ for f in *.js; do node --check "$f"; done
 "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" \
   --headless=new --disable-gpu --remote-debugging-port=9222 \
   --user-data-dir=.edge-profile --window-size=390,844 \
-  "http://127.0.0.1:8765/index.html"
+  "http://127.0.0.1:8765/index.html?quick=1"
 
-# 在页面里断言（示例：沙盒开关）
-node tools/cdp-eval.mjs "Sandbox.open(); document.getElementById('sandbox-pin').value='123'; [...document.querySelectorAll('.modal-actions .btn')].find(b=>b.textContent==='进入').click(); JSON.stringify({sandbox:Sandbox.active(), unlocked:Progress.read().unlockedLevel, ls:localStorage.getItem('math-adventure.progress.v1')})"
+# 改动脚本/样式后必须硬刷新（否则测的是缓存）
+node tools/cdp-reload.mjs
 
-# 移动视口截图
+# 零中文断言（含 aria-label / placeholder）
+node tools/cdp-eval.mjs "(()=>{const c=/[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]/;const bad=[];document.querySelectorAll('[aria-label],[placeholder]').forEach(e=>['aria-label','placeholder'].forEach(a=>{const v=e.getAttribute(a);if(v&&c.test(v))bad.push(a+':'+v)}));return JSON.stringify({body:c.test(document.body.innerText),bad});})()"
+
+# 音频全解码
+node tools/cdp-eval.mjs "(async()=>{const f=['common/ready','common/try_again','common/gold','common/silver','lv01/t1_a','lv01/t1_b','lv01/t1_c','lv01/t1_d','lv01/t2_a','lv01/t2_b','lv01/t2_c','lv01/t2_d','lv01/t3_a','lv01/q1','lv01/q2','lv01/q3','lv01/q4','lv01/q5','lv01/q6','lv01/q7','lv01/q8','lv01/q9','lv01/q10'];const bad=[];for(const k of f){const d=await new Promise(r=>{const a=new Audio();a.onloadedmetadata=()=>r(a.duration);a.onerror=()=>r(0);a.src='voice/'+k+'.mp3';setTimeout(()=>r(-1),6000)});if(!(d>0))bad.push(k)}return JSON.stringify({total:f.length,bad});})()"
+
+# 截图
 node tools/cdp-shot.mjs .shots/map.png 390 844
 ```
 
 已通过的验收项（2026-10-29）：
 
 - `node --check` 全部脚本通过；
-- 390×844 地图 / 加载遮罩 / 关卡占位 / 云存档面板截图无重叠；
-- 10 题全对返回 `gold`，中途错一题返回 `silver` 且题号不前进；
-- 银星 → 金星可升级并推进解锁线，金星不会被银星降级；
+- 23 条 mp3 全部可解码，总时长 79.9 秒；
+- 全流程 `document.body.innerText` 与 `aria-label` / `placeholder` 均不含 CJK；
+- 390×844 下地图 / 教学 / 答题 / 结算 / 加载 / 弹层无溢出、无重叠；
+- 10 题全对 → `gold` 且 `unlockedLevel = 2`；错一题 → `silver` 且 `unlockedLevel = 1`；
+- 银星 → 金星可升级，金星不会被银星降级；
 - 合并函数：`unlockedLevel` 取最大、星级取最高、`cleared` 取并集；
-- 沙盒口令错误时弹层不关闭；口令正确后全解锁且 `localStorage` 仍为 `null`；
-- 无效 Gist 令牌返回中文错误提示，且不会残留令牌。
+- 沙盒口令错误时弹层不关闭；口令正确后全解锁且 `localStorage` 不被改写；
+- 无效 Gist 令牌返回英文错误提示，且不残留令牌。
 
 ---
 
 ## 7. 已知坑（都是实测踩过的）
 
-1. **Edge headless 最小窗口宽度约 500 px**：直接 `--window-size=390,844` 得到的是 492 px 视口，右侧元素会被裁掉。截图必须用 `Emulation.setDeviceMetricsOverride`（`tools/cdp-shot.mjs` 已封装）。
-2. **Allison 读中文返回空音频**：`code` 正常但没有 `data` 帧。中文必须用 `zh_female_xiaoxue_uranus_bigtts`。
-3. **`context_texts` 放错位置会被静默忽略**：必须在 `additions` 的 JSON 字符串里。
-4. **iOS 音频元素数量上限**：一次创建几十个 `<audio>` 后会静默失声。`engine.js` 限 40 个并在退关释放。
-5. **`git push` 一定失败**，不要浪费时间去试代理。
-6. **`--dump-dom` 不会等异步渲染完成**，验证交互要用 CDP。
+1. **Edge headless 最小窗口宽度约 500 px**：`--window-size=390,844` 实际得到 492 px 视口，右侧元素会被裁掉。截图与求值都必须用 `Emulation.setDeviceMetricsOverride`（三个 cdp 工具已封装）。
+2. **CDP 的 Emulation 覆盖随连接关闭而失效**：换一个工具连接就要重新设置，否则会出现「量出来 492、截图 390」的口径不一致。
+3. **浏览器会缓存 JS/CSS**：改完必须 `node tools/cdp-reload.mjs`（内部 `Network.setCacheDisabled` + `Page.reload({ignoreCache:true})`），否则测的是旧版本。
+4. **Allison 只支持英文**：用她读中文会返回空音频（`code` 正常但无 `data` 帧）。本项目已全面英文，不再需要任何中文音色。
+5. **`context_texts` 放错位置会被静默忽略**：必须在 `additions` 的 JSON 字符串里。
+6. **iOS 音频元素数量上限**：一次创建几十个 `<audio>` 后会静默失声。`engine.js` 限 40 个并在退关释放。
+7. **`git push` 一定失败**，不要浪费时间去试代理。
+8. **`--dump-dom` 不会等异步渲染完成**，验证交互要用 CDP。
 
 ---
 
 ## 8. 当前进度与下一步
 
-### 已完成（Day 1）
+### 已完成
 
-- 仓库创建、铁律与交接文档落地；
-- 模块化骨架：地图屏（3 个节点，1 个可玩 + 2 个占位）、关卡屏、加载遮罩、弹层、轻提示；
+- 仓库、铁律、交接文档；
+- 地图屏（3 个节点，1 个可玩 + 2 个占位）、关卡屏、加载遮罩、弹层、轻提示；
 - `engine.js`：按关加载 + 加权进度条 + 失败重试、音频池与手势解锁、果冻动画（运动预算 10 / 动画结束销毁）、10 题判定状态机、Three.js 扩展位；
 - `progress.js`：星级只升不降、金星才解锁、合并取最高；
 - `cloud.js`：Gist 先合并再推送、有限退避、令牌只存本地；
 - `sandbox.js`：连点 5 次 + 口令 123，全解锁且不落盘；
-- 豆包 TTS 工具链与本地密钥落盘，中文样音已通过语音识别验证。
+- **第一关 Apple Addition**：23 条英文语音、3 幕教学、10 题纯数字按钮、金星 / 银星结算；
+- 全英文改造：界面零中文，按钮全部 SVG 图标。
 
-### 待确认（阻塞下一步）
+### 下一步
 
-见 `docs/LEVEL_01_DESIGN.md` 的「待确认项」，核心是音色选择与台词文案。
-
-### 确认后要做的
-
-1. 生成 `voice/common/` 与 `voice/lv01/` 共 22 条语音；
-2. 新建 `level-lv01.js`，实现 3 幕教学 + 10 题；
-3. 接入结算页（金星 / 银星两套文案与动效）；
-4. 按 `PROJECT_MATH_RULES.md §8` 跑完整验收；
-5. 通过 `push_via_api.py` 推送。
+1. 第 2 关 `Apple Take Away`（5 以内减法）：沿用第一关的题型框架，新增「拿走」动画与 10 题数据；
+2. 关卡 2 语音按 `voice/lines/lv02.json` 新建，复用 `common/` 四条；
+3. 地图节点 2 的解锁验证（第一关金星后自动解锁）；
+4. 真机（iOS Safari / Android Chrome）音频与排版复核。
