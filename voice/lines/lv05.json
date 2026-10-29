@@ -1,0 +1,35 @@
+{
+  "level": "lv05",
+  "status": "draft",
+  "note": "Cookie Party (numbers 11-19, scene interaction with a cookie box). English only. Teaching asks a question then answers it (t2_q + t2_b, 1s pause in code). Type A = listen and drag cookies to the animal (a*_q); type B = count a box plus loose cookies and pick the number (b*_q); type C = pick the animal holding the matching cookies (c*_q). Runtime shuffles the ten questions.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's give the puppy some cookies. Let's count ten.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Ten cookies make one box. That's a ten!", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "Here is one full box of ten. And five more cookies outside.", "mood": "teach" },
+    { "key": "t2_q", "lang": "en", "text": "How many cookies in total?", "mood": "ask" },
+    { "key": "t2_b", "lang": "en", "text": "One ten and five ones make fifteen!", "mood": "count" },
+
+    { "key": "t3_a", "lang": "en", "text": "Now, you try! Give the bear eighteen cookies.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "One box of ten, and eight ones make eighteen.", "mood": "count" },
+
+    { "key": "a1_q", "lang": "en", "text": "Give the bear sixteen cookies.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Give the puppy thirteen cookies.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Give the cat eighteen cookies.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Give the rabbit twelve cookies.", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "How many cookies does the bear have?", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Look at the box. How many cookies altogether?", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Count the cookies. How many does the puppy have?", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Find the bear with fourteen cookies.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Find the puppy with seventeen cookies.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Find the cat with sixteen cookies.", "mood": "ask" }
+  ]
+}

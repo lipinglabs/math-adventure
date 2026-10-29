@@ -1,0 +1,125 @@
+# Level 5 · Cookie Party（发饼干 · 11–19 场景互动）
+
+> 把「一个十 + 零散个位」放进真实情境：给小动物发饼干，先装满一盒十块，再放零散几块。
+> 3 幕教学 + 10 题（顺序每局打乱），三种题型混排。
+
+| 项 | 值 |
+|---|---|
+| 关卡文件 | `level-lv05.js` |
+| 数据 | `levels_data.js` → `levels[5]` |
+| 语音 | `voice/lv05/`（17 条）+ `voice/common/`（4 条），合计 71.2 秒 |
+| 音色 | `en_female_allison_uranus_bigtts`，`speech_rate = -15` |
+| 选项数 | 看盒识数 3、选小动物 3、拖拽无选项（见铁律 §6.5） |
+| 十格阵 | 严格 2 行 × 5 列，左上 → 右下填充（铁律 §5.8） |
+| 拖拽 | 热区四边外扩 `HIT_PAD = 14px`，未命中 320 ms 平滑弹回且不落子（铁律 §5.9） |
+| 判定 | 10 题首轮全对 = 金星并解锁 L6；有错 = 银星，题号不前进 |
+
+---
+
+## 1. 语音清单（17 条，全部英文）
+
+### 教学（7 条）
+
+| key | 台词 | 时长 |
+|---|---|---|
+| `t1_a` | Let's give the puppy some cookies. Let's count ten. | 5.23s |
+| `t1_b` | Ten cookies make one box. That's a ten! | 4.27s |
+| `t2_a` | Here is one full box of ten. And five more cookies outside. | 6.17s |
+| `t2_q` | How many cookies in total? | 1.92s |
+| `t2_b` | One ten and five ones make fifteen! | 3.82s |
+| `t3_a` | Now, you try! Give the bear eighteen cookies. | 4.27s |
+| `t3_b` | One box of ten, and eight ones make eighteen. | 4.06s |
+
+> `t2_q` 与 `t2_b` 必须是两个独立 mp3：问句播完停 1 秒，由系统播答案（铁律 §6.1）。
+
+### 题型 A · 听数字拖饼干（4 条）
+
+| key | 台词 | 目标 |
+|---|---|---|
+| `a1_q` | Give the bear sixteen cookies. | 16 |
+| `a2_q` | Give the puppy thirteen cookies. | 13 |
+| `a3_q` | Give the cat eighteen cookies. | 18 |
+| `a4_q` | Give the rabbit twelve cookies. | 12 |
+
+### 题型 B · 看盒子点数字（3 条）
+
+| key | 台词 | 画面 | 答案 |
+|---|---|---|---|
+| `b1_q` | How many cookies does the bear have? | 满盒 + 6 块散 | 16 |
+| `b2_q` | Look at the box. How many cookies altogether? | 满盒 + 8 块散 | 18 |
+| `b3_q` | Count the cookies. How many does the puppy have? | 满盒 + 5 块散 | 15 |
+
+### 题型 C · 听指令选小动物（3 条）
+
+| key | 台词 | 正确答案 | 干扰项 |
+|---|---|---|---|
+| `c1_q` | Find the bear with fourteen cookies. | 熊 14 | 狗 16、猫 18 |
+| `c2_q` | Find the puppy with seventeen cookies. | 狗 17 | 熊 15、猫 19 |
+| `c3_q` | Find the cat with sixteen cookies. | 猫 16 | 熊 18、狗 13 |
+
+---
+
+## 2. 三幕教学（每幕语音播完定格，点屏幕任意位置才进入下一幕）
+
+### 第一幕 · 装满一盒
+
+1. 小狗 + 空十格阵 → `t1_a`
+2. `t1_b` 起手的同一时刻，10 块饼干从右侧依次飞入（间隔 90 ms），**只影响自己那一格，不挤动其它格**
+3. 第 10 块落定 → 盒子 `pack-pop` 弹一下 + 金色封边 `pack-seal` 淡入，之后转为 `seal-breathe` 呼吸辉光
+4. 大数字 `10` 弹入，定格等点击
+
+### 第二幕 · 认识十五
+
+1. 满盒（已填充、金色封边）+「+」+ 5 块散饼干（3 列排布）→ `t2_a`
+2. 停 1 秒 → `t2_q`（问句）
+3. 停 1 秒 → `t2_b`，同时大数字 `15` 弹入、5 块散饼干依次弹跳
+4. 播完定格等点击
+
+### 第三幕 · 你来发十八块
+
+1. 小熊 + 空十格阵 + 右侧虚线盘 + 下方 18 块饼干供应区 → `t3_a`
+2. 10 块饼干依次飞入盒子（供应区对应饼干只隐藏、保留占位），第 10 块落定后打包 + 弹跳，虚线盘亮起
+3. `t3_b` 起手的同一时刻，8 块饼干飞入虚线盘，随后大数字 `18` 弹入
+4. 播完定格等点击
+
+---
+
+## 3. 三种题型
+
+| 题型 | 画面 | 交互 | 答对 | 答错 |
+|---|---|---|---|---|
+| A `give` | 小动物 + 空盒 + 虚线盘 + 下方饼干堆（带手势提示） | 从饼干堆拖到盒子/盘上；或轻点盒子区域逐个放 | 放够目标数：满十自动打包、大数字弹出、星音，560 ms 后进下一题 | 无错误态（发饼干任务）；拖到别处只弹回 |
+| B `count` | 满盒 +「+」+ 零散饼干（3 列） | 3 个数字键（答案 ±2/±4 取值） | 星音 + 盒子发光，680 ms 进下一题 | 抖动 + `Try again`（同题一次）+ 换位 |
+| C `pick` | 三张动物卡，每张「小十格阵 + 零散饼干」 | 点选端着对应数量饼干的小动物 | 卡片变绿 + 星音 | 抖动 + 换位 |
+
+**发饼干规则**：目标数 N（12–18）一律「先装满 10 块、再放 N−10 块」。第 10 块落盘时盒子立刻打包成「一盒」，
+后续的块落在旁边的虚线盘里——这正是「一个十 + 零散个位」的实物表征，也避免孩子重复拖 16 次还看不出结构。
+
+---
+
+## 4. 动画与实现要点
+
+- 十格阵由 `makeFrame()` 生成固定 10 个 `.tf-cell`，`fillFrame()` 按左上→右下填格，一格最多一块；
+- 满十打包 = `pack-pop`（弹一下）+ `tf-glow`（金色呼吸）两条动画**并存**；
+  只写 `pack-pop` 会把 `.is-full` 的 `tf-glow` 覆盖掉，满十就不发光了；
+- 飞入动画用 Web Animations 在格子内部做 `translate + scale`，**不改变布局**；
+- 拖拽用 Pointer Events：`pointerdown` 在饼干堆上生成 `position: fixed` 的 ghost 跟随指针；
+  `pointerup` 时用「目标矩形四边各外扩 14px」判定命中；
+  命中 → ghost 收缩淡出并落子；未命中 → 三段回弹（回到原位、缩小、淡出），**不落子、不扣星、不播 try_again**；
+  `pointermove` 位移 < 8px 视为轻点，也算落子（触屏兜底）；目标区域 `pointerdown` 直接落子；
+- 关卡 `unmount()` 兜底清理 `.l5-ghost`，避免拖拽中途退出留下幽灵。
+
+---
+
+## 5. 验收结果（2026-10-29）
+
+- 21 条音频（17 关内 + 4 公共）全部 `decodeAudioData` 成功，合计 71.2 秒；
+- 10 题全对 → `gold`，`Progress.summary().unlockedLevel = 6`；
+- 四道 `give` 题实测：盒内 10 块、盘上分别是 6 / 3 / 8 / 2 块，`is-packed` 与 `is-ready` 均正确触发，大数字为 16 / 13 / 18 / 12；
+- 三道 `count` 题实测：满盒 10 + 散块 6 / 8 / 5，三个数字键中必含正确答案；
+- 三道 `pick` 题实测：三张卡片的散块数为 4/6/8、5/7/9、8/3/6，答案卡必在其中；
+- 答错重排实测：数字键 `[16,18,14]` → `[14,18,16]`，正确答案位置 0 → 2；
+- 拖拽热区实测：目标右边界外 **13px** 落子成功、外 **16px** 不落子，ghost 全部清理；
+- 390×844 无横向溢出（看盒识数卡 305px、动物卡 281px、拖拽舞台 305px）；
+- 地图 5 个节点：最低节点标签底边 764px，底部提示语顶边 779px，留白 15px；
+- 教学三幕 + 答题 + 结算全程 `document.body.innerText` 无 CJK。

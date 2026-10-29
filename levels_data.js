@@ -14,18 +14,22 @@
 window.MATH_DATA = {
   meta: {
     title: 'Math Adventure',
-    version: '0.2.0',
+    version: '0.3.0',
     // 音频根目录。页面运行时按关拼路径，只请求当前关用到的文件。
     audioBase: 'voice/'
   },
 
   map: {
     viewBox: { w: 390, h: 620 },
+    // 节点中心纵向间距 104 单位（实测 390×844 下 = 127px），横向左右交替。
+    // 最低点必须保证「圆盘 + 标签」不压到 .map-note（labelBottom = 76 + y×1.223 + 60 ≤ 768）。
+    // 改坐标时必须同步改 index.html 里的三条轨迹 path。
     spots: [
-      { level: 1, x: 128, y: 520 },
-      { level: 2, x: 212, y: 356 },
-      { level: 3, x: 152, y: 196 },
-      { level: 4, x: 236, y: 108 }
+      { level: 1, x: 128, y: 514 },
+      { level: 2, x: 214, y: 410 },
+      { level: 3, x: 132, y: 306 },
+      { level: 4, x: 226, y: 202 },
+      { level: 5, x: 140, y: 98 }
     ]
   },
 
@@ -235,6 +239,69 @@ window.MATH_DATA = {
         { type: 'build', target: 15, voice: 'c1_q' },
         { type: 'build', target: 13, voice: 'c2_q' },
         { type: 'build', target: 17, voice: 'c3_q' }
+      ]
+    },
+
+    5: {
+      id: 5,
+      name: 'Cookie Party',
+      status: 'ready',
+      // 三种题型的选项数（§6.5）：give 是拖拽题、无选项；count = 3 个数字键；pick = 3 张动物卡。
+      // target = 要给的饼干总数，ones = 盒子外零散数（count/pick 用到）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv05/t1_a.mp3',
+          'lv05/t1_b.mp3',
+          'lv05/t2_a.mp3',
+          'lv05/t2_q.mp3',
+          'lv05/t2_b.mp3',
+          'lv05/t3_a.mp3',
+          'lv05/t3_b.mp3',
+
+          'lv05/a1_q.mp3',
+          'lv05/a2_q.mp3',
+          'lv05/a3_q.mp3',
+          'lv05/a4_q.mp3',
+
+          'lv05/b1_q.mp3',
+          'lv05/b2_q.mp3',
+          'lv05/b3_q.mp3',
+
+          'lv05/c1_q.mp3',
+          'lv05/c2_q.mp3',
+          'lv05/c3_q.mp3'
+        ],
+        images: []
+      },
+      // 11–19 与「一盒十块 + 零散」：4 题听数字拖饼干 + 3 题看盒点数字 + 3 题选小动物。
+      // pick 题的 options 里必须有一项 ones 等于本题 ones（答案），三项 ones 互不相同。
+      questions: [
+        { type: 'give', target: 16, animal: 'bear', voice: 'a1_q' },
+        { type: 'give', target: 13, animal: 'puppy', voice: 'a2_q' },
+        { type: 'give', target: 18, animal: 'cat', voice: 'a3_q' },
+        { type: 'give', target: 12, animal: 'rabbit', voice: 'a4_q' },
+
+        { type: 'count', ones: 6, animal: 'bear', voice: 'b1_q' },
+        { type: 'count', ones: 8, animal: 'cat', voice: 'b2_q' },
+        { type: 'count', ones: 5, animal: 'puppy', voice: 'b3_q' },
+
+        {
+          type: 'pick', ones: 4, animal: 'bear', voice: 'c1_q',
+          options: [{ animal: 'bear', ones: 4 }, { animal: 'puppy', ones: 6 }, { animal: 'cat', ones: 8 }]
+        },
+        {
+          type: 'pick', ones: 7, animal: 'puppy', voice: 'c2_q',
+          options: [{ animal: 'bear', ones: 5 }, { animal: 'puppy', ones: 7 }, { animal: 'cat', ones: 9 }]
+        },
+        {
+          type: 'pick', ones: 6, animal: 'cat', voice: 'c3_q',
+          options: [{ animal: 'bear', ones: 8 }, { animal: 'puppy', ones: 3 }, { animal: 'cat', ones: 6 }]
+        }
       ]
     }
   }

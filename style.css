@@ -1795,3 +1795,272 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   height: 100%;
   display: block;
 }
+
+/* ============================================================
+   Cookie Party（level-lv05）：饼干、动物、盒子、拖拽
+   ============================================================ */
+
+.tf-cookie {
+  width: 84%;
+  height: 84%;
+  display: block;
+  will-change: transform;
+}
+
+.tf-cookie svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 满十后「打包」：先弹一下，再持续金色呼吸辉光（§5.6 动态星效，禁止静态光芒）
+   注意：pack-pop 的 animation 会覆盖 .is-full 的 tf-glow，两条必须同时列出来。 */
+.tenframe {
+  position: relative;
+}
+
+.tenframe.is-packed {
+  animation:
+    pack-pop 560ms var(--ease-jelly) both,
+    tf-glow 1.6s ease-in-out 560ms infinite;
+}
+
+.tenframe.is-packed::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 21px;
+  border: 3px solid rgba(255, 190, 60, 0.9);
+  pointer-events: none;
+  animation: pack-seal 620ms var(--ease-soft) both, seal-breathe 1.6s ease-in-out 620ms infinite;
+}
+
+@keyframes pack-pop {
+  0% { transform: scale(1); }
+  38% { transform: scale(1.07) rotate(-1deg); }
+  70% { transform: scale(0.98) rotate(0.6deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pack-seal {
+  0% { opacity: 0; transform: scale(0.86); }
+  60% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.85; transform: scale(1); }
+}
+
+@keyframes seal-breathe {
+  0%, 100% { opacity: 0.72; box-shadow: 0 0 0 rgba(255, 190, 60, 0); }
+  50% { opacity: 1; box-shadow: 0 0 16px rgba(255, 190, 60, 0.5); }
+}
+
+.l5-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.l5-board--tight { gap: 10px; }
+
+.l5-animal {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+
+.l5-animal svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.l5-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 30px;
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow: 0 14px 30px rgba(150, 120, 90, 0.1), inset 0 2px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* 零散饼干盘（打包后启用） */
+.l5-plate {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  gap: 4px;
+  align-content: center;
+  justify-content: center;
+  width: 96px;
+  min-height: 96px;
+  padding: 6px;
+  border-radius: 18px;
+  border: 2px dashed rgba(206, 180, 146, 0.75);
+  background: rgba(255, 253, 248, 0.6);
+  transition: border-color 240ms var(--ease-soft), background 240ms var(--ease-soft);
+}
+
+.l5-plate.is-ready {
+  border-color: rgba(240, 170, 80, 0.95);
+  background: rgba(255, 240, 214, 0.72);
+  animation: plate-ready 1.6s ease-in-out infinite;
+}
+
+@keyframes plate-ready {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 170, 80, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(240, 170, 80, 0.16); }
+}
+
+.l5-one {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.l5-one svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 零散饼干：列数由 JS 按场景定（教学 3 列、看盒识数 5 列），此处只定排布规则 */
+.l5-loose {
+  display: grid;
+  gap: 5px;
+  align-content: center;
+  justify-content: center;
+}
+
+.l5-plus {
+  font-size: 22px;
+  font-weight: 800;
+  color: #C79E6A;
+  line-height: 24px;
+}
+
+.l5-supply {
+  display: grid;
+  gap: 4px;
+  justify-content: center;
+}
+
+.l5-bignum {
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+  color: #E0A32F;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 0 rgba(255, 255, 255, 0.85), 0 12px 24px rgba(220, 160, 60, 0.26);
+}
+
+.l5-bignum--small { font-size: 52px; }
+
+/* ---------------- 拖拽 ---------------- */
+
+.l5-pile-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding-top: 6px;
+}
+
+.l5-pile {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 14px;
+  border-radius: 22px;
+  border: 2px dashed rgba(206, 180, 146, 0.85);
+  background: rgba(255, 253, 248, 0.8);
+  box-shadow: 0 8px 18px rgba(150, 120, 90, 0.1);
+  touch-action: none;
+  cursor: grab;
+  animation: pile-breathe 2.4s ease-in-out infinite;
+}
+
+.l5-pile:active { cursor: grabbing; }
+
+/* 提示手势：贴着饼干堆轻轻往右上方“拉”，暗示可以拖走 */
+.l5-pile-hint {
+  display: grid;
+  place-items: center;
+  color: #C7A681;
+  animation: hint-drag 1.9s ease-in-out infinite;
+}
+
+@keyframes hint-drag {
+  0%, 55%, 100% { transform: translate(0, 0); opacity: 0.85; }
+  25% { transform: translate(9px, -9px); opacity: 1; }
+}
+
+.l5-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  pointer-events: none;
+  z-index: 999;
+  filter: drop-shadow(0 6px 10px rgba(150, 100, 80, 0.26));
+}
+
+.l5-ghost svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------- 题型 C：三个小动物 ---------------- */
+
+.l5-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.l5-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D3 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 12px 20px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l5-card:active { transform: translateY(4px) scale(0.98); }
+
+.l5-card.is-right {
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 6px 0 #7FC3A6, 0 12px 20px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l5-card .tenframe {
+  padding: 4px;
+  gap: 3px;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(160, 130, 100, 0.16);
+}
+
+.l5-card .tf-cell { border-radius: 4px; }
+
+.l5-card-ones {
+  display: grid;
+  grid-template-columns: repeat(5, 16px);
+  gap: 4px;
+  align-content: center;
+  justify-content: center;
+  min-width: 92px;
+}

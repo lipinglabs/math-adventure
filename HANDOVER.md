@@ -15,7 +15,7 @@
 | 线上地址 | https://lipinglabs.github.io/math-adventure/ |
 | 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
-| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 / L2 / L3 / L4 已完成** |
+| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 / L2 / L3 / L4 / L5 已完成** |
 
 ---
 
@@ -78,6 +78,7 @@ math-adventure/
 ├─ level-lv02.js           第二关 Balloon Take Away：3 幕教学 + 10 题（题目打乱）
 ├─ level-lv03.js           第三关 Orchard Harvest：3 幕教学 + 10 题（sign / sentence / number 三型）
 ├─ level-lv04.js           第四关 Ten and Some More：十格阵教学 + 10 题（count / pick / build 三型）
+├─ level-lv05.js           第五关 Cookie Party：发饼干场景教学 + 10 题（give / count / pick 三型）
 ├─ level-kit.js            关卡共用：金星 / 银星结算页
 ├─ manifest.json           Web App 清单（名称 / 图标 / 立屏打开）
 ├─ icons/                  应用图标：512 / 192 / 180 / 32 / maskable
@@ -91,6 +92,7 @@ math-adventure/
 │  ├─ lv02/                19 条第二关语音
 │  ├─ lv03/                22 条第三关语音（8 教学 + 8 符号题 + 3 算式题 + 3 结果题）
 │  ├─ lv04/                16 条第四关语音（6 教学 + 4 识数 + 3 匹配 + 3 凑数）
+│  ├─ lv05/                17 条第五关语音（7 教学 + 4 发饼干 + 3 识数 + 3 选动物）
 │  └─ lines/               台词清单 JSON（生成脚本的输入）
 ├─ tools/
 │  ├─ gen_tts.py           豆包 TTS 批量生成（--probe 试听 / --dry-run 校验）
@@ -202,7 +204,11 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - L3 答错后：符号题 2 个、算式题 3 个、数字题 3 个，选项集合不变、顺序与答案位置都变；
 - L4 22 条语音可解码（合计 60.5 秒）；十格阵实测 2 行 × 5 列，左上先填；
 - L4 十题全对 `gold`、`unlockedLevel = 5`；拖拽（Pointer）命中右阵才落子，点框兜底可用；
-- 教学第二幕 5 只气球按「上 2 下 3」两排排布，行宽 176 / 268 ≤ 卡片内容宽 308，不再溢出屏幕。
+- 教学第二幕 5 只气球按「上 2 下 3」两排排布，行宽 176 / 268 ≤ 卡片内容宽 308，不再溢出屏幕；
+- L5 21 条语音（17 关内 + 4 公共）全部可解码，合计 71.2 秒；十题全对 `gold`、`unlockedLevel = 6`；
+- L5 四道发饼干题实测盒内 10 块、盘上 6 / 3 / 8 / 2 块，`is-packed` / `is-ready` 均触发；
+- L5 拖拽热区实测：目标右边界外 **13px** 落子、外 **16px** 不落子，ghost 全部清理；
+- L5 地图 5 节点：最低标签底边 764px、底部提示顶边 779px，留白 15px，无重叠。
 
 ---
 

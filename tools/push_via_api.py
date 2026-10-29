@@ -27,7 +27,7 @@ REPO = "math-adventure"
 BRANCH = "main"
 ROOT = Path(__file__).resolve().parent.parent
 
-EXCLUDE_DIRS = {".git", ".shots", ".edge-profile", "tmp", "__pycache__", "node_modules", ".idea", ".vscode"}
+EXCLUDE_DIRS = {".git", ".shots", ".edge-profile", ".edge-prof", "tmp", "__pycache__", "node_modules", ".idea", ".vscode"}
 EXCLUDE_SUFFIX = {".pyc", ".log", ".tmp"}
 FORBIDDEN_PARTS = ("secret", ".local.json")
 
