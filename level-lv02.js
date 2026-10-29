@@ -11,6 +11,7 @@
 
   var TOTAL = 10;
 
+  var TUT_BALLOON = 84;      // 教学气球直径；5 只按 2+3 两排，最大行宽 3×84+2×8=268
   var COLORS = ['#F58FA0', '#7FC8E8', '#93D7C3', '#F7C948', '#B9A6E8',
                 '#F6A96B', '#8FBF6A', '#E58FC8', '#6FB1E8'];
 
@@ -139,7 +140,11 @@
     item.balloon.classList.remove('is-bobbing');
   }
 
-  /** 向上飘走并淡出，结束后移除整个 slot */
+  /**
+   * 向上飘走并淡出。
+   * 铁律：飞走后**保留占位**（slot 不离开文档流），只把气球本身隐藏，
+   * 这样剩下的气球位置、间距、排列完全不发生重排。
+   */
   function flyAway(item, delay) {
     bobOff(item);
     var p = animate(item.balloon, [
@@ -149,8 +154,9 @@
     ], { duration: 900, delay: delay || 0, easing: 'cubic-bezier(.3,.7,.4,1)' });
 
     later(function () {
-      if (item.slot.parentNode) item.slot.parentNode.removeChild(item.slot);
-    }, (delay || 0) + 940);
+      item.balloon.style.visibility = 'hidden';
+      item.slot.classList.add('is-gone');
+    }, (delay || 0) + 900);
     return p;
   }
 
@@ -183,7 +189,7 @@
 
     var items = [];
     for (var i = 0; i < 3; i += 1) {
-      var item = makeBalloon(92, COLORS[i]);
+      var item = makeBalloon(TUT_BALLOON, COLORS[i]);
       row.appendChild(item.slot);
       items.push(item);
     }
@@ -216,31 +222,34 @@
   async function sceneTwo(host) {
     host.innerHTML = '';
     var frame = makeFrame(host);
-    var row = el('div', 'tut-row tut-row--balloons tut-row--tight');
-    frame.appendChild(row);
+    var stack = el('div', 'balloon-rows');
+    frame.appendChild(stack);
 
+    // 上排 2 只、下排 3 只：飞走的是上排两只（向上飘走最符合现实），
+    // 下排三只原地不动，点数从下排左起。
     var items = [];
-    for (var i = 0; i < 5; i += 1) {
-      var item = makeBalloon(78, COLORS[i]);
-      row.appendChild(item.slot);
-      items.push(item);
-    }
+    var layout = [2, 3];
+    var n = 0;
+    layout.forEach(function (count) {
+      var row = el('div', 'tut-row tut-row--balloons');
+      for (var i = 0; i < count; i += 1) {
+        var item = makeBalloon(TUT_BALLOON, COLORS[n]);
+        row.appendChild(item.slot);
+        items.push(item);
+        n += 1;
+      }
+      stack.appendChild(row);
+    });
 
-    await Promise.all([
-      popIn(items[0].balloon, 0),
-      popIn(items[1].balloon, 90),
-      popIn(items[2].balloon, 180),
-      popIn(items[3].balloon, 270),
-      popIn(items[4].balloon, 360),
-      ctx.audio.play('lv02/t2_a')          // Here are five balloons. Let's count.
-    ]);
+    var pops = items.map(function (item, i) { return popIn(item.balloon, i * 90); });
+    await Promise.all(pops.concat([ctx.audio.play('lv02/t2_a')]));   // Here are five balloons. Let's count.
     if (!alive) return;
     items.forEach(bobOn);
 
     await Promise.all([
       ctx.audio.play('lv02/t2_b'),         // Two balloons flew away!
-      flyAway(items[4], 80),
-      flyAway(items[3], 260)
+      flyAway(items[0], 80),
+      flyAway(items[1], 260)
     ]);
     if (!alive) return;
 
@@ -250,7 +259,7 @@
 
     await sleep(1000);
     var answer = ctx.audio.play('lv02/t2_c');   // One, two, three. Three balloons left.
-    await countUp([items[0], items[1], items[2]], 1100);
+    await countUp([items[2], items[3], items[4]], 1100);
     await answer;
   }
 

@@ -1142,16 +1142,21 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   50% { transform: translateY(-8px) rotate(1.6deg); }
 }
 
+/* 点数圆点：绝对定位，绝不参与布局——否则点完数会把气球整体顶上去 */
 .count-dot {
+  position: absolute;
+  left: 50%;
+  bottom: -17px;
   width: 12px;
   height: 12px;
-  margin-top: 5px;
+  margin-left: -6px;
   border-radius: 50%;
   background: #F08F72;
   box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.14);
   opacity: 0;
   transform: scale(0.4);
   transition: opacity 260ms var(--ease-soft), transform 320ms var(--ease-jelly);
+  pointer-events: none;
 }
 
 .count-dot.is-on { opacity: 1; transform: scale(1); }
@@ -1163,6 +1168,20 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   align-content: center;
   gap: 6px;
   width: 264px;
+}
+
+/* 教学：多排气球的容器（每排独立居中，飞走的气球保留占位不动） */
+.balloon-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* 已飞走的气球：占位保留、不可交互 */
+.balloon-slot.is-gone {
+  pointer-events: none;
 }
 
 .tut-row--balloons { gap: 8px; }
