@@ -342,18 +342,24 @@
 
   /* ---------------- 答题 ---------------- */
 
-  function optionsFor(answer) {
-    var set = [answer];
-    var deltas = [-1, 1, -2, 2];
-    for (var i = 0; i < deltas.length && set.length < 3; i += 1) {
-      var v = answer + deltas[i];
-      if (v >= 1 && v <= 5 && set.indexOf(v) < 0) set.push(v);
-    }
-    for (var k = set.length - 1; k > 0; k -= 1) {
+  function shuffle(list) {
+    for (var k = list.length - 1; k > 0; k -= 1) {
       var j = Math.floor(Math.random() * (k + 1));
-      var tmp = set[k]; set[k] = set[j]; set[j] = tmp;
+      var tmp = list[k]; list[k] = list[j]; list[j] = tmp;
     }
-    return set;
+    return list;
+  }
+
+  /** 4 个选项：正确答案 + 3 个最接近的干扰项（1–5 范围内） */
+  function optionsFor(answer) {
+    var pool = [];
+    for (var v = 1; v <= 5; v += 1) {
+      if (v !== answer) pool.push(v);
+    }
+    pool.sort(function (a, b) {
+      return Math.abs(a - answer) - Math.abs(b - answer) || a - b;
+    });
+    return shuffle([answer].concat(pool.slice(0, 3)));
   }
 
   function addObjects(group, kind, count, size) {
@@ -417,52 +423,73 @@
     var tray = el('div', 'lv-tray');
     var options = optionsFor(answer);
     var locked = false;
-    var tried = false;
+    var errorCount = 0;
 
-    options.forEach(function (value) {
-      var key = el('button', 'numkey');
-      key.type = 'button';
-      key.dataset.value = String(value);
-      key.setAttribute('aria-label', String(value));
-      key.appendChild(el('span', 'numkey-digit', String(value)));
-
-      key.addEventListener('click', function () {
-        if (locked) return;
-
-        if (value === answer) {
-          locked = true;
-          key.classList.add('is-right');
-          Engine.sfx.correct();
-          later(function () { Engine.sfx.star(); }, 90);
-
-          plus.classList.add('is-gone');
-          left.classList.add('is-merged');
-          right.classList.add('is-merged');
-          burst(story);
-
-          var solved = session.answer(true);
-          ctx.step(Math.min(session.index, TOTAL));
-
-          later(function () {
-            if (solved.done) finish(solved.star);
-            else askQuestion(root);
-          }, 650);
-          return;
-        }
-
-        if (!tried) {
-          tried = true;
-          session.answer(false);
-          later(function () { ctx.audio.play('common/try_again'); }, 240);
-        } else {
-          session.answer(false);
-        }
-        Engine.sfx.wrong();
-        shake(key);
+    function paintTray(animateIn) {
+      tray.innerHTML = '';
+      options.forEach(function (value, i) {
+        var key = el('button', 'numkey');
+        key.type = 'button';
+        key.dataset.value = String(value);
+        key.setAttribute('aria-label', String(value));
+        key.appendChild(el('span', 'numkey-digit', String(value)));
+        key.addEventListener('click', function () { pick(value, key); });
+        if (animateIn) popIn(key, i * 60);
+        tray.appendChild(key);
       });
+    }
 
-      tray.appendChild(key);
-    });
+    /** 答错后重排：只换位置、不改内容；整体顺序与「正确答案所在位置」都必须变化 */
+    function reshuffleOptions() {
+      var before = options.join(',');
+      var beforeIndex = options.indexOf(answer);
+      for (var attempt = 0; attempt < 12; attempt += 1) {
+        shuffle(options);
+        if (options.join(',') !== before && options.indexOf(answer) !== beforeIndex) return;
+      }
+      options.push(options.shift());   // 保底：轮转一位，答案位置必定改变
+    }
+
+    function pick(value, key) {
+      if (locked) return;
+
+      if (value === answer) {
+        locked = true;
+        key.classList.add('is-right');
+        Engine.sfx.correct();
+        later(function () { Engine.sfx.star(); }, 90);
+
+        plus.classList.add('is-gone');
+        left.classList.add('is-merged');
+        right.classList.add('is-merged');
+        burst(story);
+
+        var solved = session.answer(true);
+        ctx.step(Math.min(session.index, TOTAL));
+
+        later(function () {
+          if (solved.done) finish(solved.star);
+          else askQuestion(root);
+        }, 650);
+        return;
+      }
+
+      errorCount += 1;
+      session.answer(false);
+      if (errorCount === 1) {
+        later(function () { ctx.audio.play('common/try_again'); }, 240);
+      }
+      Engine.sfx.wrong();
+      shake(key);
+
+      later(function () {
+        if (locked) return;
+        reshuffleOptions();
+        paintTray(true);
+      }, 300);
+    }
+
+    paintTray(false);
 
     wrap.appendChild(story);
     wrap.appendChild(tray);

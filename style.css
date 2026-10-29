@@ -796,7 +796,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 .lv-tray {
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 10px;
   padding: 16px 0 6px;
 }
 
@@ -989,8 +989,8 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 .q-replay:active { transform: scale(0.92); }
 
 .numkey {
-  width: 92px;
-  height: 92px;
+  width: 78px;
+  height: 78px;
   display: grid;
   place-items: center;
   border-radius: 26px;
@@ -1015,7 +1015,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 }
 
 .numkey-digit {
-  font-size: 42px;
+  font-size: 36px;
   font-weight: 800;
   line-height: 1;
   text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);

@@ -18,7 +18,9 @@ if (!out) {
 }
 
 const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-const page = targets.find((t) => t.type === 'page' && t.webSocketDebuggerUrl);
+const pages = targets.filter((t) => t.type === 'page' && t.webSocketDebuggerUrl);
+// 优先选真正的 http(s) 页面，避免命中 about:blank 的空白目标
+const page = pages.find((t) => /^https?:/.test(t.url)) || pages[0];
 if (!page) {
   console.error('没有可用的页面 target');
   process.exit(1);

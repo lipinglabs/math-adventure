@@ -24,20 +24,20 @@
 
 | # | 算式 | 实物 | 题干语音 | 选项 |
 |---|---|---|---|---|
-| 1 | 1 + 1 | apple | One apple, and one more. How many altogether? | 1/2/3 |
-| 2 | 1 + 2 | balloon | One balloon, and two more. How many altogether? | 2/3/4 |
-| 3 | 2 + 1 | fish | Two fish, and one more. How many altogether? | 2/3/4 |
-| 4 | 1 + 3 | apple | One apple, and three more. How many altogether? | 3/4/5 |
-| 5 | 3 + 1 | star | Three stars, and one more. How many altogether? | 3/4/5 |
-| 6 | 2 + 2 | balloon | Two balloons, and two more. How many altogether? | 3/4/5 |
-| 7 | 1 + 4 | fish | One fish, and four more. How many altogether? | 3/4/5 |
-| 8 | 4 + 1 | star | Four stars, and one more. How many altogether? | 3/4/5 |
-| 9 | 2 + 3 | apple | Two apples, and three more. How many altogether? | 3/4/5 |
-| 10 | 3 + 2 | balloon | Three balloons, and two more. How many altogether? | 3/4/5 |
+| 1 | 1 + 1 | apple | One apple, and one more. How many altogether? | 1/2/3/4 |
+| 2 | 1 + 2 | balloon | One balloon, and two more. How many altogether? | 1/2/3/4 |
+| 3 | 2 + 1 | fish | Two fish, and one more. How many altogether? | 1/2/3/4 |
+| 4 | 1 + 3 | apple | One apple, and three more. How many altogether? | 2/3/4/5 |
+| 5 | 3 + 1 | star | Three stars, and one more. How many altogether? | 2/3/4/5 |
+| 6 | 2 + 2 | balloon | Two balloons, and two more. How many altogether? | 2/3/4/5 |
+| 7 | 1 + 4 | fish | One fish, and four more. How many altogether? | 2/3/4/5 |
+| 8 | 4 + 1 | star | Four stars, and one more. How many altogether? | 2/3/4/5 |
+| 9 | 2 + 3 | apple | Two apples, and three more. How many altogether? | 2/3/4/5 |
+| 10 | 3 + 2 | balloon | Three balloons, and two more. How many altogether? | 2/3/4/5 |
 
-- 选项固定 3 个纯数字键，只显示数字，不出现任何文字。
-- 选项为「正确答案 + 相邻两个干扰项」，顺序每局重排。
-- 答错原地重做，选项顺序保持不变。
+- 选项固定 **4 个**纯数字键，只显示数字，不出现任何文字。
+- 选项为「正确答案 + 3 个最接近的干扰项」；开局随机排布，**答错后立即重排**（内容不变，整体顺序与答案位置都必须变化）。
+- 答错原地重做，选项在反馈后立即换位。
 
 ---
 
@@ -93,7 +93,7 @@
 | 事件 | 反馈 | 时序 |
 |---|---|---|
 | 点对 | 数字键变绿 + 金币音 + 星星音；「＋」缩小消失，两组靠拢；金星迸发；进度点前进 | **650ms** 后进下一题 |
-| 点错 | 数字键摇晃 + 柔和下行音；`try_again` 语音（同一题只播一次） | 不换题，原地重做 |
+| 点错 | 数字键摇晃 + 柔和下行音；`try_again` 语音（同一题只播一次）；**选项立即重排** | 不换题，原地重做 |
 | 点喇叭 | 重播题干 | 随时可用 |
 
 **严禁**在单题答对时播放任何人声。
@@ -158,5 +158,6 @@
 - 23 条 mp3 全部可解码，总时长 79.9 秒；
 - 10 题全对 → `gold`，`unlockedLevel = 2`；
 - 中途错一题 → `silver`，`unlockedLevel` 保持 1；
+- 每题 4 个选项；答错后整体顺序与答案位置都改变，选项集合不变；
 - 三种最大题型（1+4 / 4+1 / 3+2）在 390×844 下单行不折行、无横向溢出；
 - 全流程 `document.body.innerText` 不含 CJK，`aria-label` / `placeholder` 同样不含。

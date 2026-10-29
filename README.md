@@ -8,7 +8,7 @@
 ## 现在能玩到什么
 
 - 地图：1 个关卡 + 2 个占位节点，支持星级与解锁状态；
-- **Level 1 · Apple Addition**：3 幕动画教学（落体 / 挤压回弹 / 点数 / 认识加号）+ 10 道题；
+- **Level 1 · Apple Addition**：3 幕动画教学（落体 / 挤压回弹 / 点数 / 认识加号）+ 10 道题（每题 4 个选项，答错立即重排）；
 - 10 题全对得 Gold Star 并解锁下一关；中途答错原地重做，得 Silver Star；
 - 云存档（Gist）、开发者沙盒（左上角连点 5 次，口令 123）。
 
@@ -43,6 +43,7 @@ python -m http.server 8765 --bind 127.0.0.1
 
 - [`PROJECT_MATH_RULES.md`](PROJECT_MATH_RULES.md)：项目铁律，最高约束，改动前必读
 - [`HANDOVER.md`](HANDOVER.md)：环境、密钥、推送方式、验收命令
+- [`docs/CURRICULUM.md`](docs/CURRICULUM.md)：全游戏大纲（5 阶段 48 关）
 - [`docs/LEVEL_01_DESIGN.md`](docs/LEVEL_01_DESIGN.md)：第一关台词与动画方案
 
 ## 语音

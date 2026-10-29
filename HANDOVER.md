@@ -90,6 +90,7 @@ math-adventure/
 │  ├─ cdp-shot.mjs         本地验收：移动视口截图
 │  └─ cdp-reload.mjs       本地验收：关缓存硬刷新
 └─ docs/
+   ├─ CURRICULUM.md        全游戏大纲：5 阶段 48 关（唯一事实来源）
    └─ LEVEL_01_DESIGN.md   第一关台词与动画方案（已实现）
 ```
 
@@ -174,6 +175,7 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - 全流程 `document.body.innerText` 与 `aria-label` / `placeholder` 均不含 CJK；
 - 390×844 下地图 / 教学 / 答题 / 结算 / 加载 / 弹层无溢出、无重叠；
 - 10 题全对 → `gold` 且 `unlockedLevel = 2`；错一题 → `silver` 且 `unlockedLevel = 1`；
+- 每题 4 个选项；连续答错时，整体顺序与正确答案位置每次都改变，选项集合不变；
 - 银星 → 金星可升级，金星不会被银星降级；
 - 合并函数：`unlockedLevel` 取最大、星级取最高、`cleared` 取并集；
 - 沙盒口令错误时弹层不关闭；口令正确后全解锁且 `localStorage` 不被改写；
@@ -209,7 +211,7 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 
 ### 下一步
 
-1. 第 2 关 `Apple Take Away`（5 以内减法）：沿用第一关的题型框架，新增「拿走」动画与 10 题数据；
+1. 第 2 关「气球减法」（`Balloon Take Away`）：沿用第一关的题型框架，新增「飞走消散」动画与 10 题数据；
 2. 关卡 2 语音按 `voice/lines/lv02.json` 新建，复用 `common/` 四条；
 3. 地图节点 2 的解锁验证（第一关金星后自动解锁）；
 4. 真机（iOS Safari / Android Chrome）音频与排版复核。
