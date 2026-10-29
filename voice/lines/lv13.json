@@ -1,0 +1,30 @@
+{
+  "level": "lv13",
+  "status": "draft",
+  "note": "Mix It Up (Stage 2 review: no-carry addition and no-borrow subtraction, 11-19). English only. Teaching has no dangling question: scene one compares add vs take away, scene two turns ten-and-six into the number sixteen. Answer phase is pure tap: add, take away, and read-the-picture. No self-answer in the answer phase.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's review! When we add, we put blocks together.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "When we take away, we remove blocks.", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "Remember, always look at the ones first!", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "One ten and six ones make sixteen.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Let's see if you remember everything! Let's play!", "mood": "ask" },
+
+    { "key": "a1_q", "lang": "en", "text": "Thirteen plus four. Tap the answer.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Twelve plus six. Tap the answer.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Fourteen plus two. Tap the answer.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Eleven plus eight. Tap the answer.", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Seventeen minus five. Tap the answer.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Nineteen minus four. Tap the answer.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Sixteen minus three. Tap the answer.", "mood": "ask" },
+    { "key": "b4_q", "lang": "en", "text": "Eighteen minus four. Tap the answer.", "mood": "ask" },
+
+    { "key": "c_q", "lang": "en", "text": "Look at the picture. Which number is it?", "mood": "ask" }
+  ]
+}

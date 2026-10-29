@@ -4980,3 +4980,310 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   box-shadow: 0 5px 0 #DFA93F, 0 0 0 4px rgba(255, 190, 80, 0.32),
               inset 0 3px 6px rgba(255, 255, 255, 0.85);
 }
+
+/* ============================================================
+   Mix It Up（level-lv13）：二阶大复习 · 加减并排对比
+   ------------------------------------------------------------
+   教学：左加右减两张对比卡（积木飞入 / 飞走），第二幕十格阵变数字；
+   答题：纯算式点选、十格阵识数，一律三个数字键。
+   积木尺寸用 --c 传入，格位一次性建满，飞走只隐藏自身（§5.7）。
+   ============================================================ */
+
+/* ---------------- 教学第一幕：左右对比 ---------------- */
+
+.l13-duo {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.l13-card {
+  position: relative;
+  width: 166px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 26px 10px 12px;
+  border-radius: 24px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+.l13-card--add { background: linear-gradient(170deg, #FFFDF7 0%, #EAF7EF 100%); }
+.l13-card--sub { background: linear-gradient(170deg, #FFFDF7 0%, #FBEBE6 100%); }
+
+.l13-badge {
+  position: absolute;
+  left: 8px;
+  top: 7px;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.l13-badge--add {
+  color: #2F8C6A;
+  background: #DDF3E8;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 2px 0 #9FD5BE;
+}
+
+.l13-badge--sub {
+  color: #C9504A;
+  background: #FBE1DC;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 2px 0 #E7AFA7;
+}
+
+/* 积木尺寸：默认值写在这里，窄屏媒体查询里再缩一档 */
+.l13-pack { --c: 13px; }
+
+.l13-slots { --c: 15px; }
+
+/* 积木场地：一捆十块 + 一列零散，底边对齐 */
+.l13-pile {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  height: 62px;
+}
+
+.l13-pack {
+  display: grid;
+  grid-template-columns: repeat(5, var(--c, 13px));
+  grid-auto-rows: var(--c, 13px);
+  gap: 2px;
+  padding: 4px;
+  border-radius: 9px;
+  background: rgba(255, 246, 226, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(214, 182, 138, 0.7),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l13-slots {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), var(--c, 15px));
+  grid-auto-rows: var(--c, 15px);
+  gap: 3px;
+  align-content: end;
+}
+
+.l13-slot {
+  display: grid;
+  place-items: center;
+  width: var(--c, 15px);
+  height: var(--c, 15px);
+}
+
+.l13-cube {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(160deg, #FFE3B8 0%, #F2BC72 62%, #DFA055 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+              inset 0 -1px 2px rgba(160, 100, 40, 0.22),
+              0 1px 0 rgba(190, 130, 60, 0.35);
+  /* 支点在接触面：压扁才像踩在桌上（§5.11） */
+  transform-origin: 50% 100%;
+}
+
+.l13-pic .l13-slots { --c: 24px; }
+
+.l13-pic .l13-cube { border-radius: 5px; }
+
+/* 十格阵里的小积木：留出格子边距，一格最多一块（§5.8） */
+.tenframe .tf-cell .l13-cube {
+  width: 76%;
+  height: 76%;
+  border-radius: 6px;
+}
+
+/* 教学算式：16 拆成「1」「6」两块，只有个位能单独转红（§6.1） */
+.l13-teq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.l13-num {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 5px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.16;
+  color: #6B4E31;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 2px 0 rgba(198, 168, 128, 0.42);
+  transition: color 200ms var(--ease-soft), background 200ms var(--ease-soft);
+}
+
+.l13-num i { font-style: normal; }
+
+.l13-num--res {
+  min-width: 22px;
+  justify-content: center;
+  color: #BFA482;
+  background: transparent;
+  box-shadow: none;
+}
+
+.l13-num i.is-hot {
+  color: #C9504A;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.l13-sop {
+  font-size: 15px;
+  font-weight: 800;
+  color: #C79E6A;
+}
+
+/* ---------------- 教学第二幕：十格阵 → 数字 ---------------- */
+
+.l13-stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 260px;
+}
+
+.l13-stage > * { grid-area: 1 / 1; }
+
+.l13-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.l13-bignum {
+  font-size: 104px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #6B4E31;
+  text-shadow: 0 7px 0 rgba(227, 201, 164, 0.6), 0 12px 18px rgba(150, 120, 90, 0.16);
+}
+
+.l13-bignum.is-hidden { opacity: 0; }
+
+/* ---------------- 答题：纯算式 ---------------- */
+
+.l13-qeq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l13-tile {
+  display: grid;
+  place-items: center;
+  min-width: 64px;
+  height: 74px;
+  padding: 0 12px;
+  border-radius: 22px;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 160ms var(--ease-soft), color 160ms var(--ease-soft),
+              box-shadow 160ms var(--ease-soft);
+}
+
+.l13-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l13-tile.is-filled {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E4F8EF 0%, #B7E7D3 100%);
+  border: none;
+  box-shadow: 0 5px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l13-tile.is-answer {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.22),
+              0 8px 16px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l13-qop {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+/* ---------------- 答题：看图选数 ---------------- */
+
+.l13-pic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ---------------- 数字键：按下立刻有反应（§5.12 ≤120ms） ---------------- */
+
+.l13-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l13-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l13-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l13-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* 窄屏（≤379px）两张对比卡收窄 10px，避免贴边 */
+@media (max-width: 379px) {
+  .l13-duo { gap: 8px; }
+  .l13-card { width: 158px; padding-left: 8px; padding-right: 8px; }
+  .l13-pile { gap: 6px; }
+  .l13-card .l13-pack { --c: 11px; }
+  .l13-card .l13-slots { --c: 13px; }
+}

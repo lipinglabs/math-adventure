@@ -674,6 +674,52 @@ window.MATH_DATA = {
         { type: 'flash', a: 19, b: 7, options: [11, 12, 13], voice: ['c2_q'] },
         { type: 'flash', a: 15, b: 4, options: [10, 11, 12], voice: ['c3_q'] }
       ]
+    },
+    13: {
+      id: 13,
+      name: 'Mix It Up',
+      status: 'ready',
+      // 二阶大复习（§6.5）：add / sub / pic 全是 3 个数字键，纯点选、不拖拽。
+      // 加法一律不进位、减法一律不退位；被减数与加数都落在 11–19 里。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv13/t1_a.mp3',
+          'lv13/t1_b.mp3',
+          'lv13/t1_c.mp3',
+          'lv13/t2_a.mp3',
+          'lv13/t2_b.mp3',
+          'lv13/a1_q.mp3',
+          'lv13/a2_q.mp3',
+          'lv13/a3_q.mp3',
+          'lv13/a4_q.mp3',
+          'lv13/b1_q.mp3',
+          'lv13/b2_q.mp3',
+          'lv13/b3_q.mp3',
+          'lv13/b4_q.mp3',
+          'lv13/c_q.mp3'
+        ],
+        images: []
+      },
+      // add：a + b（个位不进位）；sub：a − b（个位够减）；pic：十格阵满十 + ones 个零散积木。
+      // 三型共用一套「点数字键」的作答方式，顺序每局打乱。
+      questions: [
+        { type: 'add', a: 13, b: 4, options: [16, 17, 18], voice: ['a1_q'] },
+        { type: 'add', a: 12, b: 6, options: [17, 18, 19], voice: ['a2_q'] },
+        { type: 'add', a: 14, b: 2, options: [15, 16, 17], voice: ['a3_q'] },
+        { type: 'add', a: 11, b: 8, options: [18, 19, 17], voice: ['a4_q'] },
+
+        { type: 'sub', a: 17, b: 5, options: [11, 12, 13], voice: ['b1_q'] },
+        { type: 'sub', a: 19, b: 4, options: [14, 15, 16], voice: ['b2_q'] },
+        { type: 'sub', a: 16, b: 3, options: [12, 13, 14], voice: ['b3_q'] },
+        { type: 'sub', a: 18, b: 4, options: [13, 14, 15], voice: ['b4_q'] },
+
+        { type: 'pic', ones: 4, options: [13, 14, 15], voice: ['c_q'] },
+        { type: 'pic', ones: 8, options: [17, 18, 19], voice: ['c_q'] }
+      ]
     }
   }
 };
