@@ -134,9 +134,56 @@ window.MATH_DATA = {
 
     3: {
       id: 3,
-      name: 'Add to Ten',
-      status: 'coming',
-      assets: { audio: [], images: [] }
+      name: 'Orchard Harvest',
+      status: 'ready',
+      // 三种题型的选项数由题型决定（§6.5）：sign = 2、sentence = 3、number = 3
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv03/t1_a.mp3',
+          'lv03/t1_b.mp3',
+          'lv03/t1_c.mp3',
+          'lv03/t2_a.mp3',
+          'lv03/t2_b.mp3',
+          'lv03/t2_c.mp3',
+          'lv03/t3_a.mp3',
+          'lv03/t3_b.mp3',
+
+          'lv03/a1_q.mp3', 'lv03/a1_r.mp3',
+          'lv03/a2_q.mp3', 'lv03/a2_r.mp3',
+          'lv03/a3_q.mp3', 'lv03/a3_r.mp3',
+          'lv03/a4_q.mp3', 'lv03/a4_r.mp3',
+
+          'lv03/b1_q.mp3',
+          'lv03/b2_q.mp3',
+          'lv03/b3_q.mp3',
+
+          'lv03/c1_q.mp3',
+          'lv03/c2_q.mp3',
+          'lv03/c3_q.mp3'
+        ],
+        images: []
+      },
+      // 10 以内加减混合：4 题点符号 + 3 题点算式 + 3 题点结果，顺序每局打乱。
+      // op 为题目本身的运算；answerVoice 只用于 sign 题（点对后播算式）。
+      questions: [
+        { type: 'sign', a: 4, b: 3, op: '+', object: 'dog', voice: 'a1_q', answerVoice: 'a1_r' },
+        { type: 'sign', a: 6, b: 2, op: '-', object: 'bird', voice: 'a2_q', answerVoice: 'a2_r' },
+        { type: 'sign', a: 5, b: 4, op: '+', object: 'rabbit', voice: 'a3_q', answerVoice: 'a3_r' },
+        { type: 'sign', a: 7, b: 3, op: '-', object: 'fish', voice: 'a4_q', answerVoice: 'a4_r' },
+
+        { type: 'sentence', a: 5, b: 2, op: '-', object: 'balloon', voice: 'b1_q' },
+        { type: 'sentence', a: 4, b: 3, op: '+', object: 'bird', voice: 'b2_q' },
+        { type: 'sentence', a: 6, b: 4, op: '-', object: 'apple', voice: 'b3_q' },
+
+        { type: 'number', a: 8, b: 3, op: '-', object: 'apple', voice: 'c1_q' },
+        { type: 'number', a: 5, b: 4, op: '+', object: 'apple', voice: 'c2_q' },
+        { type: 'number', a: 6, b: 2, op: '+', object: 'apple', voice: 'c3_q' }
+      ]
     }
   }
 };

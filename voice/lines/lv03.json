@@ -1,0 +1,40 @@
+{
+  "level": "lv03",
+  "status": "draft",
+  "note": "Orchard Harvest (mixed add/subtract within 10). English only. Type A = pick the sign (a*_q question, a*_r equation feedback); type B = pick the sentence (b*_q); type C = pick the number (c*_q). Runtime shuffles the ten questions.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! Three apples on the tree.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Two more apples fly in. Now, we have more. Let's add!", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "Three plus two equals five.", "mood": "count" },
+
+    { "key": "t2_a", "lang": "en", "text": "Oh no! A strong wind is blowing.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Two apples fall down and roll away. Now, we have less. Let's take away!", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "Five minus two equals three.", "mood": "count" },
+
+    { "key": "t3_a", "lang": "en", "text": "When we add, numbers go up.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "When we take away, numbers go down.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Four dogs, and three more run here. Do we add or take away?", "mood": "ask" },
+    { "key": "a1_r", "lang": "en", "text": "Four plus three equals seven.", "mood": "count" },
+    { "key": "a2_q", "lang": "en", "text": "Six birds, and two fly away. Do we add or take away?", "mood": "ask" },
+    { "key": "a2_r", "lang": "en", "text": "Six minus two equals four.", "mood": "count" },
+    { "key": "a3_q", "lang": "en", "text": "Five rabbits, and four more hop in. Do we add or take away?", "mood": "ask" },
+    { "key": "a3_r", "lang": "en", "text": "Five plus four equals nine.", "mood": "count" },
+    { "key": "a4_q", "lang": "en", "text": "Seven fish, and three swim away. Do we add or take away?", "mood": "ask" },
+    { "key": "a4_r", "lang": "en", "text": "Seven minus three equals four.", "mood": "count" },
+
+    { "key": "b1_q", "lang": "en", "text": "Look at the balloons. Which number sentence matches this?", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Look at the birds. Which number sentence matches this?", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Look at the apples. Which number sentence matches this?", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Eight apples on the tree. Three fall down. How many are left?", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Five apples on the tree. Four more grow. How many apples now?", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Six apples on the tree. Two more grow. How many apples now?", "mood": "ask" }
+  ]
+}

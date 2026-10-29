@@ -15,7 +15,7 @@
 | 线上地址 | https://lipinglabs.github.io/math-adventure/ |
 | 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
-| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 Apple Addition / L2 Balloon Take Away 已完成** |
+| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 / L2 / L3 已完成** |
 
 ---
 
@@ -76,6 +76,7 @@ math-adventure/
 ├─ app.js                  启动、地图渲染、路由、云存档面板
 ├─ level-lv01.js           第一关 Apple Addition：3 幕教学 + 10 题
 ├─ level-lv02.js           第二关 Balloon Take Away：3 幕教学 + 10 题（题目打乱）
+├─ level-lv03.js           第三关 Orchard Harvest：3 幕教学 + 10 题（sign / sentence / number 三型）
 ├─ level-kit.js            关卡共用：金星 / 银星结算页
 ├─ manifest.json           Web App 清单（名称 / 图标 / 立屏打开）
 ├─ icons/                  应用图标：512 / 192 / 180 / 32 / maskable
@@ -87,6 +88,7 @@ math-adventure/
 │  ├─ common/              4 条公共语音（ready / try_again / gold / silver）
 │  ├─ lv01/                19 条第一关语音
 │  ├─ lv02/                19 条第二关语音
+│  ├─ lv03/                22 条第三关语音（8 教学 + 8 符号题 + 3 算式题 + 3 结果题）
 │  └─ lines/               台词清单 JSON（生成脚本的输入）
 ├─ tools/
 │  ├─ gen_tts.py           豆包 TTS 批量生成（--probe 试听 / --dry-run 校验）
@@ -97,7 +99,8 @@ math-adventure/
 └─ docs/
    ├─ CURRICULUM.md        全游戏大纲：5 阶段 48 关（唯一事实来源）
    ├─ LEVEL_01_DESIGN.md   第一关台词与动画方案（已实现）
-   └─ LEVEL_02_DESIGN.md   第二关台词与动画方案（已实现）
+   ├─ LEVEL_02_DESIGN.md   第二关台词与动画方案（已实现）
+   └─ LEVEL_03_DESIGN.md   第三关台词与动画方案（已实现）
 ```
 
 ---
@@ -191,6 +194,9 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - 冷缓存首次进入：`downloaded = 23`、读条出现一次；二次进入：`downloaded = 0`、读条不出现；
 - 答题瞬间旧语音立即停止：答对后 300ms 播放中的 audio 为 0，下一题开始后为 1；
 - 位置稳定（§5.7）：L2 答题飞走气球前后，全部 `slot` 坐标 `dx = dy = 0`；教学第二幕飞走上排两只后，下排三个仍在 `61/153/245 × 458`；
+- L3 三种题型各验一次：7 只动物 / 5 只气球 / 8 枚苹果离场后，剩余物件 `dx = dy = 0`；
+- L3 22 条语音全部可解码（合计 93.8 秒），十题全对 `gold`、`unlockedLevel = 4`；
+- L3 答错后：符号题 2 个、算式题 3 个、数字题 3 个，选项集合不变、顺序与答案位置都变；
 - 教学第二幕 5 只气球按「上 2 下 3」两排排布，行宽 176 / 268 ≤ 卡片内容宽 308，不再溢出屏幕。
 
 ---

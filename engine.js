@@ -576,12 +576,19 @@
     return shuffleList([answer].concat(pool.slice(0, count - 1)));
   }
 
-  function reshuffleOptions(list, answer) {
-    var before = list.join(',');
+  /**
+   * 答错后重排：整体顺序与「正确答案所在位置」都必须变化。
+   * @param key 可选，元素是对象时用来生成可比对的标识（默认 String(item)）
+   */
+  function reshuffleOptions(list, answer, key) {
+    var keyOf = typeof key === 'function' ? key : function (item) { return String(item); };
+    var signature = function () { return list.map(keyOf).join('|'); };
+    var before = signature();
     var beforeIndex = list.indexOf(answer);
+
     for (var attempt = 0; attempt < 12; attempt += 1) {
       shuffleList(list);
-      if (list.join(',') !== before && list.indexOf(answer) !== beforeIndex) return list;
+      if (signature() !== before && list.indexOf(answer) !== beforeIndex) return list;
     }
     list.push(list.shift());     // 保底：轮转一位，答案位置必定改变
     return list;

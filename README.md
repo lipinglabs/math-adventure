@@ -11,6 +11,8 @@
 - 地图：1 个关卡 + 2 个占位节点，支持星级与解锁状态；
 - **Level 1 · Apple Addition**：3 幕动画教学（落体 / 挤压回弹 / 点数 / 认识加号）+ 10 道题；
 - **Level 2 · Balloon Take Away**：3 幕教学（气球飘走 / 点数 / 认识减号）+ 10 道打乱顺序的减法题；
+- **Level 3 · Orchard Harvest**：3 幕果园教学（小鸟送苹果 / 风吹落果 / 加减号）+ 10 道混合题，
+  含「选符号 / 选算式 / 选结果」三种题型；
 - 所有选择题均为 4 个选项，答错立即重排；
 - 动画遵循现实规则：气球飞走后其余气球留在原位，不会重新排布；
 - 10 题全对得 Gold Star 并解锁下一关；中途答错原地重做，得 Silver Star；
@@ -44,6 +46,7 @@ python -m http.server 8765 --bind 127.0.0.1
 | `app.js` | 启动、地图渲染、路由 |
 | `level-lv01.js` | 第一关：教学分镜、10 题 |
 | `level-lv02.js` | 第二关：气球减法教学、10 题（题目打乱） |
+| `level-lv03.js` | 第三关：果园情境教学、三题型混合 |
 | `level-kit.js` | 关卡共用结算页（金星 / 银星） |
 
 ## 文档
@@ -53,6 +56,7 @@ python -m http.server 8765 --bind 127.0.0.1
 - [`docs/CURRICULUM.md`](docs/CURRICULUM.md)：全游戏大纲（5 阶段 48 关）
 - [`docs/LEVEL_01_DESIGN.md`](docs/LEVEL_01_DESIGN.md)：第一关台词与动画方案
 - [`docs/LEVEL_02_DESIGN.md`](docs/LEVEL_02_DESIGN.md)：第二关台词与动画方案
+- [`docs/LEVEL_03_DESIGN.md`](docs/LEVEL_03_DESIGN.md)：第三关台词与动画方案
 
 ## 语音
 
