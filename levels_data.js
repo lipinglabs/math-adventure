@@ -21,15 +21,16 @@ window.MATH_DATA = {
 
   map: {
     viewBox: { w: 390, h: 620 },
-    // 节点中心纵向间距 104 单位（实测 390×844 下 = 127px），横向左右交替。
-    // 最低点必须保证「圆盘 + 标签」不压到 .map-note（labelBottom = 76 + y×1.223 + 60 ≤ 768）。
-    // 改坐标时必须同步改 index.html 里的三条轨迹 path。
+    // 6 个节点：纵向步长 93 单位（实测 390×844 下 ≈ 114px），横向左右交替。
+    // 节点整块高 104px（圆盘 76 + 间距 6 + 标签 22），步长必须 > 104，否则标签会压下一颗圆盘。
+    // 最低点保证「圆盘 + 标签」不压到 .map-note，最高点不顶出 .map-wrap 上沿；改坐标必须同步改 index.html 的三条轨迹 path。
     spots: [
-      { level: 1, x: 128, y: 514 },
-      { level: 2, x: 214, y: 410 },
-      { level: 3, x: 132, y: 306 },
-      { level: 4, x: 226, y: 202 },
-      { level: 5, x: 140, y: 98 }
+      { level: 1, x: 128, y: 526 },
+      { level: 2, x: 214, y: 433 },
+      { level: 3, x: 132, y: 340 },
+      { level: 4, x: 226, y: 247 },
+      { level: 5, x: 140, y: 154 },
+      { level: 6, x: 222, y: 61 }
     ]
   },
 
@@ -302,6 +303,60 @@ window.MATH_DATA = {
           type: 'pick', ones: 6, animal: 'cat', voice: 'c3_q',
           options: [{ animal: 'bear', ones: 8 }, { animal: 'puppy', ones: 3 }, { animal: 'cat', ones: 6 }]
         }
+      ]
+    },
+
+    6: {
+      id: 6,
+      name: 'Number Link',
+      status: 'ready',
+      // 三种题型（§6.5）：link 是连线题（左右各 3 张卡，没有按钮选项）；fill 是 3 个数字键。
+      // left = 'num' 表示数字在左、图案在右；nums 与 ones 各自独立洗牌，答案位置每局都变。
+      // link 题的 nums / ones 必须互相对应（10 + ones 落在 nums 里），且三对都能配平。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv06/t1_a.mp3',
+          'lv06/t1_b.mp3',
+          'lv06/t2_a.mp3',
+
+          'lv06/a1_q.mp3',
+          'lv06/a2_q.mp3',
+          'lv06/a3_q.mp3',
+          'lv06/a4_q.mp3',
+
+          'lv06/b1_a.mp3',
+          'lv06/b2_a.mp3',
+          'lv06/b3_a.mp3',
+          'lv06/link_right.mp3',
+
+          'lv06/c1_a.mp3',
+          'lv06/c2_a.mp3',
+          'lv06/c3_a.mp3',
+          'lv06/how_many.mp3',
+          'lv06/touch_num.mp3'
+        ],
+        images: []
+      },
+      // 11–19 半抽象匹配：4 题数字找图案 + 3 题图案找数字 + 3 题看图选数字。
+      // voice 是数组：题干可能由多条语音接起来（先描述图案，再说“连到右边的数字”）。
+      questions: [
+        { type: 'link', left: 'num', target: 14, nums: [14, 18, 12], ones: [4, 8, 2], voice: ['a1_q'] },
+        { type: 'link', left: 'num', target: 18, nums: [16, 18, 13], ones: [8, 6, 3], voice: ['a2_q'] },
+        { type: 'link', left: 'num', target: 12, nums: [12, 15, 19], ones: [2, 5, 9], voice: ['a3_q'] },
+        { type: 'link', left: 'num', target: 16, nums: [17, 16, 11], ones: [1, 6, 7], voice: ['a4_q'] },
+
+        { type: 'link', left: 'pic', target: 17, nums: [17, 13, 19], ones: [7, 3, 9], voice: ['b1_a', 'link_right'] },
+        { type: 'link', left: 'pic', target: 15, nums: [12, 18, 15], ones: [5, 8, 2], voice: ['b2_a', 'link_right'] },
+        { type: 'link', left: 'pic', target: 19, nums: [16, 19, 14], ones: [9, 6, 4], voice: ['b3_a', 'link_right'] },
+
+        { type: 'fill', ones: 9, options: [19, 18, 16], voice: ['c1_a', 'how_many', 'touch_num'] },
+        { type: 'fill', ones: 6, options: [16, 18, 14], voice: ['c2_a', 'how_many', 'touch_num'] },
+        { type: 'fill', ones: 8, options: [18, 16, 19], voice: ['c3_a', 'how_many', 'touch_num'] }
       ]
     }
   }

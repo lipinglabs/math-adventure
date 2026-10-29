@@ -15,7 +15,7 @@
 | 线上地址 | https://lipinglabs.github.io/math-adventure/ |
 | 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
-| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 / L2 / L3 / L4 / L5 已完成** |
+| 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒 + **L1 / L2 / L3 / L4 / L5 / L6 已完成** |
 
 ---
 
@@ -79,6 +79,7 @@ math-adventure/
 ├─ level-lv03.js           第三关 Orchard Harvest：3 幕教学 + 10 题（sign / sentence / number 三型）
 ├─ level-lv04.js           第四关 Ten and Some More：十格阵教学 + 10 题（count / pick / build 三型）
 ├─ level-lv05.js           第五关 Cookie Party：发饼干场景教学 + 10 题（give / count / pick 三型）
+├─ level-lv06.js           第六关 Number Link：2 幕连线教学 + 10 题（link / fill 两型）
 ├─ level-kit.js            关卡共用：金星 / 银星结算页
 ├─ manifest.json           Web App 清单（名称 / 图标 / 立屏打开）
 ├─ icons/                  应用图标：512 / 192 / 180 / 32 / maskable
@@ -93,6 +94,7 @@ math-adventure/
 │  ├─ lv03/                22 条第三关语音（8 教学 + 8 符号题 + 3 算式题 + 3 结果题）
 │  ├─ lv04/                16 条第四关语音（6 教学 + 4 识数 + 3 匹配 + 3 凑数）
 │  ├─ lv05/                17 条第五关语音（7 教学 + 4 发饼干 + 3 识数 + 3 选动物）
+│  ├─ lv06/                16 条第六关语音（3 教学 + 4 数字连线 + 4 听音连线 + 5 看图选数）
 │  └─ lines/               台词清单 JSON（生成脚本的输入）
 ├─ tools/
 │  ├─ gen_tts.py           豆包 TTS 批量生成（--probe 试听 / --dry-run 校验）
@@ -209,6 +211,12 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - L5 四道发饼干题实测盒内 10 块、盘上 6 / 3 / 8 / 2 块，`is-packed` / `is-ready` 均触发；
 - L5 拖拽热区实测：目标右边界外 **13px** 落子、外 **16px** 不落子，ghost 全部清理；
 - L5 地图 5 节点：最低标签底边 764px、底部提示顶边 779px，留白 15px，无重叠。
+- L6 20 条语音（16 关内 + 4 公共）全部可解码，合计 72.7 秒 / 569KB；十题全对 `gold`、`unlockedLevel = 7`；
+- L6 连线一笔画出：拖动中临时虚线恰好 1 条，落手后残留 `lines = 1`、`is-on = 1`、`linked = 2`；
+- L6 连错：红线 `badDrawn = 1`，560ms 后 `lines = 0` / `linked = 0` / `done = 0`，`try_again` 播 1 次、题目不前进；
+- L6 连线热区实测：目标卡右边界外 **13px** 连得上、外 **16px** 连不上（`armed = 0`）；两下轻点同样能连；
+- L6 看图选数答错重排 `[19,18,16] → [16,19,18]`，答案位置 0 → 1，题目不前进；
+- L6 地图 6 节点（`y = 526 / 433 / 340 / 247 / 154 / 61`）：最低标签底边 772px、底部提示顶边 779px，无重叠；
 
 ---
 
@@ -224,6 +232,9 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 8. **`--dump-dom` 不会等异步渲染完成**，验证交互要用 CDP。
 9. **Cache Storage 只在 https / localhost 生效**：`file://` 下会退化为每次网络加载；换素材时务必把 `engine.js` 里的 `CACHE_NAME` 版本号 +1，否则旧缓存会继续命中。
 10. **图标来自真实照片**：`tools/make_icon.py` 的 `--box` 控制裁剪范围，换照片时重跑一次即可。
+11. **CSS 类名与 JS 加的类必须逐字对上**：L6 连线变绿写成 `.l6-line--on`、JS 加的是 `is-on`，结果「连对了却还是浅蓝」，肉眼很难发现，靠断言 `is-on` 的数量才抓到。
+12. **绝对定位的 SVG 会盖住卡片**：连线 `svg` 必须 `z-index: 0`、两列卡片 `position: relative; z-index: 1`，否则线会从卡面上糊过去。
+13. **`justify-content: space-between` 只有一个子元素时会贴左**：单卡（教学第二幕）要另加 `.l6-board--single` 用 `gap` 居中，不能指望 space-between。
 
 ---
 
@@ -232,12 +243,17 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 ### 已完成
 
 - 仓库、铁律、交接文档；
-- 地图屏（3 个节点，1 个可玩 + 2 个占位）、关卡屏、加载遮罩、弹层、轻提示；
+- 地图屏（**6 个节点**，逐关解锁）、关卡屏、加载遮罩、弹层、轻提示；
 - `engine.js`：按关加载 + 加权进度条 + 失败重试、音频池与手势解锁、果冻动画（运动预算 10 / 动画结束销毁）、10 题判定状态机、Three.js 扩展位；
 - `progress.js`：星级只升不降、金星才解锁、合并取最高；
 - `cloud.js`：Gist 先合并再推送、有限退避、令牌只存本地；
 - `sandbox.js`：连点 5 次 + 口令 123，全解锁且不落盘；
 - **第一关 Apple Addition**：23 条英文语音、3 幕教学、10 题纯数字按钮、金星 / 银星结算；
+- **第二关 Balloon Take Away**：气球减法，3 幕教学 + 10 题打乱；
+- **第三关 Orchard Harvest**：10 以内加减混合，3 幕教学 + 选符号 / 选算式 / 选结果三型；
+- **第四关 Ten and Some More**：十格阵认识 11–19，3 幕教学 + 看阵识数 / 听数选阵 / 拖拽凑数三型；
+- **第五关 Cookie Party**：发饼干场景，3 幕教学 + 听数字拖饼干 / 看盒点数字 / 选小动物三型；
+- **第六关 Number Link**：2 幕连线教学 + 数字连阵图 / 听音连数字 / 看图选数三型，连线一笔画出（§5.10）；
 - 全英文改造：界面零中文，按钮全部 SVG 图标；
 - 素材持久化：Cache Storage `math-adventure-assets-v1`，二次进入不重新下载、不弹读条；
 - 语音互斥：`play()` 独占 + 答对瞬间 `stop()`，实测切题时播放中的 audio ≤ 1；
@@ -247,7 +263,7 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 
 ### 下一步
 
-1. 第 3 关「混合判断」：果园场景，看图判断该用加法还是减法；
-2. 题目数据与语音清单按 `docs/CURRICULUM.md` L3 落地；
-3. 真机（iOS Safari / Android Chrome）音频与排版复核；
+1. 第 7 关（相机/主题待定）：20 以内加减，按 `docs/CURRICULUM.md` 落地；
+2. 真机（iOS Safari / Android Chrome）音频与排版复核；
+3. 关卡选择页 / 家长报告页（可选）；
 4. 抽空把 L1 的选项 / 结算逻辑与 L2 对齐（已共用 `Engine.quiz` 与 `LevelKit`）。

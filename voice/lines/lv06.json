@@ -1,0 +1,33 @@
+{
+  "level": "lv06",
+  "status": "draft",
+  "note": "Number Link (numbers 11-19, half-abstract: ten-frame picture <-> number card). English only. Teaching asks nothing, so nothing to self-answer; the 1s pause before the demo line is a dramatic beat. Type A = a1_q..a4_q (three numbers on the left, three pictures on the right, drag a line). Type B = b1_a..b3_a plus the shared link_right (three pictures on the left, three numbers on the right). Type C = c1_a..c3_a plus the shared how_many and touch_num (one picture, three number keys). Runtime shuffles the ten questions and each column.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's match the numbers and the pictures. Look at number thirteen.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Thirteen is one ten and three ones. They match!", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "Let's find sixteen. One ten and six ones. Yes, this is sixteen.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Find fourteen and match it to the picture.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Find eighteen and match it to the picture.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Find twelve and match it to the picture.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Find sixteen and match it to the picture.", "mood": "ask" },
+
+    { "key": "b1_a", "lang": "en", "text": "Look at the picture with one ten and seven ones.", "mood": "ask" },
+    { "key": "b2_a", "lang": "en", "text": "Look at the picture with one ten and five ones.", "mood": "ask" },
+    { "key": "b3_a", "lang": "en", "text": "Look at the picture with one ten and nine ones.", "mood": "ask" },
+    { "key": "link_right", "lang": "en", "text": "Connect it to the right number.", "mood": "ask" },
+
+    { "key": "c1_a", "lang": "en", "text": "This is one ten and nine ones.", "mood": "teach" },
+    { "key": "c2_a", "lang": "en", "text": "This is one ten and six ones.", "mood": "teach" },
+    { "key": "c3_a", "lang": "en", "text": "This is one ten and eight ones.", "mood": "teach" },
+    { "key": "how_many", "lang": "en", "text": "How many in total?", "mood": "ask" },
+    { "key": "touch_num", "lang": "en", "text": "Touch the correct number.", "mood": "ask" }
+  ]
+}
