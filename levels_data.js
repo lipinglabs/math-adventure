@@ -626,6 +626,54 @@ window.MATH_DATA = {
         { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 17, b: 5, shown: 12 }, { a: 13, b: 2, shown: 10 }, { a: 18, b: 6, shown: 12 }] },
         { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 19, b: 7, shown: 12 }, { a: 15, b: 4, shown: 12 }, { a: 16, b: 3, shown: 13 }] }
       ]
+    },
+    12: {
+      id: 12,
+      name: 'Lightning Math',
+      status: 'ready',
+      // 三种题型（§6.5）：calc = 3 个数字键；balloon = 3 个写着答案的气球；flash = 3 个数字键 + 5 秒条。
+      // 一律不退位：只从个位减，个位够减（a - 10 >= b）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv12/t1_a.mp3',
+          'lv12/t1_b.mp3',
+          'lv12/t1_b2.mp3',
+          'lv12/t1_c.mp3',
+          'lv12/t2_a.mp3',
+          'lv12/t2_b.mp3',
+          'lv12/a1_q.mp3',
+          'lv12/a2_q.mp3',
+          'lv12/a3_q.mp3',
+          'lv12/a4_q.mp3',
+          'lv12/b1_q.mp3',
+          'lv12/b2_q.mp3',
+          'lv12/b3_q.mp3',
+          'lv12/c1_q.mp3',
+          'lv12/c2_q.mp3',
+          'lv12/c3_q.mp3'
+        ],
+        images: []
+      },
+      // 三种题型共用 a - b = ? 的结构；options 是三个候选答案（气球题直接印在气球上）。
+      // flash 题按 §6.9：超时与点错都记一次错、同一题重来、进度条重置。
+      questions: [
+        { type: 'calc', a: 17, b: 3, options: [13, 14, 15], voice: ['a1_q'] },
+        { type: 'calc', a: 14, b: 2, options: [11, 12, 13], voice: ['a2_q'] },
+        { type: 'calc', a: 19, b: 6, options: [12, 13, 14], voice: ['a3_q'] },
+        { type: 'calc', a: 16, b: 5, options: [10, 11, 12], voice: ['a4_q'] },
+
+        { type: 'balloon', a: 15, b: 2, options: [13, 12, 14], voice: ['b1_q'] },
+        { type: 'balloon', a: 18, b: 6, options: [13, 12, 11], voice: ['b2_q'] },
+        { type: 'balloon', a: 13, b: 2, options: [12, 11, 10], voice: ['b3_q'] },
+
+        { type: 'flash', a: 18, b: 5, options: [12, 13, 14], voice: ['c1_q'] },
+        { type: 'flash', a: 19, b: 7, options: [11, 12, 13], voice: ['c2_q'] },
+        { type: 'flash', a: 15, b: 4, options: [10, 11, 12], voice: ['c3_q'] }
+      ]
     }
   }
 };

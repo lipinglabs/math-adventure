@@ -57,7 +57,7 @@
 |---|---|---|---|
 | L10 | 小鸟飞走 **（已实现）** | 动画教学 | 十位树枝那一整枝不动，从个位树枝飞走几只小鸟（18-5 等，不退位）；含看鸟飞走点剩余、听总数选树枝、点掉指定数量再点剩余三型 |
 | L11 | 分糖果 **（已实现）** | 场景互动 | 一整盒 10 颗不动，把个位散糖拖进盘里拿走指定颗数（18-5 等，不退位）；含拖糖进盘再点剩余、听总数选糖果组、找错误算式三型 |
-| L12 | 闪电心算 | 半抽象逻辑 | 纯数字题目，限时选择正确答案 |
+| L12 | 闪电心算 **（已实现）** | 半抽象逻辑 | 纯数字不退位减法 + 5 秒限时；含纯算式点选、气球选答案、闪电心算三型 |
 
 ### 二阶大复习
 
@@ -182,7 +182,7 @@
 | 关卡编号 | `levels_data.js` 的 `levels.<1–48>`，编号全局唯一、不跳号 |
 | 阶段 / 知识点 | 仅用于文档与地图分区，不参与运行时逻辑 |
 | 三种教学形态 | `tutorial`（动画）→ `interactive`（场景互动）→ `quiz`（半抽象点选） |
-| 已实现 | L1 `Apple Addition`、L2 `Balloon Take Away`、L3 `Orchard Harvest`、L4 `Ten and Some More`、L5 `Cookie Party`、L6 `Number Link`、L7 `Block Build`、L8 `Car Garage`、L9 `Quick Tap`、L10 `Bird Branch`、L11 `Candy Share`（`level-lv11.js`） |
-| 待实现 | L12 起（20 以内加减的进位、数的比较与排序） |
+| 已实现 | L1 `Apple Addition`、L2 `Balloon Take Away`、L3 `Orchard Harvest`、L4 `Ten and Some More`、L5 `Cookie Party`、L6 `Number Link`、L7 `Block Build`、L8 `Car Garage`、L9 `Quick Tap`、L10 `Bird Branch`、L11 `Candy Share`、L12 `Lightning Math`（`level-lv12.js`） |
+| 待实现 | L13 起（20 以内加减的进位、数的比较与排序） |
 
 > 地图已按 5 大阶段分组（`levels_data.js` 的 `map.stages`），一屏只显示一个阶段；阶段内超过 6 关自动分页、左右滑动查看（铁律 §5.13）。因此后续关卡再多也不会挤。

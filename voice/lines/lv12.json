@@ -1,0 +1,32 @@
+{
+  "level": "lv12",
+  "status": "draft",
+  "note": "Lightning Math (teen numbers minus ones, no borrow). English only. Teaching has no dangling question: the first scene says the teen number, the second says the take-away in words, the third states the answer. Type A (calc) = pure equation + three number keys. Type B (balloon) = one equation card + three balloons carrying answers. Type C (flash) = 5 s bar, same rules as L9 (timeout or wrong tap restarts on the same question).",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look at the blocks. One ten and six ones. That's sixteen.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "Now, let's look at the numbers. We take away the ones.", "mood": "teach" },
+    { "key": "t1_b2", "lang": "en", "text": "Six minus four equals two.", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "So, sixteen minus four equals twelve!", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "Remember, the ten stays the same.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "We only take away from the ones.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Seventeen minus three. Tap the right answer.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Fourteen minus two. Tap the right answer.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Nineteen minus six. Tap the right answer.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Sixteen minus five. Tap the right answer.", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Fifteen minus two. Which balloon has the answer?", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Eighteen minus six. Which balloon has the answer?", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Thirteen minus two. Which balloon has the answer?", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Quick! Eighteen minus five equals what?", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Quick! Nineteen minus seven equals what?", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Quick! Fifteen minus four equals what?", "mood": "ask" }
+  ]
+}
