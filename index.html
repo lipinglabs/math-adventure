@@ -53,23 +53,36 @@
 
     <div class="map-wrap">
       <!--
-        viewBox 固定 390×620，preserveAspectRatio="none"。
-        节点坐标同样以这个坐标系书写（levels_data.js 的 map.spots），
-        由 app.js 换算成百分比定位，因此两者在任何屏幕比例下都严格对齐。
+        分阶段地图：一屏只放一个「页」（≤6 个节点）。
+        每一页自带一条轨迹（path 由 app.js 依节点坐标生成，viewBox 固定 390×620），
+        所有页排成一条横向轨道，左右滑动 / 阶段按钮切换。
       -->
-      <svg class="map-trail" viewBox="0 0 390 620" preserveAspectRatio="none" aria-hidden="true">
-        <path class="trail-shadow" vector-effect="non-scaling-stroke"
-              d="M128 537 C 145.2 507, 196.8 505, 214 475 C 197.6 445, 148.4 443, 132 413 C 150.8 383, 207.2 381, 226 351 C 208.8 321, 157.2 319, 140 289 C 156.4 259, 205.6 257, 222 227 C 204.8 197, 153.2 195, 136 165 C 152.8 135, 203.2 133, 220 103 C 202.4 73, 149.6 71, 132 41" />
-        <path class="trail-dash" vector-effect="non-scaling-stroke"
-              d="M128 537 C 145.2 507, 196.8 505, 214 475 C 197.6 445, 148.4 443, 132 413 C 150.8 383, 207.2 381, 226 351 C 208.8 321, 157.2 319, 140 289 C 156.4 259, 205.6 257, 222 227 C 204.8 197, 153.2 195, 136 165 C 152.8 135, 203.2 133, 220 103 C 202.4 73, 149.6 71, 132 41" />
-        <path class="trail-future" vector-effect="non-scaling-stroke"
-              d="M132 41 C 154 23, 192 15, 230 3" />
-      </svg>
-
-      <!-- 关卡节点由 app.js 依 levels_data.js 渲染 -->
-      <div id="map-nodes" class="map-nodes"></div>
+      <div id="map-viewport" class="map-viewport">
+        <div id="map-track" class="map-track"></div>
+      </div>
 
       <p id="map-note" class="map-note">Tap a level to play</p>
+
+      <div class="map-nav">
+        <button id="stage-prev" class="stage-btn" type="button" aria-label="Previous stage">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor"
+                  stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="stage-meta">
+          <span id="stage-name" class="stage-name">Stage 1</span>
+          <span id="stage-dots" class="stage-dots" aria-hidden="true"></span>
+        </div>
+
+        <button id="stage-next" class="stage-btn" type="button" aria-label="Next stage">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor"
+                  stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- 沙盒热区：左上角连点 5 次，见 sandbox.js -->
@@ -139,6 +152,7 @@
 <script src="level-lv07.js"></script>
 <script src="level-lv08.js"></script>
 <script src="level-lv09.js"></script>
+<script src="level-lv10.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

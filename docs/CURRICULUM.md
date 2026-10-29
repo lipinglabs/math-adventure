@@ -55,7 +55,7 @@
 
 | 关卡 | 名称 | 形态 | 要点 |
 |---|---|---|---|
-| L10 | 小鸟飞走 | 动画教学 | 从个位区域的树枝上飞走 5 只小鸟 |
+| L10 | 小鸟飞走 **（已实现）** | 动画教学 | 十位树枝那一整枝不动，从个位树枝飞走几只小鸟（18-5 等，不退位）；含看鸟飞走点剩余、听总数选树枝、点掉指定数量再点剩余三型 |
 | L11 | 分糖果 | 场景互动 | 从 18 颗糖果里把 5 颗拖出盒子，剩多少 |
 | L12 | 闪电心算 | 半抽象逻辑 | 纯数字题目，限时选择正确答案 |
 
@@ -182,7 +182,7 @@
 | 关卡编号 | `levels_data.js` 的 `levels.<1–48>`，编号全局唯一、不跳号 |
 | 阶段 / 知识点 | 仅用于文档与地图分区，不参与运行时逻辑 |
 | 三种教学形态 | `tutorial`（动画）→ `interactive`（场景互动）→ `quiz`（半抽象点选） |
-| 已实现 | L1 `Apple Addition`、L2 `Balloon Take Away`、L3 `Orchard Harvest`、L4 `Ten and Some More`、L5 `Cookie Party`、L6 `Number Link`、L7 `Block Build`、L8 `Car Garage`、L9 `Quick Tap`（`level-lv09.js`） |
-| 待实现 | L10 起（20 以内加减的进位、数的比较与排序） |
+| 已实现 | L1 `Apple Addition`、L2 `Balloon Take Away`、L3 `Orchard Harvest`、L4 `Ten and Some More`、L5 `Cookie Party`、L6 `Number Link`、L7 `Block Build`、L8 `Car Garage`、L9 `Quick Tap`、L10 `Bird Branch`（`level-lv10.js`） |
+| 待实现 | L11 起（20 以内加减的进位、数的比较与排序） |
 
-> 注意：当前地图放了 9 个节点做骨架验证，节点已收缩到 50px 圆盘、纵向步长 76px。再往上加就会挤，按阶段分屏时每屏 8–10 个为宜。
+> 地图已按 5 大阶段分组（`levels_data.js` 的 `map.stages`），一屏只显示一个阶段；阶段内超过 6 关自动分页、左右滑动查看（铁律 §5.13）。因此后续关卡再多也不会挤。

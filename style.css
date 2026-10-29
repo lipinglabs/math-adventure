@@ -200,7 +200,7 @@ svg { display: block; }
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05), 0 4px 8px rgba(122, 92, 68, 0.12);
 }
 
-/* 地图画布 */
+/* 地图画布：分阶段，一屏一页，所有页排在一条横向轨道上 */
 .map-wrap {
   position: relative;
   z-index: 2;
@@ -210,11 +210,42 @@ svg { display: block; }
   overflow: hidden;
 }
 
+.map-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* 纵向手势留给系统，横向由脚本接管翻页 */
+  touch-action: pan-y;
+}
+
+.map-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.map-page {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+/* 页内真正的地图区：上方留出状态条、下方留出阶段导航，任何屏高都不会压到 */
+.map-canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 92px;
+  bottom: 140px;
+}
+
 .map-trail {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
 .trail-shadow,
@@ -232,40 +263,109 @@ svg { display: block; }
 .map-note {
   position: absolute;
   left: 50%;
-  bottom: 22px;
+  top: 12px;
+  z-index: 4;
   transform: translateX(-50%);
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: var(--ink-soft);
-  background: rgba(255, 253, 248, 0.82);
+  background: rgba(255, 253, 248, 0.86);
   box-shadow: 0 6px 14px rgba(150, 120, 95, 0.12);
   white-space: nowrap;
+  pointer-events: none;
 }
+
+/* 底部阶段导航条（拇指区） */
+.map-nav {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: 0 10px 22px rgba(150, 120, 95, 0.18), var(--inset-hi);
+}
+
+.stage-btn {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 20px;
+  color: var(--ink);
+  background: linear-gradient(160deg, #fffdf8 0%, #f6e9d6 100%);
+  box-shadow: 0 4px 0 #e3cdae, 0 8px 14px rgba(150, 120, 95, 0.16),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  transition: transform 160ms var(--ease-jelly), opacity 200ms var(--ease-soft);
+}
+
+.stage-btn:active { transform: translateY(3px) scale(0.95); }
+
+.stage-btn.is-off {
+  opacity: 0.32;
+  box-shadow: none;
+  background: rgba(240, 232, 220, 0.75);
+}
+
+.stage-meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.stage-name {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.stage-dots { display: flex; gap: 6px; }
+
+.stage-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e2d3bd;
+  transition: background 200ms var(--ease-soft), transform 200ms var(--ease-jelly);
+}
+
+.stage-dots i.is-now { background: var(--peach-deep); transform: scale(1.4); }
 
 /* 关卡节点 */
 .node {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  transform: translate(-50%, -50%);
+  /* 短屏时 --node-scale 会整体缩尺，保证一页 6 个也不重叠（由 app.js 计算） */
+  transform: translate(-50%, -50%) scale(var(--node-scale, 1));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   padding: 0;
   transition: transform 220ms var(--ease-jelly);
 }
 
-.node:active { transform: translate(-50%, -50%) scale(0.93); }
+.node:active { transform: translate(-50%, -50%) scale(calc(var(--node-scale, 1) * 0.93)); }
 
 .node-disc {
   position: relative;
   display: grid;
   place-items: center;
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: linear-gradient(160deg, #ffe9c9 0%, var(--butter) 55%, var(--butter-deep) 100%);
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.07), 0 18px 26px rgba(140, 105, 70, 0.22), var(--inset-hi);
@@ -274,23 +374,23 @@ svg { display: block; }
 .node-disc::after {
   content: "";
   position: absolute;
-  inset: 5px;
+  inset: 6px;
   border-radius: 50%;
   border: 2px dashed rgba(255, 255, 255, 0.75);
 }
 
 .node-num {
   position: relative;
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 3px 0 rgba(0, 0, 0, 0.14);
 }
 
 .node-label {
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 999px;
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 600;
   color: var(--ink);
   background: rgba(255, 253, 248, 0.9);
@@ -318,8 +418,8 @@ svg { display: block; }
   bottom: -2px;
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 4px 8px rgba(140, 105, 70, 0.2);
@@ -3504,4 +3604,358 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 
 .l9-timer.is-done .l9-timer-fill {
   background: linear-gradient(90deg, #9FD8C4 0%, #6FC7AA 100%);
+}
+
+/* ============================================================
+   Bird Branch（level-lv10）：树枝、小鸟、飞走、竖式、树枝卡
+   ============================================================ */
+
+.l10-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ---------------- 树枝 ---------------- */
+
+.l10-tree {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 18px;
+  padding-bottom: 6px;
+}
+
+/* 树枝投在桌面上的柔和落影 */
+.l10-tree::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 78%;
+  height: 22px;
+  margin-left: -39%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, rgba(150, 108, 66, 0.26) 0%, rgba(150, 108, 66, 0) 74%);
+  pointer-events: none;
+}
+
+.l10-branch {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+/* 树枝本体 */
+.l10-branch::after {
+  content: "";
+  position: absolute;
+  left: -9px;
+  right: -9px;
+  bottom: 0;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #CB9F6E 0%, #A97B4E 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45), 0 3px 0 rgba(150, 110, 70, 0.24);
+}
+
+.l10-group {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 2px;
+}
+
+.l10-row {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.l10-slot {
+  display: grid;
+  place-items: center;
+  width: var(--cell, 24px);
+  height: var(--cell, 24px);
+}
+
+/* ---------------- 小鸟 ---------------- */
+
+.l10-bird {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #8FD3BC;
+  transform-origin: 50% 70%;
+}
+
+.l10-bird svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+.l10-bird--mint { color: #8FD3BC; }
+.l10-bird--sky { color: #93C6EA; }
+.l10-bird--butter { color: #EFC072; }
+.l10-bird--lilac { color: #BCACE2; }
+.l10-bird--rose { color: #EFA091; }
+
+/* 起飞时翅膀扑腾 */
+.l10-bird.is-flying .l10-wing {
+  transform-box: fill-box;
+  transform-origin: 60% 60%;
+  animation: l10-flap 170ms ease-in-out infinite alternate;
+}
+
+@keyframes l10-flap {
+  from { transform: rotate(-16deg) scaleY(0.72); }
+  to { transform: rotate(12deg) scaleY(1.12); }
+}
+
+/* 飞走之后：只隐藏本体，格位留在原位（§5.7 不得 reflow） */
+.l10-bird.is-gone {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.l10-bird.is-gone .l10-wing { animation: none; }
+
+.l10-bird.is-touchable { cursor: pointer; }
+
+/* ---------------- 树枝状态 ---------------- */
+
+.l10-branch.is-ready::before,
+.l10-branch.is-ten-on::before {
+  content: "";
+  position: absolute;
+  inset: -9px -11px 2px;
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+/* 只圈住还在场的那几只：位置由脚本按实际包围盒写死（见 ringRound） */
+.l10-ring {
+  position: absolute;
+  border-radius: 18px;
+  border: 3px solid rgba(79, 176, 124, 0.95);
+  box-shadow: 0 0 0 6px rgba(79, 176, 124, 0.12);
+  pointer-events: none;
+  animation: l10-join 620ms var(--ease-jelly) both;
+}
+
+.l10-branch.is-ready::before {
+  border: 3px dashed rgba(95, 184, 160, 0.85);
+  animation: l10-ready 1.3s ease-in-out infinite;
+}
+
+@keyframes l10-ready {
+  0%, 100% { opacity: 0.5; transform: scale(0.985); }
+  50% { opacity: 1; transform: scale(1.015); }
+}
+
+@keyframes l10-join {
+  from { opacity: 0; transform: scale(0.86); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.l10-branch.is-ten-on::before {
+  border: 3px solid rgba(255, 180, 60, 0.95);
+  animation: l10-ten 1s ease-in-out infinite;
+}
+
+@keyframes l10-ten {
+  0%, 100% { opacity: 0.42; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* ---------------- 徽标 / 计数点 ---------------- */
+
+.l10-badge {
+  position: absolute;
+  left: 50%;
+  top: -40px;
+  width: 42px;
+  margin-left: -21px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.l10-badge-chip {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  font-size: 23px;
+  font-weight: 800;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #B7E7D2 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 8px 14px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l10-tally {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  transition: opacity 320ms var(--ease-soft);
+}
+
+.l10-tally.is-done { opacity: 0; }
+
+.l10-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8FD3BC;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: transform 240ms var(--ease-jelly), background 240ms var(--ease-soft),
+              opacity 240ms var(--ease-soft);
+}
+
+.l10-dot.is-used {
+  background: #E2D3BE;
+  opacity: 0.55;
+  transform: scale(0.66);
+}
+
+/* ---------------- 教学第三幕：竖式 ---------------- */
+
+.l10-sum {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.l10-vert {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.l10-vrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l10-vrow--sum.is-hidden { opacity: 0; }
+
+.l10-vsign {
+  width: 26px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l10-vcell {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 240ms var(--ease-soft), color 240ms var(--ease-soft),
+              box-shadow 240ms var(--ease-soft);
+}
+
+.l10-vcell--blank {
+  background: transparent;
+  border: 2px dashed rgba(203, 178, 143, 0.5);
+  box-shadow: none;
+}
+
+.l10-vcell.is-ten {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF2C6 0%, #FFD46F 100%);
+  box-shadow: 0 5px 0 #DFA93F, 0 0 0 4px rgba(255, 190, 80, 0.35),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l10-vcell.is-ones {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.28),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l10-vline {
+  align-self: stretch;
+  height: 5px;
+  margin-left: 33px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #D9BE99 0%, #C09B6B 100%);
+  transform-origin: left center;
+}
+
+/* ---------------- 题型 B：三根树枝卡 ---------------- */
+
+.l10-opts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+}
+
+.l10-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  min-height: 92px;
+  padding: 10px 12px 12px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D3 100%);
+  box-shadow: 0 6px 0 #E3CDAA, 0 10px 18px rgba(150, 120, 90, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l10-opt:active { transform: translateY(4px) scale(0.985); }
+
+.l10-opt.is-right {
+  background: linear-gradient(160deg, #E9FAF2 0%, #CBEBD9 100%);
+  box-shadow: 0 6px 0 #9FD3BA, 0 10px 18px rgba(80, 150, 130, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l10-mini {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.l10-mini .l10-tree::after { display: none; }
+
+.l10-plus {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+  padding-bottom: 8px;
+}
+
+.l10-plus--mini {
+  font-size: 16px;
+  padding-bottom: 6px;
+}
+
+/* 小鸟提示手势：贴在个位树枝正下方，向上指着要点的鸟 */
+.tap-hint--bird {
+  top: auto;
+  bottom: -48px;
 }

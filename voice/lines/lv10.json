@@ -1,0 +1,33 @@
+{
+  "level": "lv10",
+  "status": "draft",
+  "note": "Bird Branch (teen numbers minus ones, no borrow). English only. Teaching has no question, so the 1s pauses are beats before the next action. Type A (fly) = a*_a describes the flock then reuses how_many as the question. Type B (branch) = b*_q, pick the branch that shows the total. Type C (take) = c*_q tells how many birds to shoo away, then reuses how_many. Runtime shuffles the ten questions and every option set.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look at the birds. One ten and eight ones make eighteen.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "Five birds fly away from the ones branch.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "We take away the ones. Eight minus five equals three.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "So, eighteen minus five equals thirteen!", "mood": "teach" },
+    { "key": "t3_a", "lang": "en", "text": "When we take away, the ten stays the same.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "We only subtract the ones.", "mood": "teach" },
+
+    { "key": "a1_a", "lang": "en", "text": "There are sixteen birds. Four fly away.", "mood": "ask" },
+    { "key": "a2_a", "lang": "en", "text": "There are seventeen birds. Five fly away.", "mood": "ask" },
+    { "key": "a3_a", "lang": "en", "text": "There are eighteen birds. Three fly away.", "mood": "ask" },
+    { "key": "a4_a", "lang": "en", "text": "There are fifteen birds. Four fly away.", "mood": "ask" },
+    { "key": "how_many", "lang": "en", "text": "How many birds are left?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find the branch with eighteen birds.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find the branch with sixteen birds.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find the branch with thirteen birds.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Take away six birds.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Take away four birds.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Take away seven birds.", "mood": "ask" }
+  ]
+}

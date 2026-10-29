@@ -21,20 +21,28 @@ window.MATH_DATA = {
 
   map: {
     viewBox: { w: 390, h: 620 },
-    // 9 个节点：纵向步长 62 单位（实测 390×844 下 ≈ 76px），横向左右交替。
-    // 节点整块高 70px（圆盘 50 + 间距 3 + 标签 17），步长必须 > 70，否则标签会压下一颗圆盘。
-    // 最低点保证「圆盘 + 标签」不压到 .map-note，最高点不顶出 .map-wrap 上沿；改坐标必须同步改 index.html 的三条轨迹 path。
-    spots: [
-      { level: 1, x: 128, y: 537 },
-      { level: 2, x: 214, y: 475 },
-      { level: 3, x: 132, y: 413 },
-      { level: 4, x: 226, y: 351 },
-      { level: 5, x: 140, y: 289 },
-      { level: 6, x: 222, y: 227 },
-      { level: 7, x: 136, y: 165 },
-      { level: 8, x: 220, y: 103 },
-      { level: 9, x: 132, y: 41 }
-    ]
+
+    // 分 5 大阶段（与 docs/CURRICULUM.md 的阶段划分一致）。
+    // 一屏只渲染一个阶段；阶段内节点超过 pageSize 时自动均分成多页，左右滑动切换。
+    // 只渲染 levels 里已存在的关卡，因此后面几阶段在关卡做出来之前是空的（按钮自动跳过）。
+    pageSize: 6,
+    stages: [
+      { id: 1, from: 1, to: 3 },
+      { id: 2, from: 4, to: 15 },
+      { id: 3, from: 16, to: 27 },
+      { id: 4, from: 28, to: 39 },
+      { id: 5, from: 40, to: 48 }
+    ],
+
+    // 页内节点坐标模板（SVG 单位，viewBox 390×620）。app.js 按页内节点数在这条竖向区间里均分。
+    // canvas 在 CSS 里已让出顶部 46px、底部 140px（底部导航条 + 提示条），所以这里铺满 0–620 即可。
+    // maxStepPx：相邻节点的最大像素间距，避免一页只有 2–3 个节点时被拉得过于稀疏。
+    layout: {
+      x: [122, 214],
+      top: 0,
+      bottom: 620,
+      maxStepPx: 118
+    }
   },
 
   levels: {
@@ -517,6 +525,57 @@ window.MATH_DATA = {
         { type: 'flash', a: 11, b: 6, options: [16, 17, 18], voice: ['c1_q'] },
         { type: 'flash', a: 13, b: 6, options: [18, 19, 17], voice: ['c2_q'] },
         { type: 'flash', a: 14, b: 4, options: [17, 18, 19], voice: ['c3_q'] }
+      ]
+    },
+
+    10: {
+      id: 10,
+      name: 'Bird Branch',
+      status: 'ready',
+      // 三种题型（§6.5）：fly = 3 个数字键；branch = 3 张树枝卡；take = 点掉鸟后 3 个数字键。
+      // 一律不退位：只从个位树枝上减，个位够减（a - 10 >= b）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv10/t1_a.mp3',
+          'lv10/t2_a.mp3',
+          'lv10/t2_b.mp3',
+          'lv10/t2_c.mp3',
+          'lv10/t3_a.mp3',
+          'lv10/t3_b.mp3',
+          'lv10/a1_a.mp3',
+          'lv10/a2_a.mp3',
+          'lv10/a3_a.mp3',
+          'lv10/a4_a.mp3',
+          'lv10/how_many.mp3',
+          'lv10/b1_q.mp3',
+          'lv10/b2_q.mp3',
+          'lv10/b3_q.mp3',
+          'lv10/c1_q.mp3',
+          'lv10/c2_q.mp3',
+          'lv10/c3_q.mp3'
+        ],
+        images: []
+      },
+      // fly：a 只鸟里飞走 b 只，答案 = a - b；voice 只念情境，问句 how_many 由关卡模块在飞完后补。
+      // branch：target 是听到的总数，combos 是三根树枝的零散只数（10 + n）。
+      // take：点掉 b 只鸟，再点剩下的只数。
+      questions: [
+        { type: 'fly', a: 16, b: 4, options: [12, 13, 14], voice: ['a1_a'] },
+        { type: 'fly', a: 17, b: 5, options: [11, 12, 13], voice: ['a2_a'] },
+        { type: 'fly', a: 18, b: 3, options: [14, 15, 16], voice: ['a3_a'] },
+        { type: 'fly', a: 15, b: 4, options: [10, 11, 12], voice: ['a4_a'] },
+
+        { type: 'branch', target: 18, combos: [7, 8, 5], voice: ['b1_q'] },
+        { type: 'branch', target: 16, combos: [6, 4, 9], voice: ['b2_q'] },
+        { type: 'branch', target: 13, combos: [3, 7, 5], voice: ['b3_q'] },
+
+        { type: 'take', a: 19, b: 6, options: [11, 13, 14], voice: ['c1_q'] },
+        { type: 'take', a: 17, b: 4, options: [12, 13, 15], voice: ['c2_q'] },
+        { type: 'take', a: 18, b: 7, options: [10, 11, 12], voice: ['c3_q'] }
       ]
     }
   }
