@@ -769,10 +769,13 @@
     }));
     var keyOf = function (g) { return g.basket + '+' + g.ground; };
     var target = q.groups[q.answer];
+    // reshuffle 要靠 indexOf 判断「答案位置是否变了」，所以必须传 list 里的那一份，
+    // 不能传 q.groups 里的原对象（否则 indexOf 恒为 -1，位置永远不会强制改变）
+    var targetKey = keyOf(target);
+    var targetItem = list.filter(function (g) { return keyOf(g) === targetKey; })[0];
 
     var board = el('div', 'l17-picks');
     story.appendChild(board);
-    makeReplay(story, q.voice);
 
     function paint() {
       board.innerHTML = '';
@@ -809,7 +812,7 @@
       }
       wrong(card);
       later(function () {
-        Engine.quiz.reshuffle(list, target, keyOf);
+        Engine.quiz.reshuffle(list, targetItem, keyOf);
         state.busy = false;
         paint();
       }, 320);
@@ -887,11 +890,7 @@
 
     var state = { locked: false, busy: false, errors: 0, filled: 0 };
 
-    if (q.type === 'pick') {
-      makeReplay(story, q.voice);
-    } else {
-      makeReplay(story, q.voice);
-    }
+    makeReplay(story, q.voice);
 
     function correct(node, holdMs) {
       if (state.locked) return;
