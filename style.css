@@ -6533,3 +6533,394 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l16-key { width: 78px; height: 78px; }
   .l16-tray { min-height: 102px; }
 }
+
+/* ============================================================
+   Corn Basket（level-lv17）：小猴子搬玉米 · 进位加法
+   ------------------------------------------------------------
+   筐 = 十格阵，外面套一圈藤编；地上散落玉米，拖进筐里凑十。
+   凑满 → 整筐发光 + 打包（金边 + 「10」标签）；教学第三幕把加数拆成两半，
+   一半飞去向被加数凑成 10。
+   ============================================================ */
+
+/* ---------------- 玉米 ---------------- */
+
+.l17-corn {
+  display: block;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.l17-corn svg { width: 100%; height: 100%; display: block; }
+
+.tf-cell .l17-corn { width: 84%; height: 88%; }
+
+.l17-corn.is-gone { visibility: hidden; }
+
+/* ---------------- 筐 ---------------- */
+
+.l17-board {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.l17-board--teach { padding-bottom: 56px; }
+
+.l17-basket {
+  position: relative;
+  flex: none;
+  padding: 7px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #E7BE8B 0%, #CB9559 62%, #B8813F 100%);
+  box-shadow: 0 6px 0 #9A6A32, 0 12px 20px rgba(150, 110, 60, 0.22),
+              inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 藤编纹理 */
+.l17-basket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(48deg,
+    rgba(255, 255, 255, 0.16) 0 4px,
+    rgba(255, 255, 255, 0) 4px 9px);
+  pointer-events: none;
+}
+
+.l17-frame {
+  --cell: 34px;
+  background: #FFF8E8;
+  box-shadow: inset 0 3px 8px rgba(140, 100, 50, 0.24);
+}
+
+/* 满十打包：金色封边 + 「10」标签 */
+.l17-basket.is-pack {
+  box-shadow: 0 0 0 4px #F5C24C, 0 0 0 9px rgba(245, 194, 76, 0.24),
+              0 8px 0 #C58F2E, 0 14px 24px rgba(200, 150, 50, 0.28);
+}
+
+.l17-tag {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 7px;
+  display: none;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A4A0C;
+  background: linear-gradient(180deg, #FFF0BE 0%, #FFC94F 100%);
+  box-shadow: 0 3px 0 #D89A2C, 0 6px 12px rgba(180, 130, 40, 0.26),
+              inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+
+.l17-basket.is-pack .l17-tag {
+  display: grid;
+  animation: l17-tag-pop 420ms cubic-bezier(.34,1.56,.64,1) 120ms both;
+}
+
+@keyframes l17-tag-pop {
+  0% { transform: scale(.4) rotate(-14deg); opacity: 0; }
+  62% { transform: scale(1.16) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* 拖拽中 / 提示中：空格发光 */
+.l17-basket.is-target .tf-cell:not(.is-on),
+.l17-basket.is-hint .tf-cell:not(.is-on) {
+  background: rgba(255, 228, 176, 0.9);
+  animation: l17-cell-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes l17-cell-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 2px rgba(240, 170, 70, 0.45); }
+  50% { box-shadow: inset 0 0 0 3px rgba(240, 170, 70, 0.95); }
+}
+
+.l17-hint {
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  color: #C08A50;
+  pointer-events: none;
+  animation: l17-hint-bob 1.4s ease-in-out infinite;
+}
+
+@keyframes l17-hint-bob {
+  0%, 100% { transform: translate(0, 0) rotate(-8deg); }
+  50% { transform: translate(-6px, -6px) rotate(-14deg); }
+}
+
+/* ---------------- 地上的玉米 ---------------- */
+
+.l17-ground {
+  --c: 36px;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), var(--c));
+  gap: 8px;
+  align-content: center;
+}
+
+.l17-slot {
+  display: grid;
+  place-items: center;
+  width: var(--c);
+  height: calc(var(--c) + 10px);   /* 整数高，避免半像素抖动（§5.7 验收要求 dx=dy=0） */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.l17-monkey {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--m, 52px);
+  height: var(--m, 52px);
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgba(140, 100, 60, 0.22));
+  transform-origin: 50% 100%;
+}
+
+.l17-monkey svg { width: 100%; height: 100%; display: block; }
+
+/* ---------------- 数字键（§5.12 按下立刻有反应） ---------------- */
+
+.l17-tray { min-height: 108px; }
+
+.l17-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l17-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l17-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l17-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 听算式选画面 ---------------- */
+
+.l17-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.l17-pick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 356px;
+  padding: 8px 10px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D2 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l17-pick:active { transform: translateY(4px) scale(0.99); }
+
+.l17-pick.is-right {
+  background: linear-gradient(160deg, #F1FBF5 0%, #CFF0E1 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l17-minib {
+  padding: 4px;
+  border-radius: 14px;
+  box-shadow: 0 3px 0 #9A6A32, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.l17-miniframe { --cell: 19px; border-radius: 12px; }
+
+.l17-miniground {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.l17-minicorn {
+  width: 20px;
+  height: 25px;
+  flex: none;
+}
+
+.l17-check {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: #4FB07C;
+  box-shadow: 0 2px 0 #3E9468, 0 4px 8px rgba(60, 130, 100, 0.3);
+}
+
+/* ---------------- 拆数链 ---------------- */
+
+.l17-chain {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 18px 18px 20px;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+.l17-crow { display: flex; align-items: center; gap: 6px; }
+
+.l17-tile {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 46px;
+  padding: 0 6px;
+  border-radius: 13px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: #FFF9EE;
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 3px 0 rgba(198, 168, 128, 0.42);
+  transition: transform 200ms var(--ease-soft), opacity 200ms var(--ease-soft),
+              background 220ms var(--ease-soft), color 220ms var(--ease-soft),
+              box-shadow 220ms var(--ease-soft);
+}
+
+.l17-op {
+  min-width: 22px;
+  padding: 0;
+  font-size: 20px;
+  color: #C79E6A;
+  background: transparent;
+  box-shadow: none;
+}
+
+.l17-total {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+}
+
+.l17-q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.9);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l17-q.is-filled {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  border: none;
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l17-tile.is-flip { transform: rotateX(88deg) scaleX(.6); opacity: 0; }
+
+.l17-tile.is-hidden { opacity: 0; }
+
+.l17-split-tile {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l17-row3 { margin-top: 2px; }
+
+.l17-row3.is-lit .l17-tile {
+  box-shadow: 0 3px 0 rgba(198, 168, 128, 0.42), 0 0 0 4px rgba(245, 194, 76, 0.3),
+              inset 0 1px 0 #FFFFFF;
+}
+
+/* 拆分时飞出去的那枚数 */
+.l17-chip {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 800;
+  color: #7A4A0C;
+  background: linear-gradient(180deg, #FFF3CB 0%, #FFC94F 100%);
+  box-shadow: 0 3px 0 #D89A2C, 0 6px 12px rgba(180, 130, 40, 0.3);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------------- 幽灵 ---------------- */
+
+.l17-ghost {
+  position: fixed;
+  margin: 0;
+  transform: translate(-50%, -50%) scale(1.12);
+  pointer-events: none;
+  z-index: 900;
+  filter: drop-shadow(0 10px 14px rgba(120, 90, 60, 0.28));
+}
+
+/* 窄屏（≤379px）：筐与地上玉米整体缩一档 */
+@media (max-width: 379px) {
+  .l17-board { gap: 8px; }
+  .l17-frame { --cell: 30px; }
+  .l17-ground { --c: 32px; gap: 6px; }
+  .l17-monkey { --m: 46px; }
+  .l17-pick { gap: 8px; padding: 6px 6px; }
+  .l17-miniframe { --cell: 17px; }
+  .l17-minicorn { width: 17px; height: 21px; }
+  .l17-key { width: 78px; height: 78px; }
+  .l17-tray { min-height: 102px; }
+}

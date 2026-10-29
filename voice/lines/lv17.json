@@ -1,0 +1,35 @@
+{
+  "level": "lv17",
+  "status": "draft",
+  "note": "Stage 3, second level: the little monkey moves corn. Three teaching scenes — eight corn in the basket plus five on the ground, move two to fill the basket (glow + pack), then split 5 into 2 and 3 in a vertical sum. Answer phase: drag corn to fill then tap the total / listen and pick the matching basket picture / fill the missing split number. No self-answer during the quiz.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! The little monkey has eight corn in the basket.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "And five more corn on the ground.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "We move two corn to fill the basket. Now we have ten!", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "And there are three corn left on the ground.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "Ten plus three equals thirteen. Eight plus five equals thirteen!", "mood": "praise" },
+    { "key": "t3_a", "lang": "en", "text": "When we add, we first make a ten, then add the rest.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "Eight plus five equals thirteen.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Seven corn in the basket. Drag some corn to fill the ten-frame.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Eight corn in the basket. Drag some corn to fill the ten-frame.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Nine corn in the basket. Drag some corn to fill the ten-frame.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Six corn in the basket. Drag some corn to fill the ten-frame.", "mood": "ask" },
+    { "key": "a_total_q", "lang": "en", "text": "How many in total?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find nine plus three.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find eight plus two.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find six plus five.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Eight plus five. We split five into two and three.", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Nine plus six. We split six into one and five.", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Seven plus five. We split five into three and two.", "mood": "ask" },
+    { "key": "c_ask_q", "lang": "en", "text": "What is the missing number?", "mood": "ask" }
+  ]
+}

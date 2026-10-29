@@ -890,6 +890,61 @@ window.MATH_DATA = {
           { a: 6, b: 8, op: '+', shown: 15 }
         ] }
       ]
+    },
+    17: {
+      id: 17,
+      name: 'Corn Basket',
+      status: 'ready',
+      // 第三阶段第二关：还是凑十，换成小猴子搬玉米（筐 = 十格阵）。
+      // fill   = 拖玉米把筐填满 → 再点总数（4 题，§6.8 两段式）
+      // pick   = 听算式，点对应的那筐玉米（3 题，三组都不同，靠筐里/地上两个数区分）
+      // split  = 8 + 5 = 8 + 2 + ? = 10 + ? = 13，点出缺的那个数（3 题）
+      // 一律进位（和落在 11–17）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv17/t1_a.mp3',
+          'lv17/t1_b.mp3',
+          'lv17/t2_a.mp3',
+          'lv17/t2_b.mp3',
+          'lv17/t2_c.mp3',
+          'lv17/t3_a.mp3',
+          'lv17/t3_b.mp3',
+          'lv17/a1_q.mp3',
+          'lv17/a2_q.mp3',
+          'lv17/a3_q.mp3',
+          'lv17/a4_q.mp3',
+          'lv17/a_total_q.mp3',
+          'lv17/b1_q.mp3',
+          'lv17/b2_q.mp3',
+          'lv17/b3_q.mp3',
+          'lv17/c1_q.mp3',
+          'lv17/c2_q.mp3',
+          'lv17/c3_q.mp3',
+          'lv17/c_ask_q.mp3'
+        ],
+        images: []
+      },
+      questions: [
+        { type: 'fill', inBasket: 7, ground: 6, options: [12, 13, 14], voice: ['a1_q'] },
+        { type: 'fill', inBasket: 8, ground: 4, options: [11, 12, 13], voice: ['a2_q'] },
+        { type: 'fill', inBasket: 9, ground: 8, options: [16, 17, 18], voice: ['a3_q'] },
+        { type: 'fill', inBasket: 6, ground: 5, options: [10, 11, 12], voice: ['a4_q'] },
+
+        { type: 'pick', answer: 0, voice: ['b1_q'],
+          groups: [{ basket: 9, ground: 3 }, { basket: 8, ground: 2 }, { basket: 6, ground: 5 }] },
+        { type: 'pick', answer: 0, voice: ['b2_q'],
+          groups: [{ basket: 8, ground: 2 }, { basket: 9, ground: 3 }, { basket: 7, ground: 4 }] },
+        { type: 'pick', answer: 0, voice: ['b3_q'],
+          groups: [{ basket: 6, ground: 5 }, { basket: 8, ground: 4 }, { basket: 7, ground: 6 }] },
+
+        { type: 'split', a: 8, b: 5, split: 2, total: 13, options: [2, 3, 4], voice: ['c1_q'] },
+        { type: 'split', a: 9, b: 6, split: 1, total: 15, options: [4, 5, 6], voice: ['c2_q'] },
+        { type: 'split', a: 7, b: 5, split: 3, total: 12, options: [1, 2, 3], voice: ['c3_q'] }
+      ]
     }
   }
 };
