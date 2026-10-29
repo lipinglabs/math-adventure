@@ -12,7 +12,8 @@
 | 名称 | 数学冒险（math-adventure） |
 | 定位 | 3–6 岁幼儿数学启蒙游戏，纯静态网页 |
 | 仓库 | `lipinglabs/math-adventure`（public） |
-| 部署 | 暂未开启 GitHub Pages，本地静态服务器预览 |
+| 线上地址 | https://lipinglabs.github.io/math-adventure/ |
+| 部署 | GitHub Pages（源 `main` 分支根目录 `/`），推送后 30–60 秒自动重建 |
 | 技术形态 | 原生 HTML / CSS / JS，无框架、无构建、无 npm 运行时依赖 |
 | 当前进度 | 骨架 + 引擎 + 进度 + 云存档 + 沙盒；**第一关台词与分镜待确认** |
 
@@ -32,10 +33,16 @@ python tools/push_via_api.py "提交说明" --dry-run   # 只看清单，不推�
 ```
 
 脚本行为：
-1. 递归收集仓库文件，自动排除 `.git/`、`.gitignore` 中列出的路径、`config/secrets.local.json`、`.shots/`、`.edge-profile/`、`tmp/`、`__pycache__/`。
+1. 递归收集仓库文件，自动排除 `.git/`、`config/secrets.local.json`、`.shots/`、`.edge-profile/`、`tmp/`、`__pycache__/`。
 2. 逐个 `POST /git/blobs` → `POST /git/trees`（带 `base_tree`）→ `POST /git/commits` → `PATCH /git/refs/heads/main`。
-3. 空仓库首次提交时自动切换为「无 base_tree、无 parents、新建 ref」。
-4. 推送前会打印文件清单与体积；**若清单里出现 `secrets` 字样会直接中止**。
+3. 仓库完全为空时，Git Data API 会返回 `409 Git Repository is empty`；脚本先用 Contents API 写入 `README.md` 制造首个提交，再继续后续流程。
+4. 推送前会打印文件清单与体积；**若清单里出现 `secret` / `.local.json` 会直接中止**。
+
+### 部署
+
+- Pages 已开启，源 `main` / 根目录，构建约 30–60 秒。
+- 查看构建：`gh api repos/lipinglabs/math-adventure/pages/builds/latest`。
+- 核验线上要加 `?cb=<时间戳>` 绕过缓存。
 
 ---
 

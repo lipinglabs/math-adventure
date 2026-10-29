@@ -32,7 +32,7 @@ window.Sandbox = (function () {
     document.body.appendChild(chip);
   }
 
-  function onTap(event) {
+  function onTap() {
     if (active) return;
     var now = Date.now();
     if (taps.length && now - taps[taps.length - 1] > GAP) taps = [];
@@ -42,8 +42,6 @@ window.Sandbox = (function () {
       taps = [];
       openPin();
     }
-    // 避免热区吞掉地图边缘的点击
-    if (event && event.type === 'pointerdown') { /* 热区本身不做业务 */ }
   }
 
   function openPin() {
@@ -129,10 +127,6 @@ window.Sandbox = (function () {
     var hotspot = document.getElementById('hotspot');
     if (!hotspot) return;
     hotspot.addEventListener('pointerdown', onTap);
-    // 鼠标端补一个 click，触屏端 pointerdown 已覆盖
-    hotspot.addEventListener('click', function (e) {
-      if (e.pointerType === 'mouse') return;   // 避免同一次点击记两次
-    });
   }
 
   return {

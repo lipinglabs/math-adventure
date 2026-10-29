@@ -14,8 +14,7 @@ window.MATH_DATA = {
     title: '数学冒险',
     version: '0.1.0',
     // 音频根目录。页面运行时按关拼路径，只请求当前关用到的文件。
-    audioBase: 'voice/',
-    maxUnlockedFallback: 1
+    audioBase: 'voice/'
   },
 
   map: {

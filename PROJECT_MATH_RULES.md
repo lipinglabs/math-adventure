@@ -38,8 +38,10 @@
 
 ### 1.4 部署
 
-- 当前未开启 GitHub Pages。需要预览时用本地静态服务器（见 `HANDOVER.md`）。
-- 若后续开启 Pages：源分支 `main`、目录 `/`，构建约 30–60 秒，验线上要加 `?cb=<时间戳>` 绕缓存。
+- GitHub Pages 已开启：源分支 `main`、目录 `/`，推送后 30–60 秒自动重建。
+- 线上地址：`https://lipinglabs.github.io/math-adventure/`。
+- 构建状态：`gh api repos/lipinglabs/math-adventure/pages/builds/latest`。
+- Pages 有缓存，验线上要加 `?cb=<时间戳>` 绕过。
 
 ---
 

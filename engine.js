@@ -374,11 +374,15 @@
     play: function (node, name, ms) {
       if (!node) return false;
       var cls = 'anim--' + name;
+      var seq = (node.__animSeq = (node.__animSeq || 0) + 1);
       node.classList.remove(cls);
       void node.offsetWidth;          // 强制重排，允许同名动画重复触发
       node.classList.add(cls);
       track(node, ms || 620);
-      setTimeout(function () { node.classList.remove(cls); }, (ms || 620) + 40);
+      setTimeout(function () {
+        // 期间若又触发了新动画，旧定时器不能把新类名摘掉
+        if (node.__animSeq === seq) node.classList.remove(cls);
+      }, (ms || 620) + 40);
       return true;
     },
 
@@ -480,6 +484,9 @@
     var root = $('#modal-root');
     if (!root) return null;
 
+    // 上一个弹层若还开着，先正常关闭，避免键盘监听残留
+    if (typeof root.__close === 'function') root.__close();
+
     root.innerHTML = '';
     var card = el('div', 'modal-card');
     if (opts.title) card.appendChild(el('h2', 'modal-title', opts.title));
@@ -523,13 +530,19 @@
         root.classList.remove('is-open');
         document.removeEventListener('keydown', onKey);
         root.removeEventListener('pointerdown', onBackdrop);
+        var mine = card;
         setTimeout(function () {
+          // 220ms 内可能已经开了新弹层，别把新内容清掉
+          if (root.firstChild !== mine) return;
           root.hidden = true;
           root.innerHTML = '';
+          if (root.__close === api.close) root.__close = null;
         }, 220);
         if (typeof opts.onClose === 'function') opts.onClose();
       }
     };
+
+    root.__close = api.close;
 
     document.addEventListener('keydown', onKey);
     if (opts.dismissible !== false) root.addEventListener('pointerdown', onBackdrop);
