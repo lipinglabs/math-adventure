@@ -90,6 +90,10 @@
       '<path d="M4 9.5h3.5L13 5.5v13L7.5 14.5H4z" fill="currentColor"/>' +
       '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" ' +
       'stroke-width="2" stroke-linecap="round"/></svg>',
+    check:
+      '<svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true">' +
+      '<path d="M4.7 12.6l5 4.9L19.4 6.9" fill="none" stroke="currentColor" stroke-width="3.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>',
     star:
       '<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">' +
       '<path d="M50 8l12.4 26.2 28.6 3.4-21.1 19.8 5.6 28.3L50 71.2 24.5 85.7l5.6-28.3L9 37.6l28.6-3.4z" ' +
@@ -593,7 +597,7 @@
       shake(node);
     }
 
-    if (q.type === 'give') buildGiveQuestion(q, story, tray, state, correct);
+    if (q.type === 'give') buildGiveQuestion(q, story, tray, state, correct, wrong);
     else if (q.type === 'count') buildCountQuestion(q, story, tray, state, correct, wrong);
     else buildPickQuestion(q, story, tray, state, correct, wrong);
 
@@ -602,16 +606,35 @@
 
   /* ---- 题型 A：听数字 → 拖饼干进盒子 ---- */
 
-  function buildGiveQuestion(q, story, tray, state, correct) {
+  function buildGiveQuestion(q, story, tray, state, correct, wrong) {
     var need = q.target;
+    // 允许比目标多放 3 块：否则「一直拖到不接收了」就等于答对，孩子根本不用数
+    var limit = need + 3;
     var placed = 0;
+    var takeHint = null;
 
     var board = el('div', 'l5-board');
     board.appendChild(animalHead(q.animal, 54));
 
     var stageRow = el('div', 'l5-stage');
     var frame = makeFrame({ cell: 29 });
-    var plate = el('div', 'l5-plate');
+
+    // 零散盘子：每个位置一次算好，拿回一块时其余饼干不重排（§5.7）
+    var plate = el('div', 'l5-plate l5-plate--grid');
+    var looseCap = Math.max(1, limit - 10);
+    var pCols = looseCap > 6 ? 4 : 3;
+    var pRows = Math.ceil(looseCap / pCols);
+    plate.style.width = (pCols * 22 + (pCols - 1) * 4 + 12) + 'px';
+    plate.style.height = (pRows * 22 + (pRows - 1) * 4 + 12) + 'px';
+    var spots = [];
+    for (var s = 0; s < looseCap; s += 1) {
+      var spot = el('span', 'l5-spot');
+      spot.style.left = (6 + (s % pCols) * 26) + 'px';
+      spot.style.top = (6 + Math.floor(s / pCols) * 26) + 'px';
+      plate.appendChild(spot);
+      spots.push(spot);
+    }
+
     stageRow.appendChild(frame.box);
     stageRow.appendChild(plate);
     board.appendChild(stageRow);
@@ -626,42 +649,125 @@
     board.appendChild(pileWrap);
     story.appendChild(board);
 
+    // 托盘里只有一个「确认」键：放没放够，由孩子自己判断并按下去
+    var check = el('button', 'submit-key');
+    check.type = 'button';
+    check.setAttribute('aria-label', 'Done');
+    check.innerHTML = ICONS.check;
+    check.addEventListener('click', submit);
+    tray.appendChild(check);
+    paintCheck();
+
+    function paintCheck() {
+      check.classList.toggle('is-dim', placed === 0);
+    }
+
     function pack() {
       frame.box.classList.add('is-full', 'is-packed');
       bounce(frame.box);
       plate.classList.add('is-ready');
     }
 
+    function unpack() {
+      frame.box.classList.remove('is-full', 'is-packed');
+      plate.classList.remove('is-ready');
+    }
+
+    function dropTakeHint() {
+      if (takeHint) { remove(takeHint); takeHint = null; }
+    }
+
+    function showTakeHint() {
+      if (!alive || state.locked || takeHint) return;
+      takeHint = el('span', 'l5-take-hint');
+      takeHint.innerHTML = ICONS.handSmall;
+      stageRow.appendChild(takeHint);
+      later(dropTakeHint, 2800);
+    }
+
     function drop() {
-      if (state.locked || placed >= need) return;
+      if (state.locked || placed >= limit) return;
 
       if (placed < 10) {
-        var cookie = fillFrame(frame, placed + 1).pop();
-        if (cookie) popIn(cookie, 0);
+        var cell = frame.cells[placed];
+        cell.dataset.on = '1';
+        cell.classList.add('is-on');
+        popIn(cookieInCell(cell), 0);
         placed += 1;
         if (placed === 10) pack();
       } else {
-        var loose = looseCookie(24);
-        plate.appendChild(loose);
-        popIn(loose, 0);
+        var slot = spots[placed - 10];
+        if (!slot) return;
+        var cookie = looseCookie(22);
+        slot.appendChild(cookie);
+        slot.classList.add('is-on');
+        popIn(cookie, 0);
         placed += 1;
       }
 
       Engine.sfx.tap();
-      if (placed >= need) {
+      paintCheck();
+    }
+
+    // 拿回最后放的那一块：只有它离场，其余饼干与格位一格不动（§5.7）
+    function removeLast() {
+      if (state.locked || placed === 0) return;
+      var idx = placed - 1;
+      var node = null;
+
+      if (idx < 10) {
+        var cell = frame.cells[idx];
+        node = cell.querySelector('.tf-cookie');
+        cell.dataset.on = '0';
+        cell.classList.remove('is-on');
+        if (placed === 10) unpack();
+      } else {
+        var slot = spots[idx - 10];
+        if (slot) {
+          node = slot.querySelector('.l5-one');
+          slot.classList.remove('is-on');
+        }
+      }
+
+      placed -= 1;
+      if (node) {
+        var anim = node.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(.35)' }
+        ], { duration: 190, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'both' });
+        anim.finished.then(function () { remove(node); }, function () { remove(node); });
+      }
+      Engine.sfx.tap();
+      paintCheck();
+      dropTakeHint();
+    }
+
+    function submit() {
+      if (state.locked) return;
+      if (placed === 0) { shake(check); return; }
+
+      if (placed === need) {
         var num = bigNumber(need);
         num.classList.add('l5-bignum--small');
         board.appendChild(num);
         popIn(num, 0);
         burst(story);
-        later(function () { correct(null); }, 560);
+        later(function () { correct(check); }, 520);
+        return;
       }
+
+      wrong(check);
+      shake(stageRow);
+      if (placed > need) later(showTakeHint, 480);
     }
 
     bindDrag(pile, stageRow, { onDrop: drop });
-    // 触屏兜底：直接点盒子区域也能放一块
-    stageRow.addEventListener('pointerdown', function () {
+
+    // 点盒子 / 盘子 = 再放一块；点已经放好的饼干 = 拿回一块
+    stageRow.addEventListener('pointerdown', function (e) {
       if (state.locked) return;
+      var t = e.target;
+      if (t && t.closest && t.closest('.tf-cookie, .l5-one')) { removeLast(); return; }
       drop();
     });
   }

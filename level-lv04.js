@@ -34,6 +34,10 @@
       '<path d="M4 9.5h3.5L13 5.5v13L7.5 14.5H4z" fill="currentColor"/>' +
       '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" ' +
       'stroke-width="2" stroke-linecap="round"/></svg>',
+    check:
+      '<svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true">' +
+      '<path d="M4.7 12.6l5 4.9L19.4 6.9" fill="none" stroke="currentColor" stroke-width="3.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>',
     star:
       '<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">' +
       '<path d="M50 8l12.4 26.2 28.6 3.4-21.1 19.8 5.6 28.3L50 71.2 24.5 85.7l5.6-28.3L9 37.6l28.6-3.4z" ' +
@@ -63,6 +67,10 @@
     if (cls) node.className = cls;
     if (text != null) node.textContent = text;
     return node;
+  }
+
+  function remove(node) {
+    if (node && node.parentNode) node.parentNode.removeChild(node);
   }
 
   function sleep(ms) {
@@ -395,7 +403,7 @@
 
     if (q.type === 'count') buildCountQuestion(q, story, tray, state, correct, wrong);
     else if (q.type === 'pick') buildPickQuestion(q, story, tray, state, correct, wrong);
-    else buildBuildQuestion(q, story, tray, state, correct);
+    else buildBuildQuestion(q, story, tray, state, correct, wrong);
 
     ctx.audio.play('lv04/' + q.voice);
   }
@@ -563,8 +571,12 @@
     });
   }
 
-  function buildBuildQuestion(q, story, tray, state, correct) {
+  function buildBuildQuestion(q, story, tray, state, correct, wrong) {
     var need = q.target - 10;
+    // 允许凑多 3 块（十格阵只有 10 格，最多到 10）：不能「填到自动对」
+    var limit = Math.min(need + 3, 10);
+    var placed = 0;
+    var takeHint = null;
 
     var row = el('div', 'l4-build');
     var left = makeFrame({ cell: 27 });
@@ -584,33 +596,89 @@
     pileWrap.appendChild(hint);
     story.appendChild(pileWrap);
 
-    var placed = 0;
+    // 托盘里只有一个「确认」键
+    var check = el('button', 'submit-key');
+    check.type = 'button';
+    check.setAttribute('aria-label', 'Done');
+    check.innerHTML = ICONS.check;
+    check.addEventListener('click', submit);
+    tray.appendChild(check);
+    paintCheck();
+
+    function paintCheck() {
+      check.classList.toggle('is-dim', placed === 0);
+    }
+
+    function dropTakeHint() {
+      if (takeHint) { remove(takeHint); takeHint = null; }
+    }
+
+    function showTakeHint() {
+      if (!alive || state.locked || takeHint) return;
+      takeHint = el('span', 'l4-take-hint');
+      takeHint.innerHTML = ICONS.handSmall;
+      row.appendChild(takeHint);
+      later(dropTakeHint, 2800);
+    }
 
     function drop() {
-      if (state.locked || placed >= need) return;
+      if (state.locked || placed >= limit) return;
       var apple = fillFrame(right, placed + 1).pop();
       if (apple) popIn(apple, 0);
       placed += 1;
       Engine.sfx.tap();
+      paintCheck();
+    }
 
-      if (placed >= need) {
+    // 点已放好的苹果 = 拿回最后一个
+    function removeLast() {
+      if (state.locked || placed === 0) return;
+      var cell = right.cells[placed - 1];
+      var node = cell ? cell.querySelector('.tf-apple') : null;
+      if (cell) {
+        cell.dataset.on = '0';
+        cell.classList.remove('is-on');
+      }
+      placed -= 1;
+      if (node) {
+        var anim = node.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(.35)' }
+        ], { duration: 190, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'both' });
+        anim.finished.then(function () { remove(node); }, function () { remove(node); });
+      }
+      Engine.sfx.tap();
+      paintCheck();
+      dropTakeHint();
+    }
+
+    function submit() {
+      if (state.locked) return;
+      if (placed === 0) { shake(check); return; }
+
+      if (placed === need) {
         right.box.classList.add('is-full');
         left.box.classList.add('is-full');
         var num = bigNumber(q.target);
         num.classList.add('l4-bignum--small');
         story.appendChild(num);
         popIn(num, 0);
-        later(function () {
-          if (!alive) return;
-          correct(right.box);
-        }, 520);
+        later(function () { correct(check); }, 520);
+        return;
       }
+
+      wrong(check);
+      shake(row);
+      if (placed > need) later(showTakeHint, 480);
     }
 
     bindDrag(pile, right.box, drop);
-    // 直接点右边的格子也能放一个（触屏兜底）
-    right.box.addEventListener('pointerdown', function () {
+
+    // 点空格子 = 再放一个；点已放好的苹果 = 拿回一个
+    right.box.addEventListener('pointerdown', function (e) {
       if (state.locked) return;
+      var t = e.target;
+      if (t && t.closest && t.closest('.tf-apple')) { removeLast(); return; }
       drop();
     });
   }

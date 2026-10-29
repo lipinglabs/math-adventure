@@ -1826,6 +1826,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 /* ---------------- 题型 C：拖拽凑数 ---------------- */
 
 .l4-build {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -1976,6 +1977,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 }
 
 .l5-stage {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3958,4 +3960,72 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 .tap-hint--bird {
   top: auto;
   bottom: -48px;
+}
+
+
+/* ============================================================
+   操作题提交键（L4 凑数 / L5 发饼干）
+   「放够了」必须由孩子自己按确认，不能填到数量就自动判对
+   ============================================================ */
+
+.submit-key {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 30px;
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #EAFBF3 0%, #A6E3CA 100%);
+  box-shadow: 0 7px 0 #6FBFA2, 0 12px 20px rgba(80, 150, 130, 0.24),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 120ms cubic-bezier(.2,.8,.3,1), box-shadow 120ms ease,
+              opacity 200ms var(--ease-soft);
+}
+
+.submit-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 2px 0 #6FBFA2, 0 4px 10px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.75);
+}
+
+/* 一块都没放时压暗，提示「还没到能确认的时候」 */
+.submit-key.is-dim { opacity: 0.4; }
+
+.submit-key.is-right {
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #9EE3C9 0%, #57B995 100%);
+  box-shadow: 0 7px 0 #3E9A79, 0 12px 22px rgba(60, 140, 110, 0.3),
+              inset 0 3px 6px rgba(255, 255, 255, 0.6);
+}
+
+/* 「拿回一块」的提示手势：贴着舞台右下角 */
+.l5-take-hint,
+.l4-take-hint {
+  position: absolute;
+  right: 10px;
+  top: -28px;
+  color: #C7A681;
+  pointer-events: none;
+  animation: hint-drag 1.9s ease-in-out infinite;
+}
+
+/* 零散盘子改成固定坐标：拿回一块时其余饼干不重排（§5.7） */
+.l5-plate--grid {
+  display: block;
+  position: relative;
+  padding: 0;
+  min-height: 0;
+  box-sizing: content-box;
+}
+
+.l5-spot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.l5-spot .l5-one {
+  width: 22px;
+  height: 22px;
 }
