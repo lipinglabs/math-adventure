@@ -1,0 +1,31 @@
+{
+  "level": "lv11",
+  "status": "draft",
+  "note": "Candy Share (teen numbers minus ones, no borrow). English only. Teaching has no dangling question; the 1 s pauses are beats before the next action. Type A (take) = a*_a names the total, then tells how many candies to drag to the plate; the how_many line is played only after the drag action is finished. Type B (group) = b*_q, pick the group that shows the total. Type C (wrong) = find_wrong is shared by the three sentences, exactly one of which is false.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look at the candies. One full box of ten, and eight outside. That's eighteen.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "Let's take away five candies from the ones.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Eight minus five equals three.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "So, eighteen minus five equals thirteen!", "mood": "teach" },
+    { "key": "t3_a", "lang": "en", "text": "When we take away, the box of ten stays the same.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "We only take away the ones.", "mood": "teach" },
+
+    { "key": "a1_a", "lang": "en", "text": "There are seventeen candies. Take away four candies from the ones.", "mood": "ask" },
+    { "key": "a2_a", "lang": "en", "text": "There are eighteen candies. Take away five candies from the ones.", "mood": "ask" },
+    { "key": "a3_a", "lang": "en", "text": "There are sixteen candies. Take away two candies from the ones.", "mood": "ask" },
+    { "key": "a4_a", "lang": "en", "text": "There are nineteen candies. Take away four candies from the ones.", "mood": "ask" },
+    { "key": "how_many", "lang": "en", "text": "How many candies are left?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find the group that shows sixteen.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find the group that shows eighteen.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find the group that shows fourteen.", "mood": "ask" },
+
+    { "key": "find_wrong", "lang": "en", "text": "Find the wrong number sentence.", "mood": "ask" }
+  ]
+}

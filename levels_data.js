@@ -577,6 +577,55 @@ window.MATH_DATA = {
         { type: 'take', a: 17, b: 4, options: [12, 13, 15], voice: ['c2_q'] },
         { type: 'take', a: 18, b: 7, options: [10, 11, 12], voice: ['c3_q'] }
       ]
+    },
+    11: {
+      id: 11,
+      name: 'Candy Share',
+      status: 'ready',
+      // 三种题型（§6.5）：take = 3 个数字键（先拖糖）；group = 3 张糖果卡；wrong = 3 句算式。
+      // 一律不退位：只从零散的个位糖里减，个位够减（a - 10 >= b）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv11/t1_a.mp3',
+          'lv11/t2_a.mp3',
+          'lv11/t2_b.mp3',
+          'lv11/t2_c.mp3',
+          'lv11/t3_a.mp3',
+          'lv11/t3_b.mp3',
+          'lv11/a1_a.mp3',
+          'lv11/a2_a.mp3',
+          'lv11/a3_a.mp3',
+          'lv11/a4_a.mp3',
+          'lv11/how_many.mp3',
+          'lv11/b1_q.mp3',
+          'lv11/b2_q.mp3',
+          'lv11/b3_q.mp3',
+          'lv11/find_wrong.mp3'
+        ],
+        images: []
+      },
+      // take：一盒十颗 + (a-10) 颗零散，拖走 b 颗到盘里，答案 = a - b；
+      //       语音只念情境与动作，问句 how_many 由关卡模块在拖完后补。
+      // group：target 是听到的总数，combos 是三组零散颗数（10 + n）。
+      // wrong：三句里恰好一句 a - b ≠ shown，孩子要把它找出来。
+      questions: [
+        { type: 'take', a: 17, b: 4, options: [12, 13, 14], voice: ['a1_a'] },
+        { type: 'take', a: 18, b: 5, options: [12, 13, 15], voice: ['a2_a'] },
+        { type: 'take', a: 16, b: 2, options: [13, 14, 15], voice: ['a3_a'] },
+        { type: 'take', a: 19, b: 4, options: [14, 15, 16], voice: ['a4_a'] },
+
+        { type: 'group', target: 16, combos: [8, 6, 5], voice: ['b1_q'] },
+        { type: 'group', target: 18, combos: [8, 7, 6], voice: ['b2_q'] },
+        { type: 'group', target: 14, combos: [5, 4, 6], voice: ['b3_q'] },
+
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 15, b: 3, shown: 12 }, { a: 16, b: 4, shown: 11 }, { a: 14, b: 2, shown: 12 }] },
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 17, b: 5, shown: 12 }, { a: 13, b: 2, shown: 10 }, { a: 18, b: 6, shown: 12 }] },
+        { type: 'wrong', voice: ['find_wrong'], sentences: [{ a: 19, b: 7, shown: 12 }, { a: 15, b: 4, shown: 12 }, { a: 16, b: 3, shown: 13 }] }
+      ]
     }
   }
 };
