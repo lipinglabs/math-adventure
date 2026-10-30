@@ -1,0 +1,97 @@
+{
+  "level": "lv33",
+  "status": "draft",
+  "note": "Stage 4: the spinning wheel for the three and four times table. The wheel shows times three, the pointer lands on four, then five times four is counted up, then the centre flips to times four. Quiz: plain number tap / read the pointer and pick the product / five second timed flash.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's spin! The pointer lands on four. Four times three equals twelve.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Five times four. Five, ten, fifteen, twenty!",
+      "mood": "count"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Now the wheel shows four.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Spin and say it fast!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Three times seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Four times six.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Three times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Four times eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Three times eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Four times seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Three times six.",
+      "mood": "ask"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Four times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Three times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Four times five.",
+      "mood": "ask"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "level": "lv31",
+  "status": "draft",
+  "note": "Stage 4: three and four times table with real objects. Three tripods with three legs each, then two cars with four wheels each, then both facts side by side, then the chant. Quiz: tap the product from legs or wheels / drag the vehicles into the slots / find the wrong sentence.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look! Three tripods. Each has three legs.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Three, six, nine legs!",
+      "mood": "count"
+    },
+    {
+      "key": "t2_a",
+      "lang": "en",
+      "text": "Two cars. Each has four wheels.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_b",
+      "lang": "en",
+      "text": "Four plus four equals eight. Two times four equals eight!",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_c",
+      "lang": "en",
+      "text": "Three times three is nine. Two times four is eight.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_d",
+      "lang": "en",
+      "text": "Three and four. Let's keep going!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Four times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Three times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Five times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Four times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Drag the vehicles to build it.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong number sentence.",
+      "mood": "ask"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "level": "lv32",
+  "status": "draft",
+  "note": "Stage 4: rows and columns with a chocolate grid. Three rows of four counted across, then counted down the columns, then the plate turns a quarter turn and the same twelve chocolates read as four rows of three. Quiz: pick the sentence for a grid / drag chocolate strips to build a grid / listen and pick the matching grid.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's look at this chocolate. Three rows and four columns.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Four, eight, twelve. Three rows of four.",
+      "mood": "count"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three, six, nine, twelve. Four columns of three.",
+      "mood": "count"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Three times four is twelve. Four times three is also twelve!",
+      "mood": "praise"
+    },
+    {
+      "key": "a_q",
+      "lang": "en",
+      "text": "Which number sentence?",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Build the grid. Drag the chocolate rows.",
+      "mood": "teach"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Five times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Four times six.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Three times seven.",
+      "mood": "ask"
+    }
+  ]
+}

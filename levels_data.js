@@ -1771,6 +1771,165 @@ window.MATH_DATA = {
         { type: 'flash', a: 2, b: 4, options: [6, 8, 10], voice: ['c2_q'] },
         { type: 'flash', a: 5, b: 7, options: [30, 35, 40], voice: ['c3_q'] }
       ]
+    },
+    31: {
+      id: 31,
+      name: 'Wheels & Legs',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_31.jpg',
+      // 第四阶段第四关：3 与 4 的乘法具象（三条腿 / 四个轮子）。
+      // tap   = 看实物听算式点结果（4 题；b = 每个单位几条腿/几个轮子）
+      // build = a × b = ?，拖 a 个实物进虚位（3 题）
+      // wrong = 三算式找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv31/t1_a.mp3',
+          'lv31/t1_b.mp3',
+          'lv31/t2_a.mp3',
+          'lv31/t2_b.mp3',
+          'lv31/t2_c.mp3',
+          'lv31/t2_d.mp3',
+
+          'lv31/a1_q.mp3',
+          'lv31/a2_q.mp3',
+          'lv31/a3_q.mp3',
+          'lv31/a4_q.mp3',
+
+          'lv31/b_q.mp3',
+          'lv31/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_31.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 4, b: 3, options: [10, 12, 14], voice: ['a1_q'] },
+        { type: 'tap', a: 3, b: 4, options: [10, 12, 14], voice: ['a2_q'] },
+        { type: 'tap', a: 5, b: 3, options: [13, 15, 17], voice: ['a3_q'] },
+        { type: 'tap', a: 4, b: 4, options: [14, 16, 18], voice: ['a4_q'] },
+
+        { type: 'build', a: 3, b: 4, voice: ['b_q'] },
+        { type: 'build', a: 4, b: 3, voice: ['b_q'] },
+        { type: 'build', a: 2, b: 4, voice: ['b_q'] },
+
+        // wrong：三句里恰好一句 a × b ≠ shown
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 3, b: 3, shown: 9 },
+          { a: 4, b: 2, shown: 8 },
+          { a: 3, b: 4, shown: 13 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 4, b: 4, shown: 16 },
+          { a: 3, b: 5, shown: 15 },
+          { a: 4, b: 3, shown: 14 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 3, b: 6, shown: 18 },
+          { a: 4, b: 5, shown: 21 },
+          { a: 3, b: 7, shown: 21 }
+        ] }
+      ]
+    },
+    32: {
+      id: 32,
+      name: 'Chocolate Grid',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_32.jpg',
+      // 第四阶段第五关：行列与交换律（同一批巧克力转个身）。
+      // pick  = 给 r 行 c 列阵列，选正确算式（4 题；只放一个顺序成立的选项）
+      // build = a × b = ?，拖 a 条「每行 b 块」的巧克力拼阵列（3 题）
+      // find  = 听算式，从三个阵列里挑（3 题；选项里不放交换后的等价阵列）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv32/t1_a.mp3',
+          'lv32/t1_b.mp3',
+          'lv32/t1_c.mp3',
+          'lv32/t1_d.mp3',
+
+          'lv32/a_q.mp3',
+          'lv32/b_q.mp3',
+          'lv32/c1_q.mp3',
+          'lv32/c2_q.mp3',
+          'lv32/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_32.jpg']
+      },
+      questions: [
+        { type: 'pick', r: 4, c: 3, options: [[4, 3], [3, 3], [4, 4]], voice: ['a_q'] },
+        { type: 'pick', r: 5, c: 2, options: [[5, 2], [5, 3], [4, 2]], voice: ['a_q'] },
+        { type: 'pick', r: 3, c: 6, options: [[3, 6], [3, 5], [4, 6]], voice: ['a_q'] },
+        { type: 'pick', r: 2, c: 7, options: [[2, 7], [2, 6], [3, 7]], voice: ['a_q'] },
+
+        { type: 'build', a: 3, b: 5, voice: ['b_q'] },
+        { type: 'build', a: 4, b: 3, voice: ['b_q'] },
+        { type: 'build', a: 5, b: 4, voice: ['b_q'] },
+
+        { type: 'find', a: 5, b: 4, arrays: [[5, 4], [4, 4], [5, 5]], voice: ['c1_q'] },
+        { type: 'find', a: 4, b: 6, arrays: [[4, 6], [5, 6], [4, 5]], voice: ['c2_q'] },
+        { type: 'find', a: 3, b: 7, arrays: [[3, 7], [4, 7], [3, 6]], voice: ['c3_q'] }
+      ]
+    },
+    33: {
+      id: 33,
+      name: 'Spin the Wheel',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_33.jpg',
+      // 第四阶段第六关：转盘速算（3 与 4 的口诀，半抽象）。
+      // tap   = 纯数字点选（4 题）
+      // wheel = 看转盘 + 听算式点结果（3 题；a 是中心乘数，b 是指针停的数）
+      // flash = 五秒闪电（3 题）；题干播完才开走（§6.9）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv33/t1_a.mp3',
+          'lv33/t1_b.mp3',
+          'lv33/t1_c.mp3',
+          'lv33/t1_d.mp3',
+
+          'lv33/a1_q.mp3',
+          'lv33/a2_q.mp3',
+          'lv33/a3_q.mp3',
+          'lv33/a4_q.mp3',
+
+          'lv33/b1_q.mp3',
+          'lv33/b2_q.mp3',
+          'lv33/b3_q.mp3',
+
+          'lv33/c1_q.mp3',
+          'lv33/c2_q.mp3',
+          'lv33/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_33.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 3, b: 7, options: [18, 21, 24], voice: ['a1_q'] },
+        { type: 'tap', a: 4, b: 6, options: [20, 24, 28], voice: ['a2_q'] },
+        { type: 'tap', a: 3, b: 9, options: [24, 27, 30], voice: ['a3_q'] },
+        { type: 'tap', a: 4, b: 8, options: [28, 32, 36], voice: ['a4_q'] },
+
+        { type: 'wheel', a: 3, b: 8, options: [18, 24, 30], voice: ['b1_q'] },
+        { type: 'wheel', a: 4, b: 7, options: [24, 28, 32], voice: ['b2_q'] },
+        { type: 'wheel', a: 3, b: 6, options: [15, 18, 21], voice: ['b3_q'] },
+
+        { type: 'flash', a: 4, b: 9, options: [32, 36, 40], voice: ['c1_q'] },
+        { type: 'flash', a: 3, b: 5, options: [12, 15, 18], voice: ['c2_q'] },
+        { type: 'flash', a: 4, b: 5, options: [16, 20, 24], voice: ['c3_q'] }
+      ]
     }
   }
 };
