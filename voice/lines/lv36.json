@@ -1,0 +1,85 @@
+{
+  "level": "lv36",
+  "status": "draft",
+  "note": "Stage 4: patterns and skip counting. Three six nine twelve, then fifteen, then skip counting by four up to twenty. Quiz: fill the missing step / listen and pick the row that contains the product / five second timed flash.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look at the pattern. Three, six, nine, twelve. What's next?",
+      "mood": "ask"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "It goes up by three. Twelve plus three is fifteen.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three times five is fifteen!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Let's skip count by four. Four, eight, twelve, sixteen, twenty!",
+      "mood": "count"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Patterns help us multiply!",
+      "mood": "praise"
+    },
+    {
+      "key": "a_q",
+      "lang": "en",
+      "text": "Find the missing number.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Four times seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Three times eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Five times six.",
+      "mood": "ask"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Eight times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Seven times six.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Nine times three.",
+      "mood": "ask"
+    }
+  ]
+}

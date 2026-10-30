@@ -1,0 +1,79 @@
+{
+  "level": "lv34",
+  "status": "draft",
+  "note": "Stage 4: the nine times table on your fingers. Two hands open, bend the fourth finger, three on the left and six on the right makes thirty-six, then the pattern of tens going up and ones going down. Quiz: read the bent finger and tap the product / drag the tens and the ones / find the wrong sentence.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look at your hands. Let's do the nine times table!",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Four times nine. Bend the fourth finger.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three and six. Thirty-six!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Look at the numbers. The tens go up, the ones go down.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Nine, eighteen, twenty-seven, thirty-six!",
+      "mood": "count"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Seven times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Three times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Eight times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Six times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Drag the tens and the ones.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong number sentence.",
+      "mood": "ask"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "level": "lv35",
+  "status": "draft",
+  "note": "Stage 4: the order does not matter. Three rows of four blocks turn a quarter turn into four rows of three, then two plates of three strawberries become three plates of two. Quiz: pick the pair of sentences that both work / drag the missing factor / listen and pick the matching sentence.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Here are three rows and four columns. That is three times four. Twelve blocks!",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Now we have four rows and three columns. Four times three is also twelve!",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three times four equals four times three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Two times three is six. Three times two is also six.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "The order doesn't matter!",
+      "mood": "praise"
+    },
+    {
+      "key": "a_q",
+      "lang": "en",
+      "text": "Which pair is the same?",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Drag the number that makes it match.",
+      "mood": "teach"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Six times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Seven times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Nine times two.",
+      "mood": "ask"
+    }
+  ]
+}

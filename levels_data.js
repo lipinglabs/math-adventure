@@ -1930,6 +1930,183 @@ window.MATH_DATA = {
         { type: 'flash', a: 3, b: 5, options: [12, 15, 18], voice: ['c2_q'] },
         { type: 'flash', a: 4, b: 5, options: [16, 20, 24], voice: ['c3_q'] }
       ]
+    },
+    34: {
+      id: 34,
+      name: 'Nine Magic Fingers',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_34.jpg',
+      // 第四阶段第七关：9 的乘法手指操（左手指 = 十位，右手指 = 个位）。
+      // read  = 看弯曲某根手指的图，听 "n times nine" 点结果（4 题）
+      // split = 拖两个数字填十位 / 个位（3 题；每个空只收自己那一位的数字）
+      // wrong = 三张 9 的算式找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv34/t1_a.mp3',
+          'lv34/t1_b.mp3',
+          'lv34/t1_c.mp3',
+          'lv34/t1_d.mp3',
+          'lv34/t1_e.mp3',
+
+          'lv34/a1_q.mp3',
+          'lv34/a2_q.mp3',
+          'lv34/a3_q.mp3',
+          'lv34/a4_q.mp3',
+
+          'lv34/b_q.mp3',
+          'lv34/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_34.jpg']
+      },
+      questions: [
+        { type: 'read', n: 7, options: [54, 63, 72], voice: ['a1_q'] },
+        { type: 'read', n: 3, options: [18, 27, 36], voice: ['a2_q'] },
+        { type: 'read', n: 8, options: [63, 72, 81], voice: ['a3_q'] },
+        { type: 'read', n: 6, options: [45, 54, 63], voice: ['a4_q'] },
+
+        { type: 'split', a: 6, pool: [5, 4, 3, 7], voice: ['b_q'] },
+        { type: 'split', a: 5, pool: [4, 5, 6, 3], voice: ['b_q'] },
+        { type: 'split', a: 9, pool: [1, 8, 2, 9], voice: ['b_q'] },
+
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 9, b: 4, shown: 36 },
+          { a: 9, b: 5, shown: 45 },
+          { a: 9, b: 6, shown: 53 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 9, b: 3, shown: 27 },
+          { a: 9, b: 7, shown: 64 },
+          { a: 9, b: 8, shown: 72 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 9, b: 2, shown: 18 },
+          { a: 9, b: 9, shown: 81 },
+          { a: 9, b: 5, shown: 44 }
+        ] }
+      ]
+    },
+    35: {
+      id: 35,
+      name: 'Flip the Blocks',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_35.jpg',
+      // 第四阶段第八关：交换律（顺序不重要）。两种证明都要做（§5.22）：
+      //   ① 阵列旋转——同一批积木顺时针转 90°
+      //   ② 重新装盘——6 颗草莓不动，2 个盘子换成 3 个盘子
+      // pair  = 给阵列，从三组「算式对」里选出两式都成立的一组（4 题）
+      // fill  = a × b = [ ] × a，拖缺失的因数（3 题）
+      // equiv = 听算式，从三张里选出等价的那张（3 题）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv35/t1_a.mp3',
+          'lv35/t1_b.mp3',
+          'lv35/t1_c.mp3',
+          'lv35/t1_d.mp3',
+          'lv35/t1_e.mp3',
+
+          'lv35/a_q.mp3',
+          'lv35/b_q.mp3',
+          'lv35/c1_q.mp3',
+          'lv35/c2_q.mp3',
+          'lv35/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_35.jpg']
+      },
+      questions: [
+        { type: 'pair', r: 4, c: 5, voice: ['a_q'], options: [
+          [[4, 5], [5, 4]], [[4, 5], [5, 5]], [[4, 4], [5, 5]]
+        ] },
+        { type: 'pair', r: 3, c: 6, voice: ['a_q'], options: [
+          [[3, 6], [6, 3]], [[3, 6], [6, 6]], [[3, 3], [6, 6]]
+        ] },
+        { type: 'pair', r: 5, c: 4, voice: ['a_q'], options: [
+          [[5, 4], [4, 5]], [[5, 4], [4, 4]], [[5, 5], [4, 4]]
+        ] },
+        { type: 'pair', r: 2, c: 7, voice: ['a_q'], options: [
+          [[2, 7], [7, 2]], [[2, 7], [7, 7]], [[2, 2], [7, 7]]
+        ] },
+
+        { type: 'fill', a: 3, b: 8, pool: [8, 3, 7, 6], voice: ['b_q'] },
+        { type: 'fill', a: 5, b: 7, pool: [7, 5, 6, 4], voice: ['b_q'] },
+        { type: 'fill', a: 4, b: 9, pool: [9, 4, 3, 8], voice: ['b_q'] },
+
+        { type: 'equiv', a: 6, b: 4, voice: ['c1_q'], options: [
+          ['×', 4, 6], ['+', 6, 4], ['×', 4, 4]
+        ] },
+        { type: 'equiv', a: 7, b: 3, voice: ['c2_q'], options: [
+          ['×', 3, 7], ['+', 7, 3], ['×', 3, 3]
+        ] },
+        { type: 'equiv', a: 9, b: 2, voice: ['c3_q'], options: [
+          ['×', 2, 9], ['−', 9, 2], ['×', 2, 2]
+        ] }
+      ]
+    },
+    36: {
+      id: 36,
+      name: 'Pattern Pop',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_36.jpg',
+      // 第四阶段第九关：找规律（跳着数 → 乘法）。
+      // step  = 数列里填缺一个数（4 题；start + d × i，miss 是缺的那一格）
+      // row   = 听算式，从三行跳数里挑出含该积的那行（3 题）
+      // flash = 五秒闪电（3 题）；题干播完才开走（§6.9）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv36/t1_a.mp3',
+          'lv36/t1_b.mp3',
+          'lv36/t1_c.mp3',
+          'lv36/t1_d.mp3',
+          'lv36/t1_e.mp3',
+
+          'lv36/a_q.mp3',
+          'lv36/b1_q.mp3',
+          'lv36/b2_q.mp3',
+          'lv36/b3_q.mp3',
+
+          'lv36/c1_q.mp3',
+          'lv36/c2_q.mp3',
+          'lv36/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_36.jpg']
+      },
+      questions: [
+        { type: 'step', start: 5, d: 5, miss: 3, options: [15, 20, 25], voice: ['a_q'] },
+        { type: 'step', start: 3, d: 3, miss: 4, options: [12, 15, 18], voice: ['a_q'] },
+        { type: 'step', start: 6, d: 6, miss: 2, options: [12, 18, 24], voice: ['a_q'] },
+        { type: 'step', start: 4, d: 4, miss: 1, options: [8, 12, 16], voice: ['a_q'] },
+
+        { type: 'row', a: 4, b: 7, answerIndex: 1, voice: ['b1_q'], rows: [
+          [4, 8, 12, 16, 20], [7, 14, 21, 28, 35], [3, 6, 9, 12, 15]
+        ] },
+        { type: 'row', a: 3, b: 8, answerIndex: 1, voice: ['b2_q'], rows: [
+          [3, 6, 9, 12, 15], [8, 16, 24, 32, 40], [5, 10, 15, 20, 25]
+        ] },
+        { type: 'row', a: 5, b: 6, answerIndex: 2, voice: ['b3_q'], rows: [
+          [5, 10, 15, 20, 25], [4, 8, 12, 16, 20], [6, 12, 18, 24, 30]
+        ] },
+
+        { type: 'flash', a: 8, b: 4, options: [28, 32, 36], voice: ['c1_q'] },
+        { type: 'flash', a: 7, b: 6, options: [36, 42, 48], voice: ['c2_q'] },
+        { type: 'flash', a: 9, b: 3, options: [24, 27, 30], voice: ['c3_q'] }
+      ]
     }
   }
 };

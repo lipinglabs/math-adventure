@@ -13051,3 +13051,1152 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l33-tray { min-height: 102px; }
   .l33-bar { max-width: 272px; }
 }
+
+/* ============================================================
+   L34 · Nine Magic Fingers（9 的乘法手指操）
+   ------------------------------------------------------------
+   两只手的 10 根手指都是独立节点：可以逐根点亮、可以把第 n 根弯下去。
+   手掌盖在手指下半段之上，弯下的手指缩进掌心并被掌沿挡住（§5.21）。
+   ============================================================ */
+
+.l34-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------------- 双手 ---------------- */
+
+.l34-hands {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+}
+
+.l34-hand {
+  display: block;
+  width: 142px;
+  height: 194px;
+  overflow: visible;
+}
+
+.l34-digit {
+  fill: #F6CFA9;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 320ms var(--ease-jelly), fill 220ms var(--ease-soft),
+              opacity 220ms var(--ease-soft);
+}
+
+.l34-palm { fill: #FBE3CB; }
+.l34-wrist { fill: #FBE3CB; }
+
+/* 弯下去：缩成一小截躺在掌心（要看得见是哪一根，否则只剩一个说不清的缝） */
+.l34-digit.is-bent {
+  transform: translateY(-4px) scaleY(0.34);
+  fill: #CFA075;
+  stroke: rgba(150, 105, 70, 0.5);
+  stroke-width: 2;
+}
+
+.l34-digit.is-lit { fill: #F0925A; }
+.l34-digit.is-lit2 { fill: #5FB595; }
+
+.l34-digit.is-wave {
+  animation: l34-wave 520ms ease-in-out var(--d, 0ms) 2;
+}
+
+@keyframes l34-wave {
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(-9px); }
+}
+
+.l34-note {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #A98457;
+  text-align: center;
+}
+
+/* ---------------- 数字砖 ---------------- */
+
+.l34-tile {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 64px;
+  padding: 0 10px;
+  border-radius: 19px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 220ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l34-tile--sm { min-width: 44px; height: 50px; font-size: 24px; border-radius: 14px; }
+.l34-tile--big { min-width: 84px; height: 84px; font-size: 42px; border-radius: 26px; }
+.l34-tile--q { color: #C0A582; background: rgba(255, 253, 248, 0.8); border: 3px dashed #CBB28F; box-shadow: none; }
+.l34-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l34-tile--a { color: #A9622F; background: linear-gradient(160deg, #FFEFE0 0%, #F8CFA8 100%);
+  box-shadow: 0 5px 0 #DCAE7E, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l34-tile--b { color: #2F6B5A; background: linear-gradient(160deg, #E8F7F1 0%, #B7E3D3 100%);
+  box-shadow: 0 5px 0 #84C4AE, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l34-tile--ans { color: #8A5A12; background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 4px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8); }
+
+.l34-tile.is-hidden { opacity: 0; visibility: hidden; }
+
+.l34-op {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l34-fact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l34-fact.is-hidden { opacity: 0; visibility: hidden; }
+.l34-fact--sm .l34-tile { min-width: 42px; height: 48px; font-size: 22px; border-radius: 13px; }
+
+/* ---------------- 3 与 6 合成 36 ---------------- */
+
+.l34-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px;
+  border-radius: 26px;
+  background: rgba(255, 251, 242, 0.78);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.44), 0 8px 16px rgba(150, 120, 90, 0.1);
+}
+
+.l34-merge {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 18px;
+}
+
+.l34-cellwrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.l34-cap {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #BFA07C;
+  margin-bottom: 1px;
+}
+
+.l34-arrow {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+/* ---------------- 规律表 ---------------- */
+
+.l34-table {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 18px;
+  border-radius: 24px;
+  background: rgba(255, 251, 242, 0.76);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.44), 0 8px 16px rgba(150, 120, 90, 0.1);
+}
+
+.l34-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border-radius: 13px;
+  transition: background 220ms var(--ease-soft);
+}
+
+.l34-row.is-on { background: rgba(255, 236, 208, 0.9); }
+.l34-row.is-said { background: rgba(214, 240, 228, 0.92); }
+
+.l34-row-n {
+  min-width: 22px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+}
+
+.l34-tcell {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 42px;
+  border-radius: 11px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #8A5A12;
+  background: rgba(255, 246, 224, 0.92);
+  box-shadow: inset 0 0 0 1.5px rgba(216, 169, 74, 0.42);
+}
+
+.l34-tcell.is-zero { color: #C8B49B; }
+
+/* ---------------- 答题：手指图 ---------------- */
+
+.l34-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ---------------- 答题：拖十位 / 个位 ---------------- */
+
+.l34-drop {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 54px;
+  border-radius: 13px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C0A582;
+  border: 2.5px dashed #CBB28F;
+  background: rgba(255, 253, 248, 0.82);
+  transition: background 180ms var(--ease-soft), color 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft), border-color 180ms var(--ease-soft);
+}
+
+.l34-drop.is-filled {
+  color: #2F6B5A;
+  border-color: transparent;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l34-chip {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 17px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  touch-action: none;
+  transition: transform 100ms cubic-bezier(.2, .8, .3, 1);
+}
+
+.l34-chip:active { transform: translateY(3px) scale(0.96); }
+.l34-chip.is-lifted { opacity: 0.4; }
+.l34-chip.is-used { visibility: hidden; }
+
+.l34-chip-digit {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.l34-ghost {
+  position: fixed;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  margin: 0;
+  border-radius: 17px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 8px 14px rgba(150, 110, 60, 0.3);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ---------------- 答题：三算式找错 ---------------- */
+
+.l34-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l34-card {
+  position: relative;
+  width: 100%;
+  max-width: 244px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l34-card:active { transform: translateY(3px) scale(0.99); }
+.l34-card.is-right { box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24); }
+
+.l34-tile.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+.l34-tile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.22);
+}
+
+.l34-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 数字键 ---------------- */
+
+.l34-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l34-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1), box-shadow 92ms ease;
+}
+
+.l34-key:active { transform: translateY(5px) scale(0.96); box-shadow: 0 0 0 #E0AE45; }
+.l34-key.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 5px 0 #5FAF97; }
+
+.l34-key-digit {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l34-hand { width: 130px; height: 177px; }
+  .l34-hands { gap: 8px; }
+  .l34-tile { min-width: 50px; height: 58px; font-size: 27px; }
+  .l34-tile--sm { min-width: 40px; height: 46px; font-size: 22px; }
+  .l34-tile--big { min-width: 76px; height: 76px; font-size: 38px; }
+  .l34-card { padding: 14px 18px; }
+  .l34-table { padding: 12px 14px; }
+  .l34-tcell { width: 36px; height: 38px; font-size: 22px; }
+  .l34-drop { width: 42px; height: 50px; font-size: 24px; }
+  .l34-chip { width: 50px; height: 50px; }
+  .l34-key { width: 78px; height: 78px; }
+  .l34-tray { min-height: 102px; max-width: 326px; }
+}
+
+/* ============================================================
+   L35 · Flip the Blocks（交换律：两种证明）
+   ------------------------------------------------------------
+   ① 旋转：同一批积木顺时针转 90°，行列表述互换（§5.20）
+   ② 换盘：草莓节点不动，只换盘子重新分组（§5.22）
+   ============================================================ */
+
+.l35-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------------- 积木 ---------------- */
+
+.l35-stage {
+  width: 236px;
+  height: 236px;
+  display: grid;
+  place-items: center;
+}
+
+.l35-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 6px 10px rgba(140, 100, 60, 0.2));
+}
+
+.l35-row { display: flex; gap: 4px; }
+
+.l35-block {
+  position: relative;
+  display: block;
+  width: var(--b, 40px);
+  height: var(--b, 40px);
+  border-radius: 8px;
+  background: linear-gradient(158deg, #F5C98C 0%, #E0A55E 52%, #C7853F 100%);
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.5),
+              inset 0 -3px 5px rgba(130, 80, 35, 0.28),
+              0 2px 3px rgba(140, 100, 60, 0.18);
+  transition: background 200ms var(--ease-soft), box-shadow 200ms var(--ease-soft);
+}
+
+/* 木纹 */
+.l35-block::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 34%;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(140, 88, 40, 0.22);
+  box-shadow: 0 6px 0 rgba(140, 88, 40, 0.16);
+}
+
+.l35-block.is-on {
+  background: linear-gradient(158deg, #FFDCA8 0%, #F0B96F 52%, #D9944A 100%);
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.6),
+              0 0 0 2px rgba(240, 160, 80, 0.5),
+              0 4px 7px rgba(150, 105, 55, 0.24);
+}
+
+.l35-plate--quiz { --b: 28px; gap: 3px; }
+.l35-plate--quiz .l35-row { gap: 3px; }
+.l35-plate--quiz .l35-block { border-radius: 6px; }
+.l35-plate--quiz .l35-block::after { display: none; }
+
+.l35-note {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #A98457;
+  text-align: center;
+}
+
+/* ---------------- 草莓盘 ---------------- */
+
+.l35-dishes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.l35-plate-dish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 96px;
+  height: 64px;
+  border-radius: 50% / 36%;
+  background: radial-gradient(ellipse at 50% 42%, #FFFDF8 0%, #F6EADA 58%, #E2C9AE 100%);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9),
+              inset 0 -7px 10px rgba(175, 135, 95, 0.22),
+              inset 0 4px 8px rgba(255, 255, 255, 0.95),
+              0 5px 10px rgba(150, 115, 80, 0.16);
+  transition: opacity 260ms var(--ease-soft), transform 260ms var(--ease-soft);
+}
+
+.l35-plate-dish.is-out { opacity: 0; transform: scale(0.78); }
+
+.l35-berry {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 28px;
+  border-radius: 48% 48% 46% 46% / 34% 34% 68% 68%;
+  background: radial-gradient(circle at 36% 30%, #FF9E9E 0%, #EE5C5C 46%, #C93B3B 100%);
+  box-shadow: inset -2px -2px 4px rgba(150, 40, 40, 0.22),
+              inset 2px 2px 3px rgba(255, 255, 255, 0.42),
+              0 2px 4px rgba(150, 70, 70, 0.2);
+  transition: box-shadow 200ms var(--ease-soft), transform 200ms var(--ease-jelly);
+}
+
+.l35-leaf {
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 14px;
+  height: 7px;
+  margin-left: -7px;
+  border-radius: 60% 60% 12% 12% / 80% 80% 20% 20%;
+  background: linear-gradient(140deg, #8ED07A 0%, #4E9A46 100%);
+}
+
+.l35-berry.is-on {
+  box-shadow: inset -2px -2px 4px rgba(150, 40, 40, 0.22),
+              0 0 0 3px rgba(238, 92, 92, 0.3),
+              0 3px 6px rgba(150, 70, 70, 0.24);
+  transform: translateY(-2px);
+}
+
+.l35-cap {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #A9622F;
+}
+
+.l35-total {
+  display: grid;
+  place-items: center;
+  min-width: 96px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ---------------- 数字砖 ---------------- */
+
+.l35-tile {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  height: 60px;
+  padding: 0 9px;
+  border-radius: 18px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l35-tile--sm { min-width: 42px; height: 48px; font-size: 22px; border-radius: 13px; }
+.l35-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l35-tile--sm.l35-tile--res { box-shadow: 0 3px 0 #7FC3A6; }
+
+.l35-op { font-size: 22px; font-weight: 800; line-height: 1; color: #C79E6A; }
+
+.l35-fact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l35-fact.is-hidden { opacity: 0; visibility: hidden; }
+.l35-fact--sm .l35-tile { min-width: 40px; height: 46px; font-size: 21px; border-radius: 12px; }
+
+/* ---------------- 两式同屏 ---------------- */
+
+.l35-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px;
+  border-radius: 26px;
+  background: rgba(255, 251, 242, 0.78);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.44), 0 8px 16px rgba(150, 120, 90, 0.1);
+}
+
+.l35-same {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2F6B5A;
+  background: rgba(212, 240, 228, 0.92);
+  box-shadow: inset 0 0 0 1.5px rgba(127, 195, 166, 0.6);
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l35-same.is-hidden { opacity: 0; visibility: hidden; }
+
+/* ---------------- 答题 A：选算式对 ---------------- */
+
+.l35-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.l35-ask { font-size: 14px; font-weight: 700; color: #A98457; }
+
+.l35-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l35-tray--wide {
+  min-height: 96px;
+  flex-wrap: nowrap;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.l35-opt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 98px;
+  height: 84px;
+  padding: 0;
+  border-radius: 18px;
+  color: #6B4E31;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.18),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  transition: transform 100ms var(--ease-jelly), box-shadow 120ms var(--ease-soft);
+}
+
+.l35-opt:active { transform: translateY(3px) scale(0.98); }
+
+.l35-opt.is-right {
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 4px 0 #5FAF97;
+}
+
+.l35-opt-line { display: flex; align-items: center; gap: 4px; }
+.l35-opt-n { font-size: 22px; font-weight: 800; line-height: 1; }
+.l35-opt-x { font-size: 15px; font-weight: 800; line-height: 1; color: #B07D4E; }
+.l35-opt-and { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; color: #A98457; }
+
+.l35-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 答题 B：拖数字填空 ---------------- */
+
+.l35-drop {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 56px;
+  border-radius: 14px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C0A582;
+  border: 2.5px dashed #CBB28F;
+  background: rgba(255, 253, 248, 0.82);
+  transition: background 180ms var(--ease-soft), color 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft), border-color 180ms var(--ease-soft);
+}
+
+.l35-drop.is-filled {
+  color: #2F6B5A;
+  border-color: transparent;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l35-chip {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 17px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  touch-action: none;
+  transition: transform 100ms cubic-bezier(.2, .8, .3, 1);
+}
+
+.l35-chip:active { transform: translateY(3px) scale(0.96); }
+.l35-chip.is-lifted { opacity: 0.4; }
+.l35-chip.is-used { visibility: hidden; }
+
+.l35-chip-digit { font-size: 26px; font-weight: 800; line-height: 1; }
+
+.l35-ghost {
+  position: fixed;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  border-radius: 17px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 8px 14px rgba(150, 110, 60, 0.3);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ---------------- 答题 C：听算式选等价 ---------------- */
+
+.l35-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l35-cards .l35-card {
+  position: relative;
+  width: 100%;
+  max-width: 244px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l35-cards .l35-card.is-right {
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24);
+}
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l35-stage { width: 214px; height: 214px; }
+  .l35-plate { --b: 36px; }
+  .l35-plate--quiz { --b: 26px; }
+  .l35-dishes { gap: 8px; }
+  .l35-plate-dish { width: 88px; height: 58px; }
+  .l35-berry { width: 22px; height: 26px; }
+  .l35-opt { width: 92px; height: 78px; }
+  .l35-tile { min-width: 46px; height: 54px; font-size: 24px; }
+  .l35-tile--sm { min-width: 38px; height: 44px; font-size: 20px; }
+  .l35-drop { width: 42px; height: 50px; font-size: 23px; }
+  .l35-chip { width: 50px; height: 50px; }
+  .l35-card { padding: 14px 18px; }
+}
+
+/* ============================================================
+   L36 · Pattern Pop（找规律：跳着数）
+   ------------------------------------------------------------
+   数列用「跳石」表示：每格一块石头，差值是石头上方的小徽标，
+   小圆点沿抛物弧从一块石跳到下一块（§5.23）。
+   ============================================================ */
+
+.l36-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ---------------- 跳石 ---------------- */
+
+.l36-stones {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 22px;
+}
+
+.l36-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l36-stone {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50% 50% 46% 46% / 48% 48% 52% 52%;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(165deg, #FFFDF6 0%, #F2DEC0 100%);
+  box-shadow: 0 4px 0 #E0C69E, 0 7px 12px rgba(150, 120, 90, 0.16),
+              inset 0 3px 5px rgba(255, 255, 255, 0.9);
+  transition: background 220ms var(--ease-soft), color 220ms var(--ease-soft),
+              box-shadow 220ms var(--ease-soft), transform 220ms var(--ease-jelly);
+}
+
+.l36-stone.is-on {
+  color: #8A5A12;
+  background: linear-gradient(165deg, #FFF4CF 0%, #FFD96F 100%);
+  box-shadow: 0 4px 0 #D8A94A, inset 0 2px 4px rgba(255, 255, 255, 0.85);
+}
+
+.l36-stone.is-missing {
+  color: #C8AE8B;
+  background: rgba(255, 253, 248, 0.7);
+  box-shadow: inset 0 0 0 2.5px rgba(201, 168, 126, 0.7);
+}
+
+.l36-stone.is-filled {
+  color: #2F7C5E;
+  background: linear-gradient(165deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l36-diff {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+  color: #A9622F;
+  background: rgba(255, 236, 208, 0.96);
+  box-shadow: inset 0 0 0 1.5px rgba(216, 169, 74, 0.55);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 200ms var(--ease-soft);
+  z-index: 4;
+}
+
+.l36-diff.is-on { opacity: 1; }
+
+.l36-hop {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #FFCE8E 0%, #E08A2B 100%);
+  box-shadow: 0 2px 5px rgba(190, 120, 50, 0.35);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.l36-note {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #A98457;
+  text-align: center;
+}
+
+/* ---------------- 数字砖 ---------------- */
+
+.l36-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 24px;
+  background: rgba(255, 251, 242, 0.78);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.44), 0 8px 16px rgba(150, 120, 90, 0.1);
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l36-card.is-hidden { opacity: 0; visibility: hidden; }
+
+.l36-fact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.l36-fact--big .l36-tile { min-width: 62px; height: 72px; font-size: 34px; border-radius: 22px; }
+
+.l36-tile {
+  display: grid;
+  place-items: center;
+  min-width: 50px;
+  height: 58px;
+  padding: 0 9px;
+  border-radius: 17px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 4px 0 #E3C9A4, 0 7px 12px rgba(150, 120, 90, 0.12),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l36-tile--q { color: #C0A582; background: rgba(255, 253, 248, 0.8); border: 3px dashed #CBB28F; box-shadow: none; }
+.l36-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l36-tile--sm { min-width: 40px; height: 46px; font-size: 21px; border-radius: 12px; }
+.l36-tile--sm.l36-tile--res { box-shadow: 0 3px 0 #7FC3A6; }
+
+.l36-op { font-size: 22px; font-weight: 800; line-height: 1; color: #C79E6A; }
+
+/* ---------------- 两行规律 ---------------- */
+
+.l36-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  transition: background 220ms var(--ease-soft);
+}
+
+.l36-line.is-on { background: rgba(255, 236, 208, 0.86); }
+
+.l36-tag {
+  min-width: 46px;
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF6D9 0%, #FFD977 100%);
+  box-shadow: 0 2px 0 #D8A94A;
+}
+
+.l36-line-text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #6B4E31;
+}
+
+/* ---------------- 答题 A / C 公用 ---------------- */
+
+.l36-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.l36-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l36-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1), box-shadow 92ms ease;
+}
+
+.l36-key:active { transform: translateY(5px) scale(0.96); box-shadow: 0 0 0 #E0AE45; }
+.l36-key.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 5px 0 #5FAF97; }
+.l36-key-digit { font-size: 32px; font-weight: 800; line-height: 1; text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6); }
+
+/* ---------------- 答题 B：三行数列 ---------------- */
+
+.l36-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l36-rowcard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  padding: 9px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l36-rowcard:active { transform: translateY(3px) scale(0.99); }
+.l36-rowcard.is-right { box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24); }
+
+.l36-mini { display: flex; align-items: center; gap: 5px; }
+
+.l36-mini-stone {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 42px;
+  padding: 0 4px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: rgba(255, 250, 240, 0.94);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.5);
+  transition: background 200ms var(--ease-soft), color 200ms var(--ease-soft);
+}
+
+.l36-mini-stone.is-hit {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 3px rgba(79, 176, 124, 0.24);
+}
+
+.l36-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 答题 C：限时 ---------------- */
+
+.l36-timed { display: flex; justify-content: center; width: 100%; }
+
+.l36-bar {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 14px;
+  border-radius: 7px;
+  background: rgba(226, 210, 190, 0.7);
+  box-shadow: inset 0 2px 4px rgba(150, 120, 90, 0.18);
+  overflow: hidden;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l36-bar-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #9FDCC2 0%, #6FC5A2 100%);
+  transform-origin: 0 50%;
+  transform: scaleX(1);
+  transition: background 200ms var(--ease-soft);
+}
+
+.l36-bar.is-idle { opacity: 0.45; }
+.l36-bar.is-low .l36-bar-fill { background: linear-gradient(90deg, #F09A80 0%, #E4694F 100%); }
+.l36-bar.is-over .l36-bar-fill { background: rgba(200, 150, 120, 0.6); }
+.l36-bar.is-done .l36-bar-fill { background: linear-gradient(90deg, #A9E3CC 0%, #4FB07C 100%); }
+
+.l36-combo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #A98457;
+  background: rgba(255, 248, 232, 0.9);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.5);
+}
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l36-stone { width: 46px; height: 46px; font-size: 19px; }
+  .l36-stones { gap: 6px; }
+  .l36-row { gap: 6px; }
+  .l36-tile { min-width: 44px; height: 52px; font-size: 23px; }
+  .l36-fact--big .l36-tile { min-width: 54px; height: 64px; font-size: 30px; }
+  .l36-key { width: 78px; height: 78px; }
+  .l36-tray { min-height: 102px; max-width: 326px; }
+  .l36-mini-stone { min-width: 34px; height: 38px; font-size: 15px; }
+  .l36-rowcard { max-width: 286px; padding: 8px; }
+  .l36-bar { max-width: 272px; }
+}
