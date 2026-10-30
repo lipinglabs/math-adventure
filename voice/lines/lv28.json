@@ -1,0 +1,79 @@
+{
+  "level": "lv28",
+  "status": "draft",
+  "note": "Stage 4 opening: multiplication as equal groups. Three pairs of gloves, count to six, then two plus two plus two, then three times two, then both readings. Quiz: tap the product from a glove array / drag pairs to build the array / find the wrong sentence.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look! Three pairs of gloves. How many gloves in total?",
+      "mood": "ask"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Let's count! One, two, three, four, five, six gloves!",
+      "mood": "count"
+    },
+    {
+      "key": "t2_a",
+      "lang": "en",
+      "text": "Two plus two plus two equals six.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_b",
+      "lang": "en",
+      "text": "Three pairs of two. Three times two equals six.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_c",
+      "lang": "en",
+      "text": "Three times two is six. Two times three is also six.",
+      "mood": "teach"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Four times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Five times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Six times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Seven times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Two times four. Drag four pairs.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong number sentence.",
+      "mood": "ask"
+    }
+  ]
+}

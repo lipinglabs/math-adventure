@@ -1,0 +1,85 @@
+{
+  "level": "lv29",
+  "status": "draft",
+  "note": "Multiplication by five: three strings of five candies, count in fives to fifteen, then three times five. Quiz: tap the product from candy strings / drag the right number of strings for a target / listen and pick the answer with no picture.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look at the candy strings! Each string has five candies.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Let's count! Five, ten, fifteen!",
+      "mood": "count"
+    },
+    {
+      "key": "t2_a",
+      "lang": "en",
+      "text": "Three strings of five.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_b",
+      "lang": "en",
+      "text": "Three times five equals fifteen!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Two times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Four times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Six times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Seven times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Four strings of five make twenty. Drag the strings.",
+      "mood": "teach"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Five times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Five times eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Five times nine.",
+      "mood": "ask"
+    }
+  ]
+}

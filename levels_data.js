@@ -1609,6 +1609,168 @@ window.MATH_DATA = {
           { a: 71, b: 36, sign: '−', shown: 34 }
         ] }
       ]
+    },
+    28: {
+      id: 28,
+      name: 'Magic Gloves',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_28.jpg',
+      // 第四阶段第一关：乘法启蒙（2 的乘法，一双手套 = 两个一）。
+      // tap   = 看手套阵列，听 "n times two" 点结果（4 题）
+      // build = 2 × n = ?，拖 n 双手套填阵列（3 题；多给一双，放不下就弹回）
+      // wrong = 三张算式找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv28/t1_a.mp3',
+          'lv28/t1_b.mp3',
+          'lv28/t2_a.mp3',
+          'lv28/t2_b.mp3',
+          'lv28/t2_c.mp3',
+
+          'lv28/a1_q.mp3',
+          'lv28/a2_q.mp3',
+          'lv28/a3_q.mp3',
+          'lv28/a4_q.mp3',
+
+          'lv28/b_q.mp3',
+          'lv28/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_28.jpg']
+      },
+      questions: [
+        { type: 'tap', n: 4, options: [6, 8, 10], voice: ['a1_q'] },
+        { type: 'tap', n: 5, options: [8, 10, 12], voice: ['a2_q'] },
+        { type: 'tap', n: 6, options: [10, 12, 14], voice: ['a3_q'] },
+        { type: 'tap', n: 7, options: [12, 14, 16], voice: ['a4_q'] },
+
+        { type: 'build', n: 4, voice: ['b_q'] },
+        { type: 'build', n: 5, voice: ['b_q'] },
+        { type: 'build', n: 6, voice: ['b_q'] },
+
+        // wrong：三句里恰好一句 2 × n ≠ shown
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 2, b: 3, shown: 6 },
+          { a: 2, b: 5, shown: 10 },
+          { a: 2, b: 4, shown: 9 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 2, b: 6, shown: 12 },
+          { a: 2, b: 7, shown: 13 },
+          { a: 2, b: 8, shown: 16 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 2, b: 2, shown: 4 },
+          { a: 2, b: 9, shown: 19 },
+          { a: 2, b: 5, shown: 10 }
+        ] }
+      ]
+    },
+    29: {
+      id: 29,
+      name: 'Candy Strings',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_29.jpg',
+      // 第四阶段第二关：5 的乘法（一串糖果就是五颗）。
+      // tap    = 看糖串，听 "n times five" 点结果（4 题）
+      // build  = 5 × n = ?，拖 n 串糖进框（3 题；多给一串，放不下就弹回）
+      // listen = 纯听算式，三键选结果（3 题，无实物图）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv29/t1_a.mp3',
+          'lv29/t1_b.mp3',
+          'lv29/t2_a.mp3',
+          'lv29/t2_b.mp3',
+
+          'lv29/a1_q.mp3',
+          'lv29/a2_q.mp3',
+          'lv29/a3_q.mp3',
+          'lv29/a4_q.mp3',
+
+          'lv29/b_q.mp3',
+          'lv29/c1_q.mp3',
+          'lv29/c2_q.mp3',
+          'lv29/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_29.jpg']
+      },
+      questions: [
+        { type: 'tap', n: 2, options: [8, 10, 12], voice: ['a1_q'] },
+        { type: 'tap', n: 4, options: [18, 20, 22], voice: ['a2_q'] },
+        { type: 'tap', n: 6, options: [28, 30, 32], voice: ['a3_q'] },
+        { type: 'tap', n: 7, options: [33, 35, 37], voice: ['a4_q'] },
+
+        { type: 'build', n: 3, voice: ['b_q'] },
+        { type: 'build', n: 4, voice: ['b_q'] },
+        { type: 'build', n: 6, voice: ['b_q'] },
+
+        { type: 'listen', a: 5, b: 5, options: [20, 25, 30], voice: ['c1_q'] },
+        { type: 'listen', a: 5, b: 8, options: [35, 40, 45], voice: ['c2_q'] },
+        { type: 'listen', a: 5, b: 9, options: [40, 45, 50], voice: ['c3_q'] }
+      ]
+    },
+    30: {
+      id: 30,
+      name: 'Quick 2s & 5s',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_30.jpg',
+      // 第四阶段第三关：脱离实物，只靠口诀（2 与 5 的乘法）。
+      // tap     = 纯数字点选（4 题）
+      // balloon = 听算式，三只气球里选结果（3 题）
+      // flash   = 五秒限时闪电（3 题）；题干播完才开走（§6.9）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv30/t1_a.mp3',
+          'lv30/t1_b.mp3',
+          'lv30/t1_c.mp3',
+          'lv30/t1_d.mp3',
+
+          'lv30/a1_q.mp3',
+          'lv30/a2_q.mp3',
+          'lv30/a3_q.mp3',
+          'lv30/a4_q.mp3',
+
+          'lv30/b1_q.mp3',
+          'lv30/b2_q.mp3',
+          'lv30/b3_q.mp3',
+
+          'lv30/c1_q.mp3',
+          'lv30/c2_q.mp3',
+          'lv30/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_30.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 2, b: 7, options: [12, 14, 16], voice: ['a1_q'] },
+        { type: 'tap', a: 5, b: 6, options: [25, 30, 35], voice: ['a2_q'] },
+        { type: 'tap', a: 2, b: 8, options: [14, 16, 18], voice: ['a3_q'] },
+        { type: 'tap', a: 5, b: 3, options: [10, 15, 20], voice: ['a4_q'] },
+
+        { type: 'balloon', a: 2, b: 9, options: [16, 18, 20], voice: ['b1_q'] },
+        { type: 'balloon', a: 5, b: 8, options: [35, 40, 45], voice: ['b2_q'] },
+        { type: 'balloon', a: 2, b: 5, options: [8, 10, 12], voice: ['b3_q'] },
+
+        { type: 'flash', a: 5, b: 5, options: [20, 25, 30], voice: ['c1_q'] },
+        { type: 'flash', a: 2, b: 4, options: [6, 8, 10], voice: ['c2_q'] },
+        { type: 'flash', a: 5, b: 7, options: [30, 35, 40], voice: ['c3_q'] }
+      ]
     }
   }
 };
