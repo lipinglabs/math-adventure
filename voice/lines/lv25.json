@@ -1,0 +1,73 @@
+{
+  "level": "lv25",
+  "status": "draft",
+  "note": "Stage 3 review: making ten with eight plus six, then splitting six into two and four, then the vertical sum. Quiz: tap the sum / drag four numbers into the make-ten chain / find the wrong sum.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Eight plus six. Let's make a ten.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Two more make ten. Ten plus four equals fourteen.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "We split six into two and four. Eight plus two equals ten.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Eight plus six equals fourteen.",
+      "mood": "teach"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Nine plus five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Eight plus seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Seven plus five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Nine plus six.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Drag the numbers to make ten, then add the rest.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong sum.",
+      "mood": "ask"
+    }
+  ]
+}

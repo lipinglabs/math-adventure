@@ -1,0 +1,91 @@
+{
+  "level": "lv27",
+  "status": "draft",
+  "note": "Stage 3 finale: adding makes a ten, taking away breaks a ten, then the trophy and the final challenge. Quiz mixes two digit adding, two digit subtracting and finding the wrong sentence, then a stage three trophy ceremony on gold.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Adding means making a ten. Taking away means breaking a ten.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "You finished Stage Three!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "You can add and take away big numbers.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Now, let's play the final challenge!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Twenty-six plus thirteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Thirty-eight plus sixteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Forty-seven plus twenty-five.",
+      "mood": "ask"
+    },
+    {
+      "key": "s1_q",
+      "lang": "en",
+      "text": "Forty-three minus fifteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "s2_q",
+      "lang": "en",
+      "text": "Fifty-two minus twenty-seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "s3_q",
+      "lang": "en",
+      "text": "Sixty-one minus thirty-four.",
+      "mood": "ask"
+    },
+    {
+      "key": "s4_q",
+      "lang": "en",
+      "text": "Thirty-four minus eighteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong number sentence.",
+      "mood": "ask"
+    },
+    {
+      "key": "t_gold",
+      "lang": "en",
+      "text": "Stage Three is complete! Here is your trophy!",
+      "mood": "praise"
+    }
+  ]
+}

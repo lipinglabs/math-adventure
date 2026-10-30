@@ -1,0 +1,73 @@
+{
+  "level": "lv26",
+  "status": "draft",
+  "note": "Stage 3 review: breaking the ten for fourteen minus eight, then the number split, then the vertical sum. Quiz: tap the answer / drag three numbers into the break-ten chain / find the wrong answer.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Fourteen minus eight.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "We don't have enough ones. Break the ten.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Ten minus eight equals two. Two plus four equals six.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Fourteen minus eight equals six.",
+      "mood": "teach"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Thirteen minus seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Fifteen minus eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Twelve minus five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Fourteen minus nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Break the ten, then add the rest.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the wrong answer.",
+      "mood": "ask"
+    }
+  ]
+}

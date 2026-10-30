@@ -1424,6 +1424,191 @@ window.MATH_DATA = {
           { parts: [41, '+', 27, '−', 8], total: 58 }
         ] }
       ]
+    },
+    25: {
+      id: 25,
+      name: 'Addition Adventure',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_25.jpg',
+      // 第三阶段大复习之一：进位加法。
+      // tap   = 点选结果（4 题）
+      // chain = 拖拽填凑十链：a + b = a + [凑十] + [剩余] = 10 + [剩余] = [和]（3 题）
+      // wrong = 三张算式找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv25/t1_a.mp3',
+          'lv25/t1_b.mp3',
+          'lv25/t1_c.mp3',
+          'lv25/t1_d.mp3',
+
+          'lv25/a1_q.mp3',
+          'lv25/a2_q.mp3',
+          'lv25/a3_q.mp3',
+          'lv25/a4_q.mp3',
+
+          'lv25/b_q.mp3',
+          'lv25/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_25.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 9, b: 5, options: [13, 14, 15], voice: ['a1_q'] },
+        { type: 'tap', a: 8, b: 7, options: [14, 15, 16], voice: ['a2_q'] },
+        { type: 'tap', a: 7, b: 5, options: [11, 12, 13], voice: ['a3_q'] },
+        { type: 'tap', a: 9, b: 6, options: [14, 15, 16], voice: ['a4_q'] },
+
+        { type: 'chain', a: 7, b: 5, voice: ['b_q'] },
+        { type: 'chain', a: 9, b: 4, voice: ['b_q'] },
+        { type: 'chain', a: 6, b: 5, voice: ['b_q'] },
+
+        // wrong：三句里恰好一句 a + b ≠ shown
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 9, b: 6, shown: 15 },
+          { a: 8, b: 7, shown: 15 },
+          { a: 7, b: 5, shown: 13 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 8, b: 5, shown: 13 },
+          { a: 9, b: 4, shown: 13 },
+          { a: 6, b: 9, shown: 16 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 7, b: 7, shown: 14 },
+          { a: 8, b: 6, shown: 14 },
+          { a: 9, b: 8, shown: 18 }
+        ] }
+      ]
+    },
+    26: {
+      id: 26,
+      name: 'Subtraction Safari',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_26.jpg',
+      // 第三阶段大复习之二：退位减法。
+      // tap   = 点选结果（4 题）
+      // chain = 拖拽填破十链：a − b = 10 − b + [个位] = [剩] + [个位] = [差]（3 题）
+      // wrong = 三张算式找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv26/t1_a.mp3',
+          'lv26/t1_b.mp3',
+          'lv26/t1_c.mp3',
+          'lv26/t1_d.mp3',
+
+          'lv26/a1_q.mp3',
+          'lv26/a2_q.mp3',
+          'lv26/a3_q.mp3',
+          'lv26/a4_q.mp3',
+
+          'lv26/b_q.mp3',
+          'lv26/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_26.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 13, b: 7, options: [5, 6, 7], voice: ['a1_q'] },
+        { type: 'tap', a: 15, b: 8, options: [6, 7, 8], voice: ['a2_q'] },
+        { type: 'tap', a: 12, b: 5, options: [6, 7, 8], voice: ['a3_q'] },
+        { type: 'tap', a: 14, b: 9, options: [4, 5, 6], voice: ['a4_q'] },
+
+        { type: 'chain', a: 15, b: 8, voice: ['b_q'] },
+        { type: 'chain', a: 13, b: 7, voice: ['b_q'] },
+        { type: 'chain', a: 16, b: 9, voice: ['b_q'] },
+
+        // wrong：三句里恰好一句 a − b ≠ shown
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 13, b: 7, shown: 6 },
+          { a: 15, b: 9, shown: 6 },
+          { a: 14, b: 8, shown: 7 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 12, b: 5, shown: 7 },
+          { a: 16, b: 8, shown: 8 },
+          { a: 17, b: 9, shown: 9 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 11, b: 4, shown: 7 },
+          { a: 14, b: 6, shown: 8 },
+          { a: 15, b: 7, shown: 9 }
+        ] }
+      ]
+    },
+    27: {
+      id: 27,
+      name: 'Stage 3 Finale',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_27.jpg',
+      // 第三阶段结业挑战：10 题完全混合打乱（§6.13.1）。
+      // add   = 两位数加法点选（3 题）
+      // sub   = 两位数减法点选（4 题）
+      // wrong = 混合算式挑错（3 题；答对后只翻结果格）
+      // 金星额外触发三阶结业仪式：彩带 24 条 + 奖杯 + 专属语音 + STAGE 3 徽章。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv27/t1_a.mp3',
+          'lv27/t1_b.mp3',
+          'lv27/t1_c.mp3',
+          'lv27/t1_d.mp3',
+
+          'lv27/a1_q.mp3',
+          'lv27/a2_q.mp3',
+          'lv27/a3_q.mp3',
+
+          'lv27/s1_q.mp3',
+          'lv27/s2_q.mp3',
+          'lv27/s3_q.mp3',
+          'lv27/s4_q.mp3',
+
+          'lv27/c_q.mp3',
+          'lv27/t_gold.mp3'
+        ],
+        images: ['assets/bg/bg_27.jpg']
+      },
+      questions: [
+        { type: 'add', a: 26, b: 13, options: [37, 39, 41], voice: ['a1_q'] },
+        { type: 'add', a: 38, b: 16, options: [52, 54, 56], voice: ['a2_q'] },
+        { type: 'add', a: 47, b: 25, options: [70, 72, 74], voice: ['a3_q'] },
+
+        { type: 'sub', a: 43, b: 15, options: [26, 28, 30], voice: ['s1_q'] },
+        { type: 'sub', a: 52, b: 27, options: [23, 25, 27], voice: ['s2_q'] },
+        { type: 'sub', a: 61, b: 34, options: [25, 27, 29], voice: ['s3_q'] },
+        { type: 'sub', a: 34, b: 18, options: [14, 16, 18], voice: ['s4_q'] },
+
+        // wrong：三句加减混排，恰好一句不成立
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 26, b: 13, sign: '+', shown: 39 },
+          { a: 43, b: 15, sign: '−', shown: 28 },
+          { a: 52, b: 27, sign: '−', shown: 26 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 38, b: 16, sign: '+', shown: 54 },
+          { a: 61, b: 34, sign: '−', shown: 27 },
+          { a: 47, b: 25, sign: '+', shown: 71 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 34, b: 18, sign: '−', shown: 16 },
+          { a: 29, b: 14, sign: '+', shown: 43 },
+          { a: 71, b: 36, sign: '−', shown: 34 }
+        ] }
+      ]
     }
   }
 };
