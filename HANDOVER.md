@@ -362,7 +362,8 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
   分步填空（先凑十再剩几）/ 听算式点拆解图 / 直接点结果三型（§6.15）；
 - **第十九关 Break the Ten**：破十法（退位减法），3 幕教学（一捆十根 + 三根 / 解绳散成十三根、拿走九根 /
   竖式 13 拆成 10 和 3）+ 破十拖走再点剩余 / 听算式点破十过程 / 找错误算式三型；
-  **首张关卡背景图** `assets/bg/bg_19.jpg`，挂载与清理见 §5.16；
+- **背景照片池**：48 张照片经 `tools/process_bg.py` 处理成 `assets/bg/bg_01…48.jpg`，
+  L1–L19 已一关一张挂好；渲染规范见 §5.17（`z-index:-1` + `isolation:isolate` + 0.72 白纱 + 按关加载）；
 - 全英文改造：界面零中文，按钮全部 SVG 图标；
 - 素材持久化：Cache Storage `math-adventure-assets-v1`，二次进入不重新下载、不弹读条；
 - 语音互斥：`play()` 独占 + 答对瞬间 `stop()`，实测切题时播放中的 audio ≤ 1；

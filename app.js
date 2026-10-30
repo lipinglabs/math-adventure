@@ -473,28 +473,65 @@
    * 素材加载时已经进过 Cache Storage，这里只把 blob URL 挂到 CSS 上。
    * 没有配 background 的关卡一律不显示背景层。
    */
-  function applyLevelBackground(level) {
+  var bgSeq = 0;          // 防止慢加载把新图覆盖掉
+  var bgSlot = 0;         // 两层图片轮流用
+
+  function bgLayers() {
     var layer = byId('level-bg');
-    if (!layer) return;
+    if (!layer) return [];
+    return Array.prototype.slice.call(layer.querySelectorAll('.level-bg-img'));
+  }
+
+  /**
+   * 交叉淡入：新图写进空闲层 → 预解码 → 亮起新层、压暗旧层（§5.17.5）。
+   * 只有一层时也能工作（新图直接替换）。
+   */
+  function applyLevelBackground(level) {
+    var layers = bgLayers();
+    if (!layers.length) return;
+
     var src = level && level.background;
     if (!src) {
-      layer.classList.remove('is-on');
-      layer.style.backgroundImage = '';
+      clearLevelBackground();
       return;
     }
+
     var url = Engine.assets && Engine.assets.imageUrl ? Engine.assets.imageUrl(src) : src;
-    layer.style.backgroundImage = 'url("' + url + '")';
+    var seq = (bgSeq += 1);
+    var next = layers[bgSlot % layers.length];
+    var prev = layers[(bgSlot + 1) % layers.length] || next;
+    bgSlot += 1;
+
+    next.style.backgroundImage = 'url("' + url + '")';
     var probe = new Image();
-    probe.onload = function () { layer.classList.add('is-on'); };
-    probe.onerror = function () { layer.classList.remove('is-on'); };
+    probe.onload = function () {
+      if (seq !== bgSeq) return;
+      next.classList.add('is-on');
+      if (prev !== next) prev.classList.remove('is-on');
+      setTimeout(function () {
+        if (seq !== bgSeq || prev === next || prev.classList.contains('is-on')) return;
+        prev.style.backgroundImage = '';
+      }, 640);
+    };
+    probe.onerror = function () {
+      if (seq !== bgSeq) return;
+      next.classList.remove('is-on');
+      next.style.backgroundImage = '';
+    };
     probe.src = url;
   }
 
   function clearLevelBackground() {
-    var layer = byId('level-bg');
-    if (!layer) return;
-    layer.classList.remove('is-on');
-    layer.style.backgroundImage = '';
+    var layers = bgLayers();
+    if (!layers.length) return;
+    var seq = (bgSeq += 1);
+    layers.forEach(function (node) { node.classList.remove('is-on'); });
+    setTimeout(function () {
+      if (seq !== bgSeq) return;
+      layers.forEach(function (node) {
+        if (!node.classList.contains('is-on')) node.style.backgroundImage = '';
+      });
+    }, 640);
   }
 
   function mountLevel(level) {

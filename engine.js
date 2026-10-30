@@ -441,12 +441,15 @@
       delete levelAudio[url];
     });
 
+    // 图片延后 900ms 再撤销：退关时关卡屏还在淡出，立刻 revoke 会闪一下空白
     Object.keys(levelImages).forEach(function (url) {
-      if (objectUrls[url]) {
-        try { URL.revokeObjectURL(objectUrls[url]); } catch (e) { /* noop */ }
-        delete objectUrls[url];
-      }
+      var blobUrl = objectUrls[url];
+      delete objectUrls[url];
       delete levelImages[url];
+      if (!blobUrl) return;
+      setTimeout(function () {
+        try { URL.revokeObjectURL(blobUrl); } catch (e) { /* noop */ }
+      }, 900);
     });
   }
 

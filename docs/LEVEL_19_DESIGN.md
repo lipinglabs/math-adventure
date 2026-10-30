@@ -9,7 +9,7 @@
 |---|---|
 | 关卡文件 | `level-lv19.js` |
 | 数据 | `levels_data.js` → `levels[19]`（含 `background`） |
-| 背景 | `assets/bg/bg_19.jpg`（960 × 1317，148 KB，本地静态） |
+| 背景 | `assets/bg/bg_19.jpg`（48 张照片池中的一张，682 × 1024，约 41 KB） |
 | 语音 | `voice/lv19/`（15 条）+ `voice/common/`（4 条），关内 59.6 秒 / 466 KB |
 | 音色 | `en_female_allison_uranus_bigtts`，`speech_rate = -15` |
 | 选项数 | 点选 3 / 过程卡 3 / 找错句 3（§6.5） |
@@ -128,15 +128,15 @@
 
 | 项 | 做法 |
 |---|---|
-| 文件 | `assets/bg/bg_19.jpg`（960 × 1317，JPEG q82，148 KB） |
+| 文件 | `assets/bg/bg_19.jpg`（682 × 1024，JPEG q80 + blur 3，约 41 KB，无 EXIF） |
 | 挂载 | `levels_data.js`：`background: 'assets/bg/bg_19.jpg'` + `assets.images: ['assets/bg/bg_19.jpg']` |
 | 加载 | `Engine.loadLevel` 把图片当普通素材：Cache Storage 命中 → blob URL；未命中才下载 |
-| 显示 | `app.js` 把 blob URL 写到 `#level-bg`，`is-on` 淡入 560ms |
-| 可读性 | 层上叠奶油薄纱（顶部 0.74 / 中部 0.44 / 底部 0.8） |
+| 显示 | `app.js` 把 blob URL 写进 `#level-bg` 的图片层，`is-on` 淡入 560ms（双层交叉） |
+| 可读性 | 层上叠纯白蒙版（`--bg-veil`，默认 0.72）+ 上下奶油柔边（v25 起） |
 | 清理 | `exitLevel()` 先摘 `is-on` 再清 `background-image`；`releaseLevel()` 撤销 blob |
 
-画面：暖奶油色墙面 + 浅木地板，左下一只藤篮、右侧两盆绿植，中间大片留白；无文字、无人物。
-原始 PNG 水印在导出时裁掉（下边 8.5%），只保留干净 JPEG。
+画面：48 张照片经 `tools/process_bg.py` 统一处理（最长边 1024、blur 3、q80、去 EXIF），
+按 `--shuffle --seed 20261030` 随机分配，第 19 关对应 `bg_19.jpg`；照片只作背景水印，不含任何题面元素。
 
 ---
 
@@ -163,8 +163,8 @@
 - 题型 B：3 张卡、`(减数,个位)` 三组互不相同；点错后重排且**答案位置必变**，`try_again` 1 次。
 - 题型 C：三题各一句不成立；点对后结果格翻成 6 / 7 / 8，0.7 秒仍在、1.6 秒后换题。
 - 全对 → `gold`、`unlockedLevel = 20`；错一处 → `silver`、只到 19。
-- 背景：首次进入 `bgReqs = 1`（148 KB）+ 15 个音频（466 KB），读条 676 ms；
-  二次进入 `bgReqs = 0`、`voiceReqs = 0`、149 ms、无读条，`.level-bg` 仍 `is-on`。
-- L18 进入时背景层为空；退关后 `.level-bg` 无 `is-on`、`backgroundImage` 为空。
+- 背景：首次进入 `bgReqs = 1`（约 41 KB）+ 15 个音频（466 KB），读条 676 ms；
+  二次进入 `bgReqs = 0`、`voiceReqs = 0`、149 ms、无读条，`.level-bg-img` 仍 `is-on`。
+- L18 进入时背景层为空；退关后图片层无 `is-on`、`backgroundImage` 为空。
 - 390 / 375 宽都 `scrollWidth === innerWidth`；零 CJK（含 `aria-label`）。
 - 地图 Stage 3 变 4 个节点（16–19），第 19 关标签 `Break the Ten`。

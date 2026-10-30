@@ -50,6 +50,8 @@ window.MATH_DATA = {
       id: 1,
       name: 'Apple Addition',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_01.jpg',
       // 本关全部素材（相对 meta.audioBase）。只加载这一组，别的一律不碰。
       assets: {
         audio: [
@@ -79,7 +81,7 @@ window.MATH_DATA = {
           'lv01/q9.mp3',
           'lv01/q10.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_01.jpg']
       },
       // 10 题：两个加数都 ≥ 1，和 ≤ 5，正好覆盖全部有序组合
       // object 决定 SVG 实物；题干语音 key 为 q<index+1>
@@ -101,6 +103,8 @@ window.MATH_DATA = {
       id: 2,
       name: 'Balloon Take Away',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_02.jpg',
       // 每题 4 个选项（全局铁律），干扰项优先取离答案最近的数
       optionCount: 4,
       assets: {
@@ -131,7 +135,7 @@ window.MATH_DATA = {
           'lv02/q9.mp3',
           'lv02/q10.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_02.jpg']
       },
       // 9 以内减法：被减数 3–9、减数 1–6，结果均 ≥ 1
       // voice 表示该题固定的题干音频；题目顺序在运行时打乱
@@ -153,6 +157,8 @@ window.MATH_DATA = {
       id: 3,
       name: 'Orchard Harvest',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_03.jpg',
       // 三种题型的选项数由题型决定（§6.5）：sign = 2、sentence = 3、number = 3
       assets: {
         audio: [
@@ -183,7 +189,7 @@ window.MATH_DATA = {
           'lv03/c2_q.mp3',
           'lv03/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_03.jpg']
       },
       // 10 以内加减混合：4 题点符号 + 3 题点算式 + 3 题点结果，顺序每局打乱。
       // op 为题目本身的运算；answerVoice 只用于 sign 题（点对后播算式）。
@@ -207,6 +213,8 @@ window.MATH_DATA = {
       id: 4,
       name: 'Ten and Some More',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_04.jpg',
       assets: {
         audio: [
           'common/ready.mp3',
@@ -234,7 +242,7 @@ window.MATH_DATA = {
           'lv04/c2_q.mp3',
           'lv04/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_04.jpg']
       },
       // 11–19 与十格阵：4 题看阵点数字 + 3 题听数字选阵 + 3 题拖拽凑数。
       // 十格阵一律 2 行 × 5 列；ones 表示零散苹果数，target 表示目标数。
@@ -258,6 +266,8 @@ window.MATH_DATA = {
       id: 5,
       name: 'Cookie Party',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_05.jpg',
       // 三种题型的选项数（§6.5）：give 是拖拽题、无选项；count = 3 个数字键；pick = 3 张动物卡。
       // target = 要给的饼干总数，ones = 盒子外零散数（count/pick 用到）。
       assets: {
@@ -288,7 +298,7 @@ window.MATH_DATA = {
           'lv05/c2_q.mp3',
           'lv05/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_05.jpg']
       },
       // 11–19 与「一盒十块 + 零散」：4 题听数字拖饼干 + 3 题看盒点数字 + 3 题选小动物。
       // pick 题的 options 里必须有一项 ones 等于本题 ones（答案），三项 ones 互不相同。
@@ -321,6 +331,8 @@ window.MATH_DATA = {
       id: 6,
       name: 'Number Link',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_06.jpg',
       // 三种题型（§6.5）：link 是连线题（左右各 3 张卡，没有按钮选项）；fill 是 3 个数字键。
       // left = 'num' 表示数字在左、图案在右；nums 与 ones 各自独立洗牌，答案位置每局都变。
       // link 题的 nums / ones 必须互相对应（10 + ones 落在 nums 里），且三对都能配平。
@@ -351,7 +363,7 @@ window.MATH_DATA = {
           'lv06/how_many.mp3',
           'lv06/touch_num.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_06.jpg']
       },
       // 11–19 半抽象匹配：4 题数字找图案 + 3 题图案找数字 + 3 题看图选数字。
       // voice 是数组：题干可能由多条语音接起来（先描述图案，再说“连到右边的数字”）。
@@ -375,6 +387,8 @@ window.MATH_DATA = {
       id: 7,
       name: 'Block Build',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_07.jpg',
       // 三种题型（§6.5）：count = 3 个数字键；pick = 3 组积木卡；solve = 3 个可拖拽的数字键。
       // 一律不进位：个位相加 ≤ 9，十位始终是「一捆 10 块」不动。
       assets: {
@@ -406,7 +420,7 @@ window.MATH_DATA = {
           'lv07/c3_q.mp3',
           'lv07/put_num.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_07.jpg']
       },
       // ones = 已有零散块数，add = 又飞来的块数；options 三选一，答案 = 10 + ones + add。
       // pick 题的 combos 是三组「10 + n」，target 是听到的那个 n；solve 题答案 = a + b。
@@ -430,6 +444,8 @@ window.MATH_DATA = {
       id: 8,
       name: 'Car Garage',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_08.jpg',
       // 三种题型（§6.5）：drag = 3 个数字键（先拖车）；pick = 3 张车库卡；touch = 3 个数字键。
       // 一律不进位：个位相加 ≤ 9，十位车库永远是停满的 10 辆。
       assets: {
@@ -461,7 +477,7 @@ window.MATH_DATA = {
           'lv08/c2_q.mp3',
           'lv08/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_08.jpg']
       },
       // drag：ones = 个位车库已有辆数，add = 车道上要拖进去的辆数，答案 = 10 + ones + add。
       // pick：a = 个位车库停着几辆，b = 车道上有几辆（题干念 10 + a 再加 b），三张卡的 (a, b) 互不相同。
@@ -486,6 +502,8 @@ window.MATH_DATA = {
       id: 9,
       name: 'Quick Tap',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_09.jpg',
       // 三种题型（§6.5）：tap = 3 个数字键；wrong = 3 个算式卡；flash = 3 个数字键 + 5 秒倒计时。
       // 一律不进位：个位相加 ≤ 9。
       assets: {
@@ -507,7 +525,7 @@ window.MATH_DATA = {
           'lv09/c2_q.mp3',
           'lv09/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_09.jpg']
       },
       // tap：a + b，三选一。
       // wrong：三个算式里恰好一个 a + b ≠ shown，孩子要把它找出来。
@@ -532,6 +550,8 @@ window.MATH_DATA = {
       id: 10,
       name: 'Bird Branch',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_10.jpg',
       // 三种题型（§6.5）：fly = 3 个数字键；branch = 3 张树枝卡；take = 点掉鸟后 3 个数字键。
       // 一律不退位：只从个位树枝上减，个位够减（a - 10 >= b）。
       assets: {
@@ -558,7 +578,7 @@ window.MATH_DATA = {
           'lv10/c2_q.mp3',
           'lv10/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_10.jpg']
       },
       // fly：a 只鸟里飞走 b 只，答案 = a - b；voice 只念情境，问句 how_many 由关卡模块在飞完后补。
       // branch：target 是听到的总数，combos 是三根树枝的零散只数（10 + n）。
@@ -582,6 +602,8 @@ window.MATH_DATA = {
       id: 11,
       name: 'Candy Share',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_11.jpg',
       // 三种题型（§6.5）：take = 3 个数字键（先拖糖）；group = 3 张糖果卡；wrong = 3 句算式。
       // 一律不退位：只从零散的个位糖里减，个位够减（a - 10 >= b）。
       assets: {
@@ -606,7 +628,7 @@ window.MATH_DATA = {
           'lv11/b3_q.mp3',
           'lv11/find_wrong.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_11.jpg']
       },
       // take：一盒十颗 + (a-10) 颗零散，拖走 b 颗到盘里，答案 = a - b；
       //       语音只念情境与动作，问句 how_many 由关卡模块在拖完后补。
@@ -631,6 +653,8 @@ window.MATH_DATA = {
       id: 12,
       name: 'Lightning Math',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_12.jpg',
       // 三种题型（§6.5）：calc = 3 个数字键；balloon = 3 个写着答案的气球；flash = 3 个数字键 + 5 秒条。
       // 一律不退位：只从个位减，个位够减（a - 10 >= b）。
       assets: {
@@ -656,7 +680,7 @@ window.MATH_DATA = {
           'lv12/c2_q.mp3',
           'lv12/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_12.jpg']
       },
       // 三种题型共用 a - b = ? 的结构；options 是三个候选答案（气球题直接印在气球上）。
       // flash 题按 §6.9：超时与点错都记一次错、同一题重来、进度条重置。
@@ -679,6 +703,8 @@ window.MATH_DATA = {
       id: 13,
       name: 'Mix It Up',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_13.jpg',
       // 二阶大复习（§6.5）：add / sub / pic 全是 3 个数字键，纯点选、不拖拽。
       // 加法一律不进位、减法一律不退位；被减数与加数都落在 11–19 里。
       assets: {
@@ -702,7 +728,7 @@ window.MATH_DATA = {
           'lv13/b4_q.mp3',
           'lv13/c_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_13.jpg']
       },
       // add：a + b（个位不进位）；sub：a − b（个位够减）；pic：十格阵满十 + ones 个零散积木。
       // 三型共用一套「点数字键」的作答方式，顺序每局打乱。
@@ -725,6 +751,8 @@ window.MATH_DATA = {
       id: 14,
       name: 'Match Maker',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_14.jpg',
       // 拖拽配对（§6.5）：算式卡可拖，数字卡是落点，一律 3 个候选。
       // pair   = 左 1 张算式 → 右边 3 个数字里拖到正确的那个（4 题）
       // listen = 左 3 张算式，语音点名一张 → 拖到右边对应数字（3 题，干扰项不等于任何数字）
@@ -749,7 +777,7 @@ window.MATH_DATA = {
           'lv14/c2_q.mp3',
           'lv14/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_14.jpg']
       },
       // 判对只看数学：算式值 === 数字卡。listen 的干扰算式故意不等于任何数字，
       // 所以「拖错卡」永远是错的，孩子不会被「其实也对」绕晕。
@@ -778,6 +806,8 @@ window.MATH_DATA = {
       id: 15,
       name: 'Final Challenge',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_15.jpg',
       // 二阶结业挑战（§6.13）：10 题混合大考，题型与顺序全随机。
       // tap    = 听音点选（算式卡 + 3 个数字键），4 题
       // blocks = 看图拖拽（一捆十块 + n 块零散 → 拖到数字卡），3 题
@@ -802,7 +832,7 @@ window.MATH_DATA = {
           'lv15/c_q.mp3',
           'lv15/win.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_15.jpg']
       },
       // wrong 题的三句里恰好一句 value ≠ shown，另外两句真的成立（§6.11）。
       questions: [
@@ -836,6 +866,8 @@ window.MATH_DATA = {
       id: 16,
       name: 'Make Ten',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_16.jpg',
       // 第三阶段开场：满十进一（进位加法）。核心是「凑十」。
       // fill  = 看动画自动凑满十格阵 → 点总数（4 题）
       // drag  = 自己拖苹果把十格阵凑满 → 再点总数（3 题，§6.8 两段式）
@@ -860,7 +892,7 @@ window.MATH_DATA = {
           'lv16/b_total_q.mp3',
           'lv16/c_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_16.jpg']
       },
       // fill: inFrame 个在十格阵里，outside 个在外面；自动飞进 10 - inFrame 个
       // drag: 同上，但要孩子自己拖 10 - inFrame 个进去
@@ -895,6 +927,8 @@ window.MATH_DATA = {
       id: 17,
       name: 'Corn Basket',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_17.jpg',
       // 第三阶段第二关：还是凑十，换成小猴子搬玉米（筐 = 十格阵）。
       // fill   = 拖玉米把筐填满 → 再点总数（4 题，§6.8 两段式）
       // pick   = 听算式，点对应的那筐玉米（3 题，三组都不同，靠筐里/地上两个数区分）
@@ -926,7 +960,7 @@ window.MATH_DATA = {
           'lv17/c3_q.mp3',
           'lv17/c_ask_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_17.jpg']
       },
       questions: [
         { type: 'fill', inBasket: 7, ground: 6, options: [12, 13, 14], voice: ['a1_q'] },
@@ -950,6 +984,8 @@ window.MATH_DATA = {
       id: 18,
       name: 'Split It',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_18.jpg',
       // 第三阶段第三关：把「拆数凑十」单独拎出来练。
       // splitfill = 分步填空：先填「凑十要几个」，再填「还剩几个」（4 题，§6.15）
       // pick      = 听算式，点出对应的拆解图（3 题，三张图的拆解和互不相同）
@@ -981,7 +1017,7 @@ window.MATH_DATA = {
           'lv18/c2_q.mp3',
           'lv18/c3_q.mp3'
         ],
-        images: []
+        images: ['assets/bg/bg_18.jpg']
       },
       // splitfill：options 必须同时包含 (10-a) 和 (b-(10-a))，另一个是纯干扰。
       questions: [
@@ -1007,14 +1043,13 @@ window.MATH_DATA = {
       id: 19,
       name: 'Break the Ten',
       status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_19.jpg',
       // 第三阶段第四关：破十法（退位减法）。个位不够减，就解开那一捆十。
       // break   = 点开那捆 → 拖走 b 根 → 点「还剩几根」（4 题，§6.8 两段式）
       // process = 听算式，点出对应的破十过程（3 题，三张卡 (b, 个位) 两两不同）
       // wrong   = 三句里找错的一句（3 题，§6.11 只翻结果格）
       // 一律借位（个位 < 减数），差落在 3–9。
-      // 背景图：本关是第一张挂背景的关卡（§5.16）。图片进 assets.images，
-      // 走 §4.6 的 Cache Storage；第二次进入不重复下载。
-      background: 'assets/bg/bg_19.jpg',
       assets: {
         audio: [
           'common/ready.mp3',
@@ -1037,9 +1072,7 @@ window.MATH_DATA = {
           'lv19/b3_q.mp3',
           'lv19/c_q.mp3'
         ],
-        images: [
-          'assets/bg/bg_19.jpg'
-        ]
+        images: ['assets/bg/bg_19.jpg']
       },
       questions: [
         { type: 'break', a: 15, b: 8, options: [6, 7, 8], voice: ['a1_q'] },

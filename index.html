@@ -107,8 +107,14 @@
 
     <div id="level-dots" class="level-dots" aria-hidden="true"></div>
 
-    <!-- 关卡背景层：由 levels_data.js 的 level.background 驱动，退关清空（§5.16） -->
-    <div id="level-bg" class="level-bg" aria-hidden="true"></div>
+    <!--
+      关卡背景层：由 levels_data.js 的 level.background 驱动（§5.16 / §5.17）。
+      两层图片交错淡入淡出，切关时不会闪白；白纱叠在最上面，让照片只是水印。
+    -->
+    <div id="level-bg" class="level-bg" aria-hidden="true">
+      <span class="level-bg-img"></span>
+      <span class="level-bg-img"></span>
+    </div>
 
     <main id="stage" class="stage">
       <!-- 关卡内容由 level-lvNN.js 挂载 -->

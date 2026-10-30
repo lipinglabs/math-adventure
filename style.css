@@ -7394,31 +7394,56 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
    本关同时是「关卡背景图」的首个使用者（见 .level-bg）。
    ============================================================ */
 
-/* ---------------- 关卡背景层（§5.16） ---------------- */
+/* ---------------- 关卡背景层（§5.16 / §5.17） ---------------- */
+
+/* 关卡屏自建层叠上下文：负层级才会落在「内容之下、body 之上」 */
+.screen--level {
+  isolation: isolate;
+  /* 0.6 是下限；这批照片细节多，0.72 才压成「水印」（§5.17.4） */
+  --bg-veil: 0.72;
+}
 
 .level-bg {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 两层图片：新图淡入、旧图淡出，切关不闪白 */
+.level-bg-img {
+  position: absolute;
+  inset: 0;
   background-size: cover;
   background-position: center 42%;
   background-repeat: no-repeat;
   opacity: 0;
   transform: scale(1.04);
   transition: opacity 560ms var(--ease-soft), transform 900ms var(--ease-soft);
-  pointer-events: none;
 }
 
-.level-bg.is-on { opacity: 1; transform: scale(1); }
+.level-bg-img.is-on { opacity: 1; transform: scale(1); }
 
-/* 奶油色薄纱：保证卡片与数字始终压得住背景 */
+/* 上下柔边：标题栏与底部按钮区的文字不压在照片细节上 */
+.level-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(255, 250, 243, 0.66) 0%,
+    rgba(255, 250, 243, 0) 24%,
+    rgba(255, 247, 237, 0) 74%,
+    rgba(255, 247, 237, 0.58) 100%);
+}
+
+/* 纯白蒙版：照片只做「若隐若现的水印」，不抢前景（§5.17.4） */
 .level-bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 70% at 50% 104%, rgba(255, 249, 240, 0.9) 0%, rgba(255, 249, 240, 0) 64%),
-    linear-gradient(180deg, rgba(255, 250, 243, 0.74) 0%, rgba(255, 249, 240, 0.44) 46%, rgba(255, 247, 237, 0.8) 100%);
+  background: rgb(255 255 255 / var(--bg-veil, 0.72));
+  z-index: 2;
 }
 
 /* 内容压在背景之上 */
