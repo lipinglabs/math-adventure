@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 import subprocess
@@ -47,6 +48,15 @@ def collect_files() -> list[str]:
             continue
         files.append(rel.as_posix())
     return sorted(files)
+
+
+def blob_sha(data: bytes) -> str:
+    """Git blob 的 SHA-1：sha1("blob <len>\\0" + data)，用来和远端 tree 比对、只传改动过的文件。"""
+    head = b"blob %d\0" % len(data)
+    digest = hashlib.sha1()
+    digest.update(head)
+    digest.update(data)
+    return digest.hexdigest()
 
 
 def gh(method: str, path: str, payload: dict | None = None) -> dict:
@@ -113,8 +123,17 @@ def main() -> int:
     base_tree = gh("GET", f"repos/{OWNER}/{REPO}/git/commits/{head}")["tree"]["sha"]
     print(f"当前提交：{head}")
 
+    # 只上传内容变过的文件：拿远端 tree 的 blob sha 和本地算出来的 sha 比。
+    # 全量重传 2000 个文件要十几分钟，增量通常几十秒；base_tree 保证未变的文件保持原样。
+    remote_tree = gh("GET", f"repos/{OWNER}/{REPO}/git/trees/{base_tree}?recursive=1")
+    remote_map = {e["path"]: e["sha"] for e in remote_tree.get("tree", []) if e.get("type") == "blob"}
+    local_map = {rel: blob_sha((ROOT / rel).read_bytes()) for rel in files}
+    changed = [rel for rel in files if remote_map.get(rel) != local_map[rel]]
+    gone = [rel for rel in remote_map if rel not in local_map]
+    print(f"内容有变 {len(changed)} 个，未变 {len(files) - len(changed)} 个" + (f"，远端多出 {len(gone)} 个" if gone else ""))
+
     tree = []
-    for rel in files:
+    for rel in changed:
         data = (ROOT / rel).read_bytes()
         blob = gh("POST", f"repos/{OWNER}/{REPO}/git/blobs", {
             "content": base64.b64encode(data).decode("ascii"),

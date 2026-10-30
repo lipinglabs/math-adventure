@@ -1105,6 +1105,80 @@ window.MATH_DATA = {
           { a: 14, b: 5, shown: 9 }
         ] }
       ]
+    },
+    20: {
+      id: 20,
+      name: 'Borrow a Ten',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_20.jpg',
+      // 第三阶段第五关：借十法（退位减法）。个位不够减，就去十位借一个十回来。
+      // borrow = 把果篮里的十拖到个位垫上散成十个一 → 拿走 b 个 → 点「还剩几个」（4 题，§6.8 两段式）
+      // pick   = 听算式，点出对应的拆分图（3 题，三张图的总数互不相同）
+      // wrong  = 三句里找错的一句（3 题，§6.11 只翻结果格）
+      // 一律借位（个位 < 减数），差落在 4–10。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv20/t1_a.mp3',
+          'lv20/t1_b.mp3',
+          'lv20/t1_c.mp3',
+          'lv20/t2_a.mp3',
+          'lv20/t2_b.mp3',
+          'lv20/t2_c.mp3',
+          'lv20/t2_d.mp3',
+          'lv20/t3_a.mp3',
+          'lv20/t3_b.mp3',
+
+          'lv20/a1_q.mp3',
+          'lv20/a2_q.mp3',
+          'lv20/a3_q.mp3',
+          'lv20/a4_q.mp3',
+          'lv20/a_ask_q.mp3',
+
+          'lv20/b1_q.mp3',
+          'lv20/b2_q.mp3',
+          'lv20/b3_q.mp3',
+
+          'lv20/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_20.jpg']
+      },
+      questions: [
+        { type: 'borrow', a: 13, b: 9, options: [3, 4, 5], voice: ['a1_q'] },
+        { type: 'borrow', a: 15, b: 8, options: [6, 7, 8], voice: ['a2_q'] },
+        { type: 'borrow', a: 14, b: 6, options: [7, 8, 9], voice: ['a3_q'] },
+        { type: 'borrow', a: 12, b: 7, options: [4, 5, 6], voice: ['a4_q'] },
+
+        // pick：target = 正确那张拆分图 [十, 零散]；三张图的总数两两不同，干扰图之和 ≠ 目标和。
+        { type: 'pick', target: [10, 5], sum: 15, voice: ['b1_q'],
+          cards: [[10, 5], [10, 2], [10, 8]] },
+        { type: 'pick', target: [10, 2], sum: 12, voice: ['b2_q'],
+          cards: [[10, 2], [10, 6], [10, 9]] },
+        { type: 'pick', target: [10, 7], sum: 17, voice: ['b3_q'],
+          cards: [[10, 7], [10, 3], [10, 6]] },
+
+        // wrong：三句里恰好一句 a − b ≠ shown，错法分别是 +1 / −2 / +2。
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 12, b: 7, shown: 5 },
+          { a: 15, b: 8, shown: 7 },
+          { a: 14, b: 6, shown: 9 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 13, b: 6, shown: 7 },
+          { a: 16, b: 9, shown: 7 },
+          { a: 15, b: 7, shown: 6 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 14, b: 8, shown: 6 },
+          { a: 11, b: 4, shown: 7 },
+          { a: 17, b: 9, shown: 10 }
+        ] }
+      ]
     }
   }
 };
