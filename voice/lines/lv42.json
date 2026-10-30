@@ -1,0 +1,91 @@
+{
+  "level": "lv42",
+  "status": "draft",
+  "note": "Take Away Again and Again: twelve candies, four taken away three times, which is the same as twelve divided by four. Quiz: hear a repeated subtraction and pick the division / link repeated subtraction to division / find the pair that does not match.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's take away four candies at a time.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "We took away three times.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Twelve divided by four is three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Taking away four, three times, is the same as twelve divided by four.",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Ten minus two, minus two, minus two, minus two, minus two, equals zero.",
+      "mood": "count"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Both of them make three!",
+      "mood": "praise"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Twelve minus four, minus four, minus four, equals zero.",
+      "mood": "count"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Fifteen minus five, minus five, minus five, equals zero.",
+      "mood": "count"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Eight minus two, minus two, minus two, minus two, equals zero.",
+      "mood": "count"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Match the taking away with the division.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Match them up.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Find the matching division.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which one does not match?",
+      "mood": "ask"
+    }
+  ]
+}

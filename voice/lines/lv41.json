@@ -1,0 +1,91 @@
+{
+  "level": "lv41",
+  "status": "draft",
+  "note": "Group Them Up: twelve ducks make groups of four, then the division sign arrives and asks how many groups. Quiz: hear a division and pick how many groups / draw a ring around each group of b / hear a division and pick the matching group picture.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "We have twelve ducks. Let's make groups of four!",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Twelve ducks in groups of four. We have three groups.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_a",
+      "lang": "en",
+      "text": "Twelve divided by four equals three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t2_q",
+      "lang": "en",
+      "text": "How many groups?",
+      "mood": "ask"
+    },
+    {
+      "key": "t2_b",
+      "lang": "en",
+      "text": "Three groups!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Nine divided by three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Eight divided by two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Twelve divided by four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Ten divided by five.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Ten candies. Make groups of five.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Nine apples. Make groups of three.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Eight ducks. Make groups of two.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which picture shows the same groups?",
+      "mood": "ask"
+    }
+  ]
+}

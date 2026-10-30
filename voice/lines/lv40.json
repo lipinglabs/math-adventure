@@ -1,0 +1,91 @@
+{
+  "level": "lv40",
+  "status": "draft",
+  "note": "Pizza Party: sharing a pizza with three friends, one slice each, then three times one is three and three divided by three is one. Quiz: hear a division and pick how many each one gets / drag cookies onto plates until every plate is equal / find the plate set that is not fair.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's share the pizza with three friends!",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "One for you, one for you, and one for me.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three plates with one slice each makes three slices.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Three times one equals three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "So, three divided by three is one.",
+      "mood": "teach"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Six divided by two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Eight divided by four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Nine divided by three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Ten divided by five.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Eight cookies. Four plates. Make them equal.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Nine strawberries. Three plates. Make them equal.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Ten candies. Five plates. Make them equal.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which one is not fair?",
+      "mood": "ask"
+    }
+  ]
+}

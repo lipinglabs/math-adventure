@@ -418,7 +418,6 @@
           correct(key);
           return;
         }
-        state.busy = true;
         wrong(key);
         later(function () {
           if (state.locked || !alive) return;

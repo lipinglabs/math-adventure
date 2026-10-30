@@ -2300,6 +2300,195 @@ window.MATH_DATA = {
           { sign: '×', a: 6, b: 7, shown: 41 }
         ] }
       ]
+    },
+
+    40: {
+      id: 40,
+      name: 'Pizza Party',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_40.jpg',
+      // 第五阶段开局：平均分 / 除法启蒙。
+      // share = 看分配点每份数（4 题；选项不含题面数字，避免字面对数字）
+      // plate = 拖拽平均分（3 题；放满不判对，必须按提交键，§6.10）
+      // fair  = 找不公平的一组（3 题；恰好一组分不均匀）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv40/t1_a.mp3',
+          'lv40/t1_b.mp3',
+          'lv40/t1_c.mp3',
+          'lv40/t1_d.mp3',
+          'lv40/t1_e.mp3',
+
+          'lv40/a1_q.mp3',
+          'lv40/a2_q.mp3',
+          'lv40/a3_q.mp3',
+          'lv40/a4_q.mp3',
+
+          'lv40/b1_q.mp3',
+          'lv40/b2_q.mp3',
+          'lv40/b3_q.mp3',
+
+          'lv40/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_40.jpg']
+      },
+      questions: [
+        { type: 'share', total: 6, parts: 2, options: [3, 4, 5], voice: ['a1_q'] },
+        { type: 'share', total: 8, parts: 4, options: [2, 3, 5], voice: ['a2_q'] },
+        { type: 'share', total: 9, parts: 3, options: [3, 2, 4], voice: ['a3_q'] },
+        { type: 'share', total: 10, parts: 5, options: [2, 3, 4], voice: ['a4_q'] },
+
+        { type: 'plate', total: 8, plates: 4, item: 'cookie', voice: ['b1_q'] },
+        { type: 'plate', total: 9, plates: 3, item: 'strawberry', voice: ['b2_q'] },
+        { type: 'plate', total: 10, plates: 5, item: 'candy', voice: ['b3_q'] },
+
+        // fair：三组里恰好一组分不均匀（错的那组结果也跟着错）
+        { type: 'fair', voice: ['c_q'], sets: [
+          { t: 6, g: 2, m: 3, deal: [3, 3] },
+          { t: 8, g: 4, m: 3, deal: [3, 2, 2, 1] },
+          { t: 10, g: 5, m: 2, deal: [2, 2, 2, 2, 2] }
+        ] },
+        { type: 'fair', voice: ['c_q'], sets: [
+          { t: 9, g: 3, m: 3, deal: [3, 3, 3] },
+          { t: 6, g: 3, m: 3, deal: [3, 2, 1] },
+          { t: 12, g: 4, m: 3, deal: [3, 3, 3, 3] }
+        ] },
+        { type: 'fair', voice: ['c_q'], sets: [
+          { t: 8, g: 2, m: 4, deal: [4, 4] },
+          { t: 10, g: 2, m: 6, deal: [6, 4] },
+          { t: 12, g: 2, m: 6, deal: [6, 6] }
+        ] }
+      ]
+    },
+
+    41: {
+      id: 41,
+      name: 'Group Them Up',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_41.jpg',
+      // 包含除：把总数按「每组几个」打包，问能打几组。
+      // groups = 看分组点组数（4 题；答对后把每组圈出来）
+      // ring   = 拖拽画圈（3 题；套索或轻点选满每组，全部分完才亮提交键，§6.10）
+      // pick   = 听算式找场景（3 题；三张图的 (总数, 每组) 两两不同）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv41/t1_a.mp3',
+          'lv41/t1_b.mp3',
+          'lv41/t2_a.mp3',
+          'lv41/t2_q.mp3',
+          'lv41/t2_b.mp3',
+
+          'lv41/a1_q.mp3',
+          'lv41/a2_q.mp3',
+          'lv41/a3_q.mp3',
+          'lv41/a4_q.mp3',
+
+          'lv41/b1_q.mp3',
+          'lv41/b2_q.mp3',
+          'lv41/b3_q.mp3',
+
+          'lv41/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_41.jpg']
+      },
+      questions: [
+        { type: 'groups', total: 9, per: 3, item: 'apple', options: [3, 2, 4], voice: ['a1_q'] },
+        { type: 'groups', total: 8, per: 2, item: 'apple', options: [4, 3, 5], voice: ['a2_q'] },
+        { type: 'groups', total: 12, per: 4, item: 'duck', options: [3, 2, 5], voice: ['a3_q'] },
+        { type: 'groups', total: 10, per: 5, item: 'candy', options: [2, 3, 4], voice: ['a4_q'] },
+
+        { type: 'ring', total: 10, per: 5, item: 'candy', voice: ['b1_q'] },
+        { type: 'ring', total: 9, per: 3, item: 'apple', voice: ['b2_q'] },
+        { type: 'ring', total: 8, per: 2, item: 'duck', voice: ['b3_q'] },
+
+        // pick：三张图的 (总数, 每组) 两两不同，商也尽量不同
+        { type: 'pick', t: 15, g: 5, voice: ['c_q'], options: [
+          { t: 15, g: 5 }, { t: 12, g: 4 }, { t: 10, g: 2 }
+        ] },
+        { type: 'pick', t: 12, g: 3, voice: ['c_q'], options: [
+          { t: 12, g: 3 }, { t: 8, g: 2 }, { t: 10, g: 5 }
+        ] },
+        { type: 'pick', t: 10, g: 2, voice: ['c_q'], options: [
+          { t: 10, g: 2 }, { t: 12, g: 4 }, { t: 9, g: 3 }
+        ] }
+      ]
+    },
+
+    42: {
+      id: 42,
+      name: 'Take Away Again and Again',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_42.jpg',
+      // 除法是减法的简便运算：拿几次就减几次。
+      // choice = 听连减选除法（4 题；三张算式卡，只有一张被减数/减数/次数全对）
+      // link   = 连减 ↔ 除法连线（3 题；三对全连对才判对，§5.10）
+      // wrong  = 三组等式找错（3 题；恰好一组除法结果错，答对后翻正）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv42/t1_a.mp3',
+          'lv42/t1_b.mp3',
+          'lv42/t1_c.mp3',
+          'lv42/t1_d.mp3',
+          'lv42/t1_e.mp3',
+
+          'lv42/a1_q.mp3',
+          'lv42/a2_q.mp3',
+          'lv42/a3_q.mp3',
+          'lv42/a4_q.mp3',
+
+          'lv42/b1_q.mp3',
+          'lv42/b2_q.mp3',
+          'lv42/b3_q.mp3',
+
+          'lv42/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_42.jpg']
+      },
+      questions: [
+        { type: 'choice', a: 10, b: 2, n: 5, options: [[10, 2, 5], [8, 2, 4], [12, 2, 6]], voice: ['a1_q'] },
+        { type: 'choice', a: 12, b: 4, n: 3, options: [[12, 4, 3], [12, 3, 4], [8, 4, 2]], voice: ['a2_q'] },
+        { type: 'choice', a: 15, b: 5, n: 3, options: [[15, 5, 3], [15, 3, 5], [20, 5, 4]], voice: ['a3_q'] },
+        { type: 'choice', a: 8, b: 2, n: 4, options: [[8, 2, 4], [8, 4, 2], [6, 2, 3]], voice: ['a4_q'] },
+
+        { type: 'link', voice: ['b1_q'], pairs: [[15, 5, 3], [8, 4, 2], [10, 2, 5]] },
+        { type: 'link', voice: ['b2_q'], pairs: [[12, 3, 4], [9, 3, 3], [6, 2, 3]] },
+        { type: 'link', voice: ['b3_q'], pairs: [[20, 5, 4], [16, 4, 4], [12, 6, 2]] },
+
+        // wrong：三组里恰好一组「除法结果」错
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { a: 8, b: 4, n: 2, shown: 2 },
+          { a: 9, b: 3, n: 3, shown: 4 },
+          { a: 10, b: 2, n: 5, shown: 5 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { a: 12, b: 4, n: 3, shown: 3 },
+          { a: 6, b: 3, n: 2, shown: 3 },
+          { a: 15, b: 5, n: 3, shown: 3 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { a: 12, b: 3, n: 4, shown: 4 },
+          { a: 8, b: 2, n: 4, shown: 3 },
+          { a: 20, b: 5, n: 4, shown: 4 }
+        ] }
+      ]
     }
   }
 };
