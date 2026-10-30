@@ -1002,6 +1002,76 @@ window.MATH_DATA = {
         { type: 'calc', a: 9, b: 8, options: [16, 17, 18], voice: ['c2_q'] },
         { type: 'calc', a: 6, b: 5, options: [10, 11, 12], voice: ['c3_q'] }
       ]
+    },
+    19: {
+      id: 19,
+      name: 'Break the Ten',
+      status: 'ready',
+      // 第三阶段第四关：破十法（退位减法）。个位不够减，就解开那一捆十。
+      // break   = 点开那捆 → 拖走 b 根 → 点「还剩几根」（4 题，§6.8 两段式）
+      // process = 听算式，点出对应的破十过程（3 题，三张卡 (b, 个位) 两两不同）
+      // wrong   = 三句里找错的一句（3 题，§6.11 只翻结果格）
+      // 一律借位（个位 < 减数），差落在 3–9。
+      // 背景图：本关是第一张挂背景的关卡（§5.16）。图片进 assets.images，
+      // 走 §4.6 的 Cache Storage；第二次进入不重复下载。
+      background: 'assets/bg/bg_19.jpg',
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv19/t1_a.mp3',
+          'lv19/t2_a.mp3',
+          'lv19/t2_b.mp3',
+          'lv19/t2_c.mp3',
+          'lv19/t3_a.mp3',
+          'lv19/t3_b.mp3',
+          'lv19/a1_q.mp3',
+          'lv19/a2_q.mp3',
+          'lv19/a3_q.mp3',
+          'lv19/a4_q.mp3',
+          'lv19/a_left_q.mp3',
+          'lv19/b1_q.mp3',
+          'lv19/b2_q.mp3',
+          'lv19/b3_q.mp3',
+          'lv19/c_q.mp3'
+        ],
+        images: [
+          'assets/bg/bg_19.jpg'
+        ]
+      },
+      questions: [
+        { type: 'break', a: 15, b: 8, options: [6, 7, 8], voice: ['a1_q'] },
+        { type: 'break', a: 12, b: 9, options: [3, 4, 5], voice: ['a2_q'] },
+        { type: 'break', a: 16, b: 7, options: [8, 9, 10], voice: ['a3_q'] },
+        { type: 'break', a: 14, b: 6, options: [7, 8, 9], voice: ['a4_q'] },
+
+        // process：target = [被减数, 减数]；cards 里三张都成立，只有一张是目标那道题。
+        { type: 'process', target: [14, 8], voice: ['b1_q'],
+          cards: [[14, 8], [12, 9], [15, 7]] },
+        { type: 'process', target: [13, 7], voice: ['b2_q'],
+          cards: [[13, 7], [12, 8], [16, 9]] },
+        { type: 'process', target: [12, 9], voice: ['b3_q'],
+          cards: [[12, 9], [14, 6], [16, 7]] },
+
+        // wrong：三句里恰好一句 a − b ≠ shown，错法分别是 +1 / +2 / −2。
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 12, b: 7, shown: 5 },
+          { a: 15, b: 9, shown: 7 },
+          { a: 16, b: 8, shown: 8 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 14, b: 8, shown: 6 },
+          { a: 13, b: 6, shown: 9 },
+          { a: 17, b: 9, shown: 8 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 11, b: 8, shown: 3 },
+          { a: 15, b: 7, shown: 6 },
+          { a: 14, b: 5, shown: 9 }
+        ] }
+      ]
     }
   }
 };

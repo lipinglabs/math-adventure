@@ -466,6 +466,37 @@
     Engine.anim.play(card, 'pop', 420);
   }
 
+  /* ---------------- 关卡背景（§5.16） ---------------- */
+
+  /**
+   * 背景图由 levels_data.js 的 level.background 驱动：
+   * 素材加载时已经进过 Cache Storage，这里只把 blob URL 挂到 CSS 上。
+   * 没有配 background 的关卡一律不显示背景层。
+   */
+  function applyLevelBackground(level) {
+    var layer = byId('level-bg');
+    if (!layer) return;
+    var src = level && level.background;
+    if (!src) {
+      layer.classList.remove('is-on');
+      layer.style.backgroundImage = '';
+      return;
+    }
+    var url = Engine.assets && Engine.assets.imageUrl ? Engine.assets.imageUrl(src) : src;
+    layer.style.backgroundImage = 'url("' + url + '")';
+    var probe = new Image();
+    probe.onload = function () { layer.classList.add('is-on'); };
+    probe.onerror = function () { layer.classList.remove('is-on'); };
+    probe.src = url;
+  }
+
+  function clearLevelBackground() {
+    var layer = byId('level-bg');
+    if (!layer) return;
+    layer.classList.remove('is-on');
+    layer.style.backgroundImage = '';
+  }
+
   function mountLevel(level) {
     var stage = byId('stage');
     stage.innerHTML = '';
@@ -473,6 +504,7 @@
     byId('level-index').textContent = 'Level ' + level.id;
     byId('level-name').textContent = level.name;
     renderStars(level);
+    applyLevelBackground(level);
 
     var total = (level.questions && level.questions.length) || 10;
     renderDots(Math.min(total, 10));
@@ -518,6 +550,7 @@
 
   function exitLevel() {
     unmountCurrent();
+    clearLevelBackground();
     Engine.audio.releaseLevel();
     Engine.anim.clear(document);
     currentLevel = null;

@@ -228,6 +228,7 @@
 
   var audioPool = {};        // url -> HTMLAudioElement
   var levelAudio = {};       // 本关加载的 url，退关时释放
+  var levelImages = {};      // 本关加载的图片 url，退关时释放
   var chainToken = 0;
   var unlocked = false;
 
@@ -322,21 +323,46 @@
     });
   }
 
-  function loadImage(src) {
-    return new Promise(function (resolve, reject) {
-      var img = new Image();
-      var settled = false;
-      img.onload = function () {
-        if (settled) return;
-        settled = true;
-        resolve(src);
-      };
-      img.onerror = function () {
-        if (settled) return;
-        settled = true;
-        reject(new Error('图片无法加载'));
-      };
-      img.src = src;
+  /**
+   * 图片与音频共用一条缓存管道（§4.6）：
+   * 命中 Cache Storage 直接用 blob URL；没命中才下载并写回缓存。
+   * resolve 出来的是可以直接塞进 CSS 的 URL。
+   */
+  function loadImage(src, cache, stats) {
+    var url = resolveUrl(src, '');
+    var prepare;
+
+    if (objectUrls[url]) {
+      prepare = Promise.resolve(objectUrls[url]);
+    } else {
+      prepare = readCachedAsset(cache, url).then(function (blob) {
+        if (blob) return blobUrlFor(url, blob);
+        if (stats) stats.downloaded += 1;
+        return downloadAsset(cache, url).then(function (data) {
+          return blobUrlFor(url, data);
+        });
+      });
+    }
+
+    return prepare.then(function (playUrl) {
+      return new Promise(function (resolve, reject) {
+        var img = new Image();
+        var settled = false;
+        img.onload = function () {
+          if (settled) return;
+          settled = true;
+          levelImages[url] = true;
+          resolve(playUrl);
+        };
+        img.onerror = function () {
+          if (settled) return;
+          settled = true;
+          reject(new Error('图片无法解码'));
+        };
+        img.src = playUrl;
+      });
+    }, function (err) {
+      throw err instanceof Error ? err : new Error('图片下载失败');
     });
   }
 
@@ -413,6 +439,14 @@
         delete objectUrls[url];
       }
       delete levelAudio[url];
+    });
+
+    Object.keys(levelImages).forEach(function (url) {
+      if (objectUrls[url]) {
+        try { URL.revokeObjectURL(objectUrls[url]); } catch (e) { /* noop */ }
+        delete objectUrls[url];
+      }
+      delete levelImages[url];
     });
   }
 
@@ -720,7 +754,7 @@
       tasks.push({
         src: src,
         base: '',
-        run: function () { return loadImage(src); }
+        run: function (cache, stats) { return loadImage(src, cache, stats); }
       });
     });
 
@@ -838,6 +872,13 @@
     limits: LIMITS,
     loadLevel: loadLevel,
     loader: loader,
+    assets: {
+      /** 关卡素材加载后拿到可用的图片地址（blob URL）；未加载则退回原路径 */
+      imageUrl: function (src) {
+        var url = resolveUrl(src, '');
+        return objectUrls[url] || url;
+      }
+    },
     audio: {
       armUnlock: armUnlock,
       unlock: unlock,

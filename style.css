@@ -7384,3 +7384,588 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l18-key { width: 78px; height: 78px; }
   .l18-tray { min-height: 102px; }
 }
+
+/* ============================================================
+   Break the Ten（level-lv19）：破十法 · 退位减法
+   ------------------------------------------------------------
+   一捆十根用绑带扎住；点开那捆 → 绑带弹飞、十根散成一根一根，
+   拿走若干根只隐藏自身（§5.7），剩余四根被领圈框住。
+   竖式按 §5.15.6 排成十位 / 个位两列，减号右对齐贴住个位。
+   本关同时是「关卡背景图」的首个使用者（见 .level-bg）。
+   ============================================================ */
+
+/* ---------------- 关卡背景层（§5.16） ---------------- */
+
+.level-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center 42%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 560ms var(--ease-soft), transform 900ms var(--ease-soft);
+  pointer-events: none;
+}
+
+.level-bg.is-on { opacity: 1; transform: scale(1); }
+
+/* 奶油色薄纱：保证卡片与数字始终压得住背景 */
+.level-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% 104%, rgba(255, 249, 240, 0.9) 0%, rgba(255, 249, 240, 0) 64%),
+    linear-gradient(180deg, rgba(255, 250, 243, 0.74) 0%, rgba(255, 249, 240, 0.44) 46%, rgba(255, 247, 237, 0.8) 100%);
+}
+
+/* 内容压在背景之上 */
+.screen--level > .levelbar,
+.screen--level > .level-dots,
+.screen--level > .stage { position: relative; z-index: 1; }
+
+/* ---------------- 教学 / 答题共用 ---------------- */
+
+.l19-teach {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.l19-mat {
+  position: relative;
+  padding: 12px 10px 22px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.96) 0%, rgba(247, 232, 206, 0.96) 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.18),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+/* 桌面落影：让小棒像立在桌上（§5.11.5） */
+.l19-mat::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 7px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(160, 120, 80, 0.26) 0%, rgba(160, 120, 80, 0) 72%);
+  pointer-events: none;
+}
+
+/* ---------------- 小棒 ---------------- */
+
+.l19-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.l19-slot {
+  width: 15px;
+  height: 132px;
+  display: grid;
+  place-items: end center;
+}
+
+/* 十根与零散之间留一道缝：一眼看出「一捆 + 几根」 */
+.l19-row .l19-slot:nth-child(11) { margin-left: 18px; }
+
+.l19-stick {
+  position: relative;
+  display: block;
+  width: 11px;
+  height: 126px;
+  border-radius: 6px 6px 4px 4px;
+  background: linear-gradient(90deg, #FBE3BC 0%, #EFC084 42%, #D89B55 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+              inset -1px 0 2px rgba(160, 110, 50, 0.22),
+              0 2px 3px rgba(140, 100, 60, 0.22);
+  transform-origin: 50% 100%;
+  transition: opacity 240ms var(--ease-soft), transform 300ms var(--ease-jelly);
+  transition-delay: var(--d, 0ms);
+  will-change: transform;
+}
+
+/* 竹节：两道浅刻线 */
+.l19-stick::before,
+.l19-stick::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.l19-stick::before { top: 30%; }
+.l19-stick::after { top: 64%; background: rgba(160, 110, 50, 0.22); }
+
+.l19-stick.is-hidden { opacity: 0; transform: translateY(12px) scale(0.82, 0.86); }
+
+.l19-stick.is-away {
+  animation: l19-away 480ms cubic-bezier(.34, .9, .5, 1) var(--d, 0ms) both;
+  pointer-events: none;
+}
+
+@keyframes l19-away {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  24% { transform: translate(0, -12px) rotate(-7deg); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), -92px) rotate(var(--rot, 20deg)) scale(0.7); opacity: 0; }
+}
+
+.l19-stick.is-gone { visibility: hidden; }
+
+/* 一捆：十根挤在一起 + 绑带 */
+.l19-bundle {
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  width: 150px;
+  height: 132px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  z-index: 2;
+  transition: opacity 200ms var(--ease-soft), transform 240ms var(--ease-soft);
+}
+
+.l19-bundle-in {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 100%;
+  padding: 0 5px;
+}
+
+.l19-bundle-in .l19-stick { width: 13px; height: 126px; }
+
+.l19-band {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52px;
+  height: 18px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #F4977C 0%, #DF6E52 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 3px rgba(150, 60, 40, 0.3),
+              0 2px 4px rgba(150, 80, 60, 0.25);
+  transform-origin: 50% 50%;
+}
+
+.l19-band::before,
+.l19-band::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  border-radius: 2px;
+  background: rgba(255, 235, 220, 0.55);
+}
+
+.l19-band::before { left: 8px; }
+.l19-band::after { right: 8px; }
+
+.l19-band.is-snap { animation: l19-band-snap 440ms cubic-bezier(.34, 1.1, .5, 1) both; }
+
+@keyframes l19-band-snap {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  34% { transform: translate(2px, 7px) scale(1.08, 1.2) rotate(2deg); opacity: 1; }
+  100% { transform: translate(30px, 66px) rotate(28deg) scale(0.92); opacity: 0; }
+}
+
+.l19-bundle.is-open {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.l19-bundle.is-armed { animation: l19-arm 1.3s ease-in-out infinite; }
+
+@keyframes l19-arm {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 160, 90, 0); }
+  50% { box-shadow: 0 0 0 7px rgba(240, 160, 90, 0.3); }
+}
+
+.l19-hint {
+  position: absolute;
+  left: -28px;
+  bottom: -32px;
+  color: #C08A50;
+  pointer-events: none;
+  animation: l19-hint-bob 1.4s ease-in-out infinite;
+}
+
+@keyframes l19-hint-bob {
+  0%, 100% { transform: translate(0, 0) rotate(-8deg); }
+  50% { transform: translate(-6px, -6px) rotate(-14deg); }
+}
+
+/* 剩余小棒的领圈（按实际包围盒定位，§5.7.7） */
+.l19-ring {
+  position: absolute;
+  border: 4px solid rgba(79, 176, 124, 0.66);
+  border-radius: 18px;
+  box-shadow: 0 0 0 6px rgba(79, 176, 124, 0.14);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* 拖拽中的幽灵小棒 */
+.l19-ghost {
+  position: fixed;
+  margin: 0;
+  z-index: 900;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 8px 10px rgba(120, 90, 60, 0.3));
+}
+
+/* ---------------- 数字块 ---------------- */
+
+.l19-tile {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 48px;
+  padding: 0 7px;
+  border-radius: 14px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(165deg, #FFFDF7 0%, #F6E7CE 100%);
+  box-shadow: 0 3px 0 #E3CDAA, 0 6px 12px rgba(150, 120, 90, 0.14),
+              inset 0 2px 5px rgba(255, 255, 255, 0.9);
+  transition: background 180ms var(--ease-soft), color 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft), transform 200ms var(--ease-soft),
+              opacity 200ms var(--ease-soft);
+}
+
+.l19-ten {
+  color: #7A4A0C;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l19-ones {
+  color: #B4593F;
+  background: linear-gradient(160deg, #FFE9DF 0%, #FFC2A8 100%);
+  box-shadow: 0 3px 0 #E79C7F, inset 0 2px 0 rgba(255, 255, 255, 0.85);
+}
+
+.l19-ans {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l19-op {
+  min-width: 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l19-blank {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.9);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+/* ---------------- 竖式 ---------------- */
+
+.l19-vsum {
+  padding: 16px 18px 18px;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+.l19-vrows { display: flex; flex-direction: column; }
+
+.l19-vrow { display: flex; align-items: center; }
+
+.l19-vcell {
+  width: 52px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  transition: color 200ms var(--ease-soft), background 200ms var(--ease-soft),
+              box-shadow 200ms var(--ease-soft);
+}
+
+.l19-vcell--t { color: #C0A582; }
+
+.l19-vcell--t.is-op {
+  place-items: center end;
+  padding-right: 8px;
+  font-size: 26px;
+  color: #C79E6A;
+}
+
+.l19-vcell.is-res {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l19-vline {
+  width: 104px;
+  height: 4px;
+  margin: 5px 0;
+  border-radius: 2px;
+  background: #C79E6A;
+}
+
+/* ---------------- 拆步行 ---------------- */
+
+.l19-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.l19-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background: rgba(255, 253, 247, 0.94);
+  box-shadow: 0 3px 0 rgba(227, 205, 170, 0.85), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l19-step.is-hidden { opacity: 0; }
+
+.l19-step .l19-tile {
+  min-width: 34px;
+  height: 40px;
+  padding: 0 5px;
+  font-size: 20px;
+  border-radius: 11px;
+  box-shadow: 0 2px 0 rgba(198, 168, 128, 0.45);
+}
+
+/* ---------------- 题型 B：破十过程卡 ---------------- */
+
+.l19-pcards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.l19-pcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  max-width: 306px;
+  padding: 9px 8px 10px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D2 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft),
+              background 180ms var(--ease-soft);
+}
+
+.l19-pcard:active { transform: translateY(3px) scale(0.99); }
+
+.l19-pcard.is-right {
+  background: linear-gradient(160deg, #F1FBF5 0%, #CFF0E1 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l19-prow { display: flex; align-items: center; gap: 5px; }
+
+.l19-pcard .l19-tile {
+  min-width: 32px;
+  height: 38px;
+  padding: 0 5px;
+  font-size: 19px;
+  border-radius: 11px;
+  box-shadow: 0 2px 0 rgba(198, 168, 128, 0.42);
+}
+
+.l19-pcard .l19-op { font-size: 16px; min-width: 16px; }
+
+.l19-down {
+  width: 0;
+  height: 0;
+  margin: 3px 0 2px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid rgba(199, 158, 106, 0.85);
+}
+
+.l19-check {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: #4FB07C;
+  box-shadow: 0 2px 0 #3E9468, 0 4px 8px rgba(60, 130, 100, 0.3);
+}
+
+/* ---------------- 题型 C：找错误算式 ---------------- */
+
+.l19-sents {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.l19-scard {
+  position: relative;
+  width: 250px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l19-scard:active { transform: translateY(4px) scale(0.98); }
+
+.l19-scard.is-right {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l19-sent { display: flex; align-items: center; gap: 5px; }
+
+.l19-stile {
+  min-width: 34px;
+  height: 42px;
+  padding: 0 5px;
+  font-size: 22px;
+  border-radius: 11px;
+}
+
+.l19-stile--res {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l19-stile.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+
+.l19-stile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l19-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* ---------------- 数字键（§5.12 按下立刻有反应） ---------------- */
+
+.l19-tray { min-height: 108px; }
+
+.l19-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l19-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l19-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l19-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* 窄屏（≤379px）：小棒与竖式整体缩一档 */
+@media (max-width: 379px) {
+  .l19-mat { padding: 10px 8px 20px; }
+  .l19-slot { width: 13px; height: 116px; }
+  .l19-row .l19-slot:nth-child(11) { margin-left: 15px; }
+  .l19-stick { width: 9px; height: 110px; }
+  .l19-bundle { left: 8px; top: 10px; width: 130px; height: 116px; }
+  .l19-bundle-in .l19-stick { width: 11px; height: 110px; }
+  .l19-band { top: 44px; }
+  .l19-vcell { width: 46px; height: 48px; font-size: 30px; }
+  .l19-vline { width: 92px; }
+  .l19-pcard { max-width: 288px; }
+  .l19-pcard .l19-tile { min-width: 29px; height: 35px; font-size: 18px; }
+  .l19-scard { width: 236px; }
+  .l19-key { width: 78px; height: 78px; }
+  .l19-tray { min-height: 102px; }
+}

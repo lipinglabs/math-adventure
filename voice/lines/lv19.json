@@ -1,0 +1,31 @@
+{
+  "level": "lv19",
+  "status": "draft",
+  "note": "Stage 3, fourth level: break the ten (13 - 9). Three teaching scenes — one bundle of ten sticks plus three loose ones, the bundle untying into ten ones and nine flying away, then the vertical sum with 13 split into 10 and 3. Answer phase: tap the bundle to break it, drag away eight sticks, then tap how many are left / listen and pick the matching process / find the wrong sentence. No self-answer during the quiz.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! One ten and three ones make thirteen. Now, let's take away nine.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "We don't have enough ones. So, we break the ten into ten ones.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Now we have thirteen ones. Take away nine, and one is left.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "So, thirteen minus nine equals four!", "mood": "praise" },
+    { "key": "t3_a", "lang": "en", "text": "When we don't have enough ones, we break the ten.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "Thirteen minus nine equals four.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Fifteen minus eight. Break the ten and take away eight.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Twelve minus nine. Break the ten and take away nine.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Sixteen minus seven. Break the ten and take away seven.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Fourteen minus six. Break the ten and take away six.", "mood": "ask" },
+    { "key": "a_left_q", "lang": "en", "text": "How many are left?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find fourteen minus eight.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find thirteen minus seven.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find twelve minus nine.", "mood": "ask" },
+
+    { "key": "c_q", "lang": "en", "text": "Find the wrong number sentence.", "mood": "ask" }
+  ]
+}
