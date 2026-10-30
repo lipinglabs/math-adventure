@@ -9357,3 +9357,1167 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l21-balloon-num { font-size: 27px; }
   .l21-scard { width: 234px; height: 60px; }
 }
+
+/* ============================================================
+   L22 · Line Them Up（竖式对齐）
+   ------------------------------------------------------------
+   具象：十块（2×5 点）+ 小棒；个位合流到下面的托盘、十位再合流。
+   抽象：竖式两列（十位 / 个位），数字按位落格；没对齐的那张会歪着。
+   ============================================================ */
+
+.l22-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.l22-scene {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* 一侧：几捆 + 几根 */
+.l22-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border-radius: 18px;
+  background: rgba(255, 251, 242, 0.6);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.36),
+              0 6px 14px rgba(150, 120, 90, 0.08);
+}
+
+.l22-tens { display: flex; gap: 6px; }
+
+.l22-ten {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 5px);
+  gap: 2px;
+  padding: 5px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FFF0C8 0%, #FFD98A 100%);
+  box-shadow: 0 3px 0 #D9A64A, inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transform-origin: 50% 100%;
+}
+
+.l22-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #D9694E;
+}
+
+.l22-ones {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  min-height: 44px;
+}
+
+.l22-stick {
+  display: block;
+  width: 9px;
+  height: 42px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #FBE3BC 0%, #EFC084 45%, #D89B55 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 2px 3px rgba(140, 100, 60, 0.18);
+  transform-origin: 50% 100%;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l22-stick.is-hidden { opacity: 0; }
+
+.l22-plus {
+  font-size: 26px;
+  font-weight: 800;
+  color: #C79E6A;
+  line-height: 1;
+}
+
+/* 结果托盘：左边十位、右边个位 */
+.l22-tray2 {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 300px;
+  min-height: 68px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 251, 242, 0.44);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.3);
+}
+
+.l22-tray-tens,
+.l22-tray-ones { display: flex; align-items: flex-end; gap: 5px; min-height: 44px; }
+
+.l22-ghost-item { opacity: 0; }
+
+.l22-ghost-item.is-on { opacity: 1; }
+
+/* ---------------- 竖式 ---------------- */
+
+.l22-vs {
+  position: relative;
+  padding: 10px 12px 12px;
+  border-radius: 18px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 5px 0 #E7D0AE, 0 9px 16px rgba(150, 120, 90, 0.12),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l22-vs--big { padding: 16px 20px 18px; }
+
+.l22-vrow { display: flex; align-items: center; opacity: 0; transition: opacity 220ms var(--ease-soft); }
+
+.l22-vrow.is-in { opacity: 1; }
+
+.l22-vs--slots .l22-vrow { opacity: 1; }
+
+.l22-vop {
+  width: 20px;
+  text-align: right;
+  padding-right: 4px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l22-vs--big .l22-vop { width: 26px; font-size: 28px; }
+
+.l22-vcell {
+  position: relative;
+  width: 34px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  transition: transform 260ms var(--ease-jelly), background 180ms var(--ease-soft),
+              box-shadow 180ms var(--ease-soft), color 180ms var(--ease-soft);
+}
+
+.l22-vs--big .l22-vcell { width: 46px; height: 52px; font-size: 32px; }
+
+.l22-vcell--t { color: #C0A582; }
+
+.l22-vcell--t.is-op {
+  place-items: center end;
+  padding-right: 5px;
+  font-size: 22px;
+  color: #C79E6A;
+}
+
+.l22-digit { font-style: normal; }
+
+.l22-vline {
+  height: 3px;
+  margin: 3px 0;
+  border-radius: 2px;
+  background: #C79E6A;
+  opacity: 0;
+  transition: opacity 220ms var(--ease-soft);
+}
+
+.l22-vline.is-in { opacity: 1; }
+
+.l22-vcell.is-res {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+/* 没对齐：个位那一列整体右移，压在十位上 */
+.l22-vs.is-skew .l22-vcell--o { transform: translateX(13px); }
+
+.l22-vs.is-fixed { box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24), 0 9px 16px rgba(80, 150, 130, 0.16); }
+
+/* 空位：虚线下划 + 待填 */
+.l22-slot {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.75);
+  box-shadow: inset 0 -3px 0 rgba(203, 178, 143, 0.55);
+}
+
+.l22-slot.is-filled {
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFFDF7 0%, #F3E3C8 100%);
+  box-shadow: 0 2px 0 #E3CDAA, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l22-vcell.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+
+/* ---------------- 算式与数字键 ---------------- */
+
+.l22-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l22-tile {
+  display: grid;
+  place-items: center;
+  min-width: 58px;
+  height: 66px;
+  padding: 0 10px;
+  border-radius: 20px;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 160ms var(--ease-soft), color 160ms var(--ease-soft);
+}
+
+.l22-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l22-tile.is-answer {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.2);
+}
+
+.l22-op {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l22-tray { min-height: 108px; }
+
+.l22-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l22-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l22-key-digit {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 拖拽题 ---------------- */
+
+.l22-board {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.l22-vs--slots .l22-vcell { width: 40px; height: 46px; font-size: 26px; }
+
+.l22-chip {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 15px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  touch-action: none;
+  transition: transform 100ms cubic-bezier(.2, .8, .3, 1), box-shadow 100ms ease;
+}
+
+.l22-chip:active { transform: translateY(3px) scale(0.96); }
+
+.l22-chip.is-used { visibility: hidden; }
+
+.l22-chip.is-lifted { opacity: 0.35; }
+
+.l22-ghost {
+  position: fixed;
+  z-index: 900;
+  pointer-events: none;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 8px 14px rgba(150, 110, 60, 0.3);
+}
+
+/* ---------------- 找错题：三个竖式并排 ---------------- */
+
+.l22-vsrow {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.l22-vcard {
+  position: relative;
+  padding: 8px 6px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l22-vcard:active { transform: translateY(3px) scale(0.98); }
+
+.l22-vcard .l22-vs {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.l22-vcard.is-right {
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 8px 14px rgba(80, 150, 130, 0.16);
+}
+
+.l22-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* 窄屏 */
+@media (max-width: 379px) {
+  .l22-side { padding: 8px; gap: 6px; }
+  .l22-vcell { width: 31px; height: 35px; font-size: 22px; }
+  .l22-vs--big .l22-vcell { width: 42px; height: 48px; font-size: 29px; }
+  .l22-vs--slots .l22-vcell { width: 36px; height: 42px; font-size: 24px; }
+  .l22-tile { min-width: 50px; height: 60px; font-size: 30px; }
+  .l22-key { width: 78px; height: 78px; }
+  .l22-tray { min-height: 102px; }
+  .l22-chip { width: 44px; height: 44px; font-size: 22px; }
+  .l22-vsrow { gap: 5px; }
+}
+
+/* ============================================================
+   L23 · Market Day（超市购物）
+   ------------------------------------------------------------
+   货架 → 收银台 → 小票。价格用黏土价签，总价用收银台的翻牌。
+   ============================================================ */
+
+.l23-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.l23-scene {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+}
+
+/* ---------------- 商品与价签 ---------------- */
+
+.l23-goods {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px 8px;
+  border-radius: 20px;
+  background: rgba(255, 251, 242, 0.7);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.36),
+              0 5px 12px rgba(150, 120, 90, 0.1);
+}
+
+.l23-goods-art { display: block; width: 62px; height: 62px; }
+
+.l23-goods-art svg { display: block; width: 100%; height: 100%; }
+
+.l23-price {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A4A0C;
+  background: linear-gradient(160deg, #FFF6D6 0%, #FFD472 100%);
+  box-shadow: 0 2px 0 #D8A94A, inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.l23-plus {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+/* ---------------- 收银台 ---------------- */
+
+.l23-counter {
+  position: relative;
+  padding: 8px 10px 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #D9C6AE 0%, #C0A98D 100%);
+  box-shadow: 0 5px 0 #9C8770, 0 9px 16px rgba(120, 100, 80, 0.22),
+              inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+.l23-counter--under { flex-basis: 100%; max-width: 190px; }
+
+.l23-screen {
+  display: grid;
+  place-items: center;
+  min-width: 96px;
+  height: 54px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #3F4B44 0%, #2C3630 100%);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+
+.l23-total {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7FDCC0;
+  text-shadow: 0 0 8px rgba(127, 220, 192, 0.45);
+  transition: color 200ms var(--ease-soft);
+}
+
+.l23-total.is-on { color: #B7F5DC; }
+
+/* 飞向收银台的钱币 */
+.l23-coin {
+  position: absolute;
+  top: 18%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 800;
+  color: #7A4A0C;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFD06A 100%);
+  box-shadow: 0 3px 0 #D8A94A, 0 6px 10px rgba(180, 140, 70, 0.3),
+              inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  transition: transform 380ms cubic-bezier(.34,.9,.5,1), opacity 380ms ease;
+  z-index: 4;
+}
+
+/* ---------------- 算式与竖式 ---------------- */
+
+.l23-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l23-tile {
+  display: grid;
+  place-items: center;
+  min-width: 58px;
+  height: 66px;
+  padding: 0 10px;
+  border-radius: 20px;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 160ms var(--ease-soft), color 160ms var(--ease-soft);
+}
+
+.l23-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l23-tile.is-answer {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.2);
+}
+
+.l23-op {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l23-vs {
+  padding: 10px 12px 12px;
+  border-radius: 18px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 5px 0 #E7D0AE, 0 9px 16px rgba(150, 120, 90, 0.12);
+}
+
+.l23-vrow { display: flex; align-items: center; opacity: 0; }
+
+.l23-vrow.is-in, .l23-vs .l23-vrow { opacity: 1; }
+
+.l23-vsign {
+  width: 20px;
+  text-align: right;
+  padding-right: 4px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #C79E6A;
+}
+
+.l23-vcell {
+  width: 34px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+}
+
+.l23-vcell.is-res {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l23-vline {
+  height: 3px;
+  margin: 3px 0;
+  border-radius: 2px;
+  background: #C79E6A;
+}
+
+/* ---------------- 小票 ---------------- */
+
+.l23-board {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.l23-slip {
+  position: relative;
+  width: 230px;
+  padding: 12px 14px 14px;
+  border-radius: 14px 14px 12px 12px;
+  background: linear-gradient(180deg, #FFFDF7 0%, #FBF1DE 100%);
+  box-shadow: 0 5px 0 #E7D6B8, 0 10px 16px rgba(150, 120, 90, 0.14),
+              inset 0 2px 5px rgba(255, 255, 255, 0.9);
+}
+
+/* 小票下缘的锯齿 */
+.l23-slip::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 8px;
+  background:
+    radial-gradient(circle at 6px 0, transparent 6px, #FBF1DE 6.5px) 0 0 / 12px 8px repeat-x;
+  opacity: 0.95;
+}
+
+.l23-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1.5px dashed rgba(203, 178, 143, 0.55);
+}
+
+.l23-line-art { display: block; width: 26px; height: 26px; }
+
+.l23-line-art svg { display: block; width: 100%; height: 100%; }
+
+.l23-line-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: #6B4E31;
+}
+
+.l23-line--total {
+  margin-top: 6px;
+  border-bottom: 0;
+  justify-content: flex-end;
+}
+
+.l23-total-slot {
+  display: grid;
+  place-items: center;
+  min-width: 62px;
+  height: 40px;
+  padding: 0 8px;
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  transition: transform 230ms var(--ease-soft), opacity 230ms var(--ease-soft),
+              background 200ms var(--ease-soft), color 200ms var(--ease-soft);
+}
+
+.l23-total-slot.is-blank {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l23-total-slot.is-filled {
+  color: #2F6B5A;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l23-total-slot.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+
+.l23-total-slot.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24);
+}
+
+/* ---------------- 数字键 / 拖拽块 ---------------- */
+
+.l23-tray { min-height: 108px; }
+
+.l23-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l23-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l23-key-digit {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.l23-chip {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 54px;
+  padding: 0;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  touch-action: none;
+  transition: transform 100ms cubic-bezier(.2, .8, .3, 1);
+}
+
+.l23-chip:active { transform: translateY(3px) scale(0.96); }
+
+.l23-chip.is-used { visibility: hidden; }
+
+.l23-chip.is-lifted { opacity: 0.35; }
+
+.l23-ghost {
+  position: fixed;
+  z-index: 900;
+  pointer-events: none;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 8px 14px rgba(150, 110, 60, 0.3);
+}
+
+/* ---------------- 找错：三张清单 ---------------- */
+
+.l23-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l23-list {
+  position: relative;
+  padding: 0;
+  background: none;
+  transition: transform 140ms var(--ease-jelly);
+}
+
+.l23-list:active { transform: translateY(3px) scale(0.99); }
+
+.l23-list .l23-slip { width: 236px; padding: 8px 12px 10px; }
+
+.l23-list .l23-line { padding: 2px 0; }
+
+.l23-list.is-right .l23-slip {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 16px rgba(80, 150, 130, 0.16);
+}
+
+.l23-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* 窄屏 */
+@media (max-width: 379px) {
+  .l23-goods { padding: 8px 9px 7px; }
+  .l23-goods-art { width: 52px; height: 52px; }
+  .l23-price { min-width: 46px; height: 26px; font-size: 16px; }
+  .l23-screen { height: 48px; min-width: 86px; }
+  .l23-total { font-size: 26px; }
+  .l23-tile { min-width: 50px; height: 60px; font-size: 28px; }
+  .l23-key { width: 78px; height: 78px; }
+  .l23-tray { min-height: 102px; }
+  .l23-chip { width: 56px; height: 50px; font-size: 22px; }
+  .l23-slip { width: 214px; }
+  .l23-list .l23-slip { width: 214px; }
+}
+
+/* ============================================================
+   L24 · Number Maze（终极运算迷宫）
+   ------------------------------------------------------------
+   迷宫 = 一条主道 + 三个出口；猫站在岔路口选路。
+   连算 = 一排黏土块 + 两拍拆步。
+   ============================================================ */
+
+.l24-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ---------------- 迷宫 ---------------- */
+
+.l24-maze {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 300 / 210;
+}
+
+.l24-maze svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.l24-cat {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  transition: transform 520ms cubic-bezier(.34,.9,.5,1), left 520ms cubic-bezier(.34,.9,.5,1);
+}
+
+.l24-cat svg { display: block; width: 100%; height: 100%; }
+
+.l24-cat--start { left: 1%; top: 64%; }
+.l24-cat--mid { left: 28%; top: 64%; }
+
+.l24-cat.is-walk { transform: translate(56px, -6px) rotate(-6deg); }
+
+.l24-gate {
+  position: absolute;
+  left: 10%;
+  top: 22%;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A4A0C;
+  background: linear-gradient(180deg, #FFF6D6 0%, #FFD472 100%);
+  box-shadow: 0 4px 0 #D8A94A, 0 8px 14px rgba(180, 140, 70, 0.24),
+              inset 0 2px 0 rgba(255, 255, 255, 0.85);
+}
+
+.l24-exit {
+  position: absolute;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFFDF7 0%, #F3E3C8 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 12px rgba(150, 120, 90, 0.16);
+  transition: background 200ms var(--ease-soft), color 200ms var(--ease-soft),
+              box-shadow 200ms var(--ease-soft);
+}
+
+.l24-exit--0 { top: 9%; }
+.l24-exit--1 { top: 42%; }
+.l24-exit--2 { top: 75%; }
+
+.l24-exit.is-right {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.22);
+}
+
+/* ---------------- 连算 ---------------- */
+
+.l24-chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.l24-tile {
+  display: grid;
+  place-items: center;
+  min-width: 46px;
+  height: 54px;
+  padding: 0 8px;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 4px 0 #E3C9A4, 0 6px 10px rgba(150, 120, 90, 0.12),
+              inset 0 2px 5px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 160ms var(--ease-soft),
+              color 160ms var(--ease-soft);
+}
+
+.l24-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l24-tile--blank { background: rgba(255, 253, 248, 0.55); box-shadow: inset 0 2px 4px rgba(190, 160, 120, 0.16); }
+
+.l24-tile.is-answer {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.2);
+}
+
+.l24-slot { box-shadow: inset 0 -3px 0 rgba(203, 178, 143, 0.55); }
+
+.l24-op {
+  min-width: 18px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+/* 拆步 */
+.l24-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.l24-step {
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: rgba(255, 253, 247, 0.94);
+  box-shadow: 0 3px 0 rgba(227, 205, 170, 0.85);
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l24-step.is-hidden { opacity: 0; }
+
+.l24-step-t {
+  font-size: 19px;
+  font-weight: 800;
+  color: #6B4E31;
+}
+
+/* 终点小旗 */
+.l24-flag {
+  width: 54px;
+  height: 54px;
+  color: #F2C14E;
+  filter: drop-shadow(0 4px 8px rgba(200, 160, 60, 0.3));
+}
+
+.l24-flag svg { display: block; width: 100%; height: 100%; }
+
+/* ---------------- 题型 A：门口算式 ---------------- */
+
+.l24-lane {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(255, 251, 242, 0.55);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.32);
+}
+
+.l24-lane .l24-cat {
+  position: relative;
+  left: 0;
+  top: 0;
+  flex: 0 0 auto;
+}
+
+.l24-lanepath {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #E9CBA4 0 8px, transparent 8px 16px);
+}
+
+.l24-gate--inline {
+  position: relative;
+  left: 0;
+  top: 0;
+  padding: 8px 14px;
+  font-size: 22px;
+}
+
+.l24-gate.is-open {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.2);
+}
+
+/* ---------------- 数字键 / 拖拽块 ---------------- */
+
+.l24-tray { min-height: 108px; }
+
+.l24-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l24-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l24-key-digit {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.l24-chip {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 54px;
+  padding: 0;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.2),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  touch-action: none;
+  transition: transform 100ms cubic-bezier(.2, .8, .3, 1);
+}
+
+.l24-chip:active { transform: translateY(3px) scale(0.96); }
+
+.l24-chip.is-used { visibility: hidden; }
+
+.l24-chip.is-lifted { opacity: 0.35; }
+
+.l24-ghost {
+  position: fixed;
+  z-index: 900;
+  pointer-events: none;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 8px 14px rgba(150, 110, 60, 0.3);
+}
+
+.l24-board { display: flex; justify-content: center; width: 100%; }
+
+/* ---------------- 题型 C：三条路 ---------------- */
+
+.l24-routes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l24-route {
+  position: relative;
+  width: 100%;
+  max-width: 306px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l24-route:active { transform: translateY(3px) scale(0.99); }
+
+.l24-route .l24-tile {
+  min-width: 38px;
+  height: 44px;
+  font-size: 19px;
+  border-radius: 12px;
+  box-shadow: 0 3px 0 rgba(198, 168, 128, 0.45);
+}
+
+.l24-route .l24-op { font-size: 18px; min-width: 14px; }
+
+.l24-route.is-right {
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 8px 14px rgba(80, 150, 130, 0.16);
+}
+
+.l24-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* 结果格翻转 */
+.l24-route .l24-tile.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+
+.l24-route .l24-tile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.22);
+}
+
+/* 窄屏 */
+@media (max-width: 379px) {
+  .l24-tile { min-width: 40px; height: 48px; font-size: 21px; }
+  .l24-key { width: 78px; height: 78px; }
+  .l24-tray { min-height: 102px; }
+  .l24-chip { width: 56px; height: 50px; font-size: 22px; }
+  .l24-route { max-width: 290px; }
+  .l24-route .l24-tile { min-width: 34px; height: 40px; font-size: 17px; }
+}

@@ -1,0 +1,25 @@
+{
+  "level": "lv22",
+  "status": "draft",
+  "note": "Stage 3, seventh level: line up the vertical sum (two-digit plus two-digit, no carrying). Four teaching scenes — blocks of twenty-three and fifteen, adding the ones, adding the tens, then the vertical sum with digits flying into their columns. Answer phase: listen and tap the sum / drag six digits into the six slots / find the vertical sum that is wrong.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Twenty-three plus fifteen. Let's add them up.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "We add the ones. Three plus five equals eight.", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "We add the tens. Two plus one equals three.", "mood": "teach" },
+    { "key": "t1_d", "lang": "en", "text": "Line up the ones and tens. Twenty-three plus fifteen equals thirty-eight.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Twenty-three plus fifteen.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Thirty-four plus twelve.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Twenty-one plus sixteen.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Forty-two plus twenty-five.", "mood": "ask" },
+
+    { "key": "b_q", "lang": "en", "text": "Drag the numbers to line up the ones and tens.", "mood": "teach" },
+    { "key": "c_q", "lang": "en", "text": "Find the wrong sum.", "mood": "ask" }
+  ]
+}

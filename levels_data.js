@@ -1245,6 +1245,185 @@ window.MATH_DATA = {
           { a: 17, b: 9, shown: 10 }
         ] }
       ]
+    },
+    22: {
+      id: 22,
+      name: 'Line Them Up',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_22.jpg',
+      // 第三阶段第七关：竖式对齐（两位数加两位数，不进位）。
+      // tap   = 听算式，点出正确结果（4 题）
+      // drag  = 把散落的六个数字拖进竖式的六个空位（3 题，个位对个位、十位对十位）
+      // wrong = 三个竖式里点出错的（没对齐 / 算错，3 题；答对后把它对齐或翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv22/t1_a.mp3',
+          'lv22/t1_b.mp3',
+          'lv22/t1_c.mp3',
+          'lv22/t1_d.mp3',
+
+          'lv22/a1_q.mp3',
+          'lv22/a2_q.mp3',
+          'lv22/a3_q.mp3',
+          'lv22/a4_q.mp3',
+
+          'lv22/b_q.mp3',
+          'lv22/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_22.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 23, b: 15, options: [36, 38, 40], voice: ['a1_q'] },
+        { type: 'tap', a: 34, b: 12, options: [44, 46, 48], voice: ['a2_q'] },
+        { type: 'tap', a: 21, b: 16, options: [35, 37, 39], voice: ['a3_q'] },
+        { type: 'tap', a: 42, b: 25, options: [65, 67, 69], voice: ['a4_q'] },
+
+        { type: 'drag', a: 23, b: 15, voice: ['b_q'] },
+        { type: 'drag', a: 34, b: 12, voice: ['b_q'] },
+        { type: 'drag', a: 21, b: 16, voice: ['b_q'] },
+
+        // wrong：三个竖式里恰好一个错——算错（+1 / +1）或没对齐（skew）。
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 23, b: 15, shown: 38 },
+          { a: 34, b: 12, shown: 46 },
+          { a: 21, b: 16, shown: 38 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 32, b: 15, shown: 47 },
+          { a: 46, b: 13, shown: 59 },
+          { a: 24, b: 13, shown: 37, skew: true }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 41, b: 27, shown: 68 },
+          { a: 30, b: 15, shown: 45 },
+          { a: 52, b: 24, shown: 77 }
+        ] }
+      ]
+    },
+    23: {
+      id: 23,
+      name: 'Market Day',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_23.jpg',
+      // 第三阶段第八关：超市购物（两位数加两位数的应用）。
+      // shop    = 两件商品 + 价签，点出总价（4 题）
+      // receipt = 小票缺总价，把正确数字拖进空格（3 题）
+      // wrong   = 三张购物清单，点出总价算错的那张（3 题；答对后只翻总价格）
+      // items 是商品图标下标：0 苹果 / 1 面包 / 2 牛奶 / 3 饼干
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv23/t1_a.mp3',
+          'lv23/t1_b.mp3',
+          'lv23/t1_q.mp3',
+          'lv23/t1_c.mp3',
+          'lv23/t1_d.mp3',
+
+          'lv23/a_q.mp3',
+          'lv23/b_q.mp3',
+          'lv23/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_23.jpg']
+      },
+      questions: [
+        { type: 'shop', a: 24, b: 13, items: [0, 1], options: [35, 37, 39], voice: ['a_q'] },
+        { type: 'shop', a: 32, b: 15, items: [2, 3], options: [45, 47, 49], voice: ['a_q'] },
+        { type: 'shop', a: 21, b: 14, items: [1, 2], options: [33, 35, 37], voice: ['a_q'] },
+        { type: 'shop', a: 43, b: 12, items: [0, 3], options: [53, 55, 57], voice: ['a_q'] },
+
+        { type: 'receipt', a: 24, b: 13, items: [0, 1], options: [36, 37, 38], voice: ['b_q'] },
+        { type: 'receipt', a: 32, b: 15, items: [2, 3], options: [46, 47, 48], voice: ['b_q'] },
+        { type: 'receipt', a: 21, b: 14, items: [1, 2], options: [34, 35, 36], voice: ['b_q'] },
+
+        // wrong：三张清单里恰好一张总价算错（错法 +1 / +1 / +1 各不相同的位置）
+        { type: 'wrong', voice: ['c_q'], lists: [
+          { a: 24, b: 13, total: 37, items: [0, 1] },
+          { a: 32, b: 15, total: 47, items: [2, 3] },
+          { a: 21, b: 14, total: 36, items: [1, 2] }
+        ] },
+        { type: 'wrong', voice: ['c_q'], lists: [
+          { a: 43, b: 12, total: 55, items: [0, 3] },
+          { a: 30, b: 25, total: 56, items: [2, 1] },
+          { a: 14, b: 13, total: 27, items: [3, 0] }
+        ] },
+        { type: 'wrong', voice: ['c_q'], lists: [
+          { a: 31, b: 16, total: 47, items: [1, 3] },
+          { a: 22, b: 14, total: 36, items: [0, 2] },
+          { a: 40, b: 17, total: 58, items: [3, 1] }
+        ] }
+      ]
+    },
+    24: {
+      id: 24,
+      name: 'Number Maze',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_24.jpg',
+      // 第三阶段收官前的综合关：两位数加减混合与连算。
+      // lane  = 门上的算式，点出结果让猫过门（4 题）
+      // chain = 连算（三步），把正确结果拖进空格（3 题）
+      // wrong = 三条路，点出算式算错的那一条（3 题；答对后只翻结果格）
+      // parts 里数字与运算符交替，运算符用减号字符 −（U+2212）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv24/t1_a.mp3',
+          'lv24/t1_q.mp3',
+          'lv24/t1_c.mp3',
+          'lv24/t1_d.mp3',
+
+          'lv24/a1_q.mp3',
+          'lv24/a2_q.mp3',
+          'lv24/a3_q.mp3',
+          'lv24/a4_q.mp3',
+
+          'lv24/b_q.mp3',
+          'lv24/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_24.jpg']
+      },
+      questions: [
+        { type: 'lane', a: 34, b: 21, options: [53, 55, 57], voice: ['a1_q'] },
+        { type: 'lane', a: 46, b: 13, options: [57, 59, 61], voice: ['a2_q'] },
+        { type: 'lane', a: 52, b: 24, options: [74, 76, 78], voice: ['a3_q'] },
+        { type: 'lane', a: 41, b: 27, options: [66, 68, 70], voice: ['a4_q'] },
+
+        { type: 'chain', parts: [20, '+', 10, '−', 5], options: [24, 25, 26], voice: ['b_q'] },
+        { type: 'chain', parts: [30, '+', 15, '−', 10], options: [34, 35, 36], voice: ['b_q'] },
+        { type: 'chain', parts: [40, '+', 20, '−', 15], options: [44, 45, 46], voice: ['b_q'] },
+
+        // wrong：三条路里恰好一条算错（错法 +5 / +2 / +2，位置各不相同）
+        { type: 'wrong', voice: ['c_q'], routes: [
+          { parts: [20, '+', 10, '−', 5], total: 25 },
+          { parts: [30, '+', 15, '−', 10], total: 35 },
+          { parts: [40, '+', 20, '−', 15], total: 50 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], routes: [
+          { parts: [25, '+', 10, '−', 8], total: 27 },
+          { parts: [34, '+', 12, '−', 6], total: 40 },
+          { parts: [46, '+', 13, '−', 10], total: 51 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], routes: [
+          { parts: [50, '−', 20, '+', 10], total: 40 },
+          { parts: [31, '+', 16, '−', 7], total: 40 },
+          { parts: [41, '+', 27, '−', 8], total: 58 }
+        ] }
+      ]
     }
   }
 };

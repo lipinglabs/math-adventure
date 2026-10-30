@@ -1,0 +1,25 @@
+{
+  "level": "lv24",
+  "status": "draft",
+  "note": "Stage 3 closing level before the stage test: number maze with mixed two digit adding and subtracting. Four teaching scenes — the cat at the maze gate with twenty-five plus twelve, the fork with the question and a one second pause, the answer with the cat stepping forward, then a two step chain thirty plus fifteen minus ten. Answer phase: which way / drag the answer of a chain / find the wrong path.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Help the cat find the way! Twenty-five plus twelve.", "mood": "teach" },
+    { "key": "t1_q", "lang": "en", "text": "Which way?", "mood": "ask" },
+    { "key": "t1_c", "lang": "en", "text": "Thirty-seven! Well done.", "mood": "praise" },
+    { "key": "t1_d", "lang": "en", "text": "First, thirty plus fifteen is forty-five. Then, forty-five minus ten is thirty-five.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Thirty-four plus twenty-one. Which way?", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Forty-six plus thirteen. Which way?", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Fifty-two plus twenty-four. Which way?", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Forty-one plus twenty-seven. Which way?", "mood": "ask" },
+
+    { "key": "b_q", "lang": "en", "text": "Twenty plus ten minus five. Drag the answer.", "mood": "teach" },
+    { "key": "c_q", "lang": "en", "text": "Find the wrong path.", "mood": "ask" }
+  ]
+}

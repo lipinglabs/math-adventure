@@ -1,0 +1,22 @@
+{
+  "level": "lv23",
+  "status": "draft",
+  "note": "Stage 3, eighth level: shopping with two digit prices. Four teaching scenes — an apple for twenty-four and bread for thirteen, the question with a one second pause then the answer, coins flying into the register, then the vertical sum. Answer phase: how much in total / drag the total onto the receipt / find the shopping list with the wrong total.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Let's go shopping! The apple is twenty-four.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "The bread is thirteen.", "mood": "teach" },
+    { "key": "t1_q", "lang": "en", "text": "How much in total?", "mood": "ask" },
+    { "key": "t1_c", "lang": "en", "text": "Twenty-four plus thirteen equals thirty-seven.", "mood": "teach" },
+    { "key": "t1_d", "lang": "en", "text": "Line up the numbers. The total is thirty-seven.", "mood": "teach" },
+
+    { "key": "a_q", "lang": "en", "text": "What is the total?", "mood": "ask" },
+    { "key": "b_q", "lang": "en", "text": "Drag the total onto the receipt.", "mood": "teach" },
+    { "key": "c_q", "lang": "en", "text": "Find the wrong total.", "mood": "ask" }
+  ]
+}
