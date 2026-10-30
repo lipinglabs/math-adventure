@@ -2107,6 +2107,199 @@ window.MATH_DATA = {
         { type: 'flash', a: 7, b: 6, options: [36, 42, 48], voice: ['c2_q'] },
         { type: 'flash', a: 9, b: 3, options: [24, 27, 30], voice: ['c3_q'] }
       ]
+    },
+    37: {
+      id: 37,
+      name: 'Multiplication Master',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_37.jpg',
+      // 第四阶段第十关：表内乘法纯复习大考。
+      // tap     = 纯数字点选（4 题）
+      // balloon = 听算式，三只气球里选结果（3 题）
+      // wrong   = 三张表内乘法找错（3 题；答对后只翻结果格）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv37/t1_a.mp3',
+          'lv37/t1_b.mp3',
+          'lv37/t1_c.mp3',
+          'lv37/t1_d.mp3',
+          'lv37/t1_e.mp3',
+
+          'lv37/a1_q.mp3',
+          'lv37/a2_q.mp3',
+          'lv37/a3_q.mp3',
+          'lv37/a4_q.mp3',
+
+          'lv37/b1_q.mp3',
+          'lv37/b2_q.mp3',
+          'lv37/b3_q.mp3',
+
+          'lv37/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_37.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 4, b: 7, options: [24, 28, 32], voice: ['a1_q'] },
+        { type: 'tap', a: 3, b: 6, options: [15, 18, 21], voice: ['a2_q'] },
+        { type: 'tap', a: 5, b: 8, options: [35, 40, 45], voice: ['a3_q'] },
+        { type: 'tap', a: 9, b: 4, options: [32, 36, 40], voice: ['a4_q'] },
+
+        { type: 'balloon', a: 6, b: 3, options: [15, 18, 21], voice: ['b1_q'] },
+        { type: 'balloon', a: 5, b: 7, options: [30, 35, 40], voice: ['b2_q'] },
+        { type: 'balloon', a: 4, b: 8, options: [28, 32, 36], voice: ['b3_q'] },
+
+        // wrong：三句里恰好一句 a × b ≠ shown
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 7, b: 4, shown: 29 },
+          { a: 6, b: 5, shown: 30 },
+          { a: 8, b: 3, shown: 24 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 3, b: 9, shown: 27 },
+          { a: 5, b: 6, shown: 30 },
+          { a: 4, b: 7, shown: 29 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sums: [
+          { a: 9, b: 2, shown: 18 },
+          { a: 6, b: 6, shown: 36 },
+          { a: 5, b: 8, shown: 41 }
+        ] }
+      ]
+    },
+    38: {
+      id: 38,
+      name: 'Add to Multiply',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_38.jpg',
+      // 第四阶段第十一关：连加与乘法是同一件事的两种读法（§5.24）。
+      // say  = 听连加，从三个乘式里选（4 题；正确答案是「n 个 b」→ n × b）
+      // link = 三张连加卡 ↔ 三张乘法卡连线，全部连对才判对（3 题）
+      // wrong= 三组等式，找出连加与乘法对不上的那组（3 题）
+      // pairs 里每个元素是 [[连加的每一项], [乘法的两个因数]]
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv38/t1_a.mp3',
+          'lv38/t1_b.mp3',
+          'lv38/t1_c.mp3',
+          'lv38/t1_d.mp3',
+
+          'lv38/a1_q.mp3',
+          'lv38/a2_q.mp3',
+          'lv38/a3_q.mp3',
+          'lv38/a4_q.mp3',
+
+          'lv38/b_q.mp3',
+          'lv38/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_38.jpg']
+      },
+      questions: [
+        { type: 'say', n: 3, b: 5, sum: [5, 5, 5], voice: ['a1_q'],
+          options: [[3, 5], [3, 4], [4, 5]] },
+        { type: 'say', n: 3, b: 4, sum: [4, 4, 4], voice: ['a2_q'],
+          options: [[3, 4], [4, 4], [3, 3]] },
+        { type: 'say', n: 5, b: 2, sum: [2, 2, 2, 2, 2], voice: ['a3_q'],
+          options: [[5, 2], [5, 5], [2, 4]] },
+        { type: 'say', n: 4, b: 3, sum: [3, 3, 3, 3], voice: ['a4_q'],
+          options: [[4, 3], [3, 3], [4, 4]] },
+
+        { type: 'link', voice: ['b_q'], pairs: [
+          [[4, 4, 4], [3, 4]], [[2, 2], [2, 2]], [[5, 5, 5, 5], [4, 5]]
+        ] },
+        { type: 'link', voice: ['b_q'], pairs: [
+          [[3, 3, 3], [3, 3]], [[5, 5], [2, 5]], [[2, 2, 2, 2], [4, 2]]
+        ] },
+        { type: 'link', voice: ['b_q'], pairs: [
+          [[4, 4], [2, 4]], [[3, 3, 3, 3], [4, 3]], [[5, 5, 5], [3, 5]]
+        ] },
+
+        // wrong：三组里恰好一组对不上（乘法的两个因数是 {连加项数, 每一项}）
+        { type: 'wrong', voice: ['c_q'], pairs: [
+          [[3, 3, 3], [3, 3]], [[2, 2, 2, 2], [2, 4]], [[5, 5], [5, 5]]
+        ] },
+        { type: 'wrong', voice: ['c_q'], pairs: [
+          [[4, 4, 4], [3, 4]], [[3, 3], [3, 3]], [[5, 5, 5], [3, 5]]
+        ] },
+        { type: 'wrong', voice: ['c_q'], pairs: [
+          [[2, 2, 2], [3, 2]], [[4, 4, 4, 4], [4, 4]], [[5, 5, 5, 5], [5, 5]]
+        ] }
+      ]
+    },
+    39: {
+      id: 39,
+      name: 'Stage 4 Finale',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_39.jpg',
+      // 第四阶段结业：10 题混排大考 + 金星四阶结业仪式（§6.16）。
+      // tap   = 混合表内点选（4 题）
+      // pick  = 看阵列选算式（3 题；三个选项的积各不相同，避免两个都对）
+      // wrong = 混合算式挑错（3 题；加减乘混排，恰好一句错）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv39/t1_a.mp3',
+          'lv39/t1_b.mp3',
+          'lv39/t1_c.mp3',
+          'lv39/t1_d.mp3',
+
+          'lv39/a1_q.mp3',
+          'lv39/a2_q.mp3',
+          'lv39/a3_q.mp3',
+          'lv39/a4_q.mp3',
+
+          'lv39/b1_q.mp3',
+          'lv39/b2_q.mp3',
+          'lv39/b3_q.mp3',
+
+          'lv39/c_q.mp3',
+          'lv39/t_gold.mp3'
+        ],
+        images: ['assets/bg/bg_39.jpg']
+      },
+      questions: [
+        { type: 'tap', a: 7, b: 4, options: [24, 28, 32], voice: ['a1_q'] },
+        { type: 'tap', a: 6, b: 5, options: [25, 30, 35], voice: ['a2_q'] },
+        { type: 'tap', a: 8, b: 9, options: [63, 72, 81], voice: ['a3_q'] },
+        { type: 'tap', a: 9, b: 3, options: [24, 27, 30], voice: ['a4_q'] },
+
+        { type: 'pick', r: 3, c: 5, voice: ['b1_q'], options: [[3, 5, 15], [3, 4, 12], [4, 5, 20]] },
+        { type: 'pick', r: 4, c: 6, voice: ['b2_q'], options: [[4, 6, 24], [4, 5, 20], [5, 6, 30]] },
+        { type: 'pick', r: 5, c: 2, voice: ['b3_q'], options: [[5, 2, 10], [5, 3, 15], [2, 4, 8]] },
+
+        // wrong：三句加减乘混排，恰好一句不成立
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { sign: '×', a: 3, b: 5, shown: 15 },
+          { sign: '+', a: 6, b: 3, shown: 10 },
+          { sign: '×', a: 4, b: 6, shown: 24 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { sign: '+', a: 7, b: 2, shown: 9 },
+          { sign: '×', a: 6, b: 5, shown: 30 },
+          { sign: '×', a: 8, b: 3, shown: 25 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { sign: '×', a: 9, b: 3, shown: 27 },
+          { sign: '+', a: 5, b: 8, shown: 13 },
+          { sign: '×', a: 6, b: 7, shown: 41 }
+        ] }
+      ]
     }
   }
 };

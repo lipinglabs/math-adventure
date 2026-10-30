@@ -14200,3 +14200,965 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l36-rowcard { max-width: 286px; padding: 8px; }
   .l36-bar { max-width: 272px; }
 }
+
+/* ============================================================
+   L37 · Multiplication Master（表内乘法大考）
+   ============================================================ */
+
+.l37-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ---------------- 三张闪卡 ---------------- */
+
+.l37-deck {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+}
+
+.l37-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 98px;
+  padding: 12px 6px 10px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: box-shadow 240ms var(--ease-soft), transform 240ms var(--ease-jelly);
+}
+
+.l37-card.is-done {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 3px rgba(79, 176, 124, 0.2),
+              0 9px 16px rgba(80, 150, 130, 0.16),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l37-card-top { display: flex; align-items: center; gap: 4px; }
+.l37-card-bottom { display: flex; align-items: center; gap: 4px; }
+
+/* ---------------- 数字砖 ---------------- */
+
+.l37-tile {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  height: 60px;
+  padding: 0 9px;
+  border-radius: 18px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 4px 0 #E3C9A4, 0 7px 12px rgba(150, 120, 90, 0.12),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l37-tile--sm { min-width: 34px; height: 42px; font-size: 20px; border-radius: 12px; padding: 0 6px; }
+.l37-tile--q { color: #C0A582; background: rgba(255, 253, 248, 0.8); border: 2.5px dashed #CBB28F; box-shadow: none; }
+.l37-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l37-tile--sm.l37-tile--res { box-shadow: 0 3px 0 #7FC3A6; }
+.l37-tile--ans { color: #8A5A12; background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 4px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8); }
+
+.l37-tile.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+.l37-tile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.22);
+}
+
+.l37-op { font-size: 20px; font-weight: 800; line-height: 1; color: #C79E6A; }
+
+.l37-eq { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.l37-eq--big .l37-tile { min-width: 62px; height: 72px; font-size: 34px; border-radius: 22px; }
+.l37-eq--small .l37-tile { min-width: 42px; height: 48px; font-size: 22px; border-radius: 13px; }
+
+.l37-note {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #A98457;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l37-note.is-hidden { opacity: 0; visibility: hidden; }
+
+.l37-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 15px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF6D9 0%, #FFD977 100%);
+  box-shadow: 0 4px 0 #D8A94A, 0 8px 14px rgba(180, 140, 70, 0.22);
+}
+
+/* ---------------- 答题：数字键 ---------------- */
+
+.l37-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.l37-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l37-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1), box-shadow 92ms ease;
+}
+
+.l37-key:active { transform: translateY(5px) scale(0.96); box-shadow: 0 0 0 #E0AE45; }
+.l37-key.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 5px 0 #5FAF97; }
+.l37-key-digit { font-size: 32px; font-weight: 800; line-height: 1; text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6); }
+
+/* ---------------- 答题：气球 ---------------- */
+
+.l37-balloons {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding-top: 4px;
+}
+
+.l37-balloon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  touch-action: manipulation;
+}
+
+.l37-balloon-body {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 88px;
+  border-radius: 50% 50% 48% 48% / 54% 54% 46% 46%;
+  background: radial-gradient(circle at 34% 26%, #FFC9C2 0%, #FF8E86 46%, #E45C55 100%);
+  box-shadow: inset -4px -6px 12px rgba(150, 50, 45, 0.2),
+              inset 4px 5px 10px rgba(255, 255, 255, 0.5),
+              0 8px 14px rgba(150, 90, 80, 0.18);
+  transition: transform 140ms var(--ease-jelly), box-shadow 160ms var(--ease-soft);
+}
+
+.l37-balloon-body::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 11px;
+  height: 8px;
+  margin-left: -5.5px;
+  border-radius: 40% 40% 60% 60%;
+  background: inherit;
+}
+
+.l37-balloon.is-blue .l37-balloon-body {
+  background: radial-gradient(circle at 34% 26%, #C7E4FB 0%, #8FC6F2 46%, #5B9BD5 100%);
+  box-shadow: inset -4px -6px 12px rgba(40, 80, 130, 0.2),
+              inset 4px 5px 10px rgba(255, 255, 255, 0.55),
+              0 8px 14px rgba(80, 110, 150, 0.18);
+}
+
+.l37-balloon.is-green .l37-balloon-body {
+  background: radial-gradient(circle at 34% 26%, #D6F3CE 0%, #A6DDA0 46%, #6FB86A 100%);
+  box-shadow: inset -4px -6px 12px rgba(50, 100, 50, 0.2),
+              inset 4px 5px 10px rgba(255, 255, 255, 0.55),
+              0 8px 14px rgba(80, 130, 80, 0.18);
+}
+
+.l37-balloon-num {
+  position: relative;
+  z-index: 2;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #FFFDF8;
+  text-shadow: 0 2px 3px rgba(120, 60, 60, 0.34);
+}
+
+.l37-balloon-string {
+  width: 2px;
+  height: 34px;
+  margin-top: 5px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, rgba(180, 150, 120, 0.8), rgba(180, 150, 120, 0.25));
+}
+
+.l37-balloon:active .l37-balloon-body { transform: scale(0.95); }
+
+.l37-balloon.is-right .l37-balloon-body {
+  box-shadow: 0 0 0 4px rgba(79, 176, 124, 0.5), 0 10px 16px rgba(80, 150, 130, 0.2);
+}
+
+/* ---------------- 答题：三算式 ---------------- */
+
+.l37-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l37-wcard {
+  position: relative;
+  width: 100%;
+  max-width: 244px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l37-wcard:active { transform: translateY(3px) scale(0.99); }
+.l37-wcard.is-right { box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24); }
+
+.l37-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l37-deck { gap: 8px; }
+  .l37-card { width: 90px; padding: 10px 4px 8px; }
+  .l37-tile { min-width: 46px; height: 54px; font-size: 24px; }
+  .l37-tile--sm { min-width: 30px; height: 38px; font-size: 18px; }
+  .l37-eq--big .l37-tile { min-width: 54px; height: 64px; font-size: 30px; }
+  .l37-eq--small .l37-tile { min-width: 38px; height: 44px; font-size: 20px; }
+  .l37-balloon-body { width: 68px; height: 82px; }
+  .l37-balloon-num { font-size: 24px; }
+  .l37-key { width: 78px; height: 78px; }
+  .l37-tray { min-height: 102px; max-width: 326px; }
+}
+
+/* ============================================================
+   L38 · Add to Multiply（连加 ↔ 乘法）
+   ------------------------------------------------------------
+   同一批圆点，只改「组框」和「缝隙」（§5.24）：
+     组横排 = 4 组各 3 个（4 列）；组竖排 = 2 组各 5 个（2 行）。
+   ============================================================ */
+
+.l38-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.l38-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ---------------- 圆点与组 ---------------- */
+
+.l38-groups {
+  display: flex;
+  transition: gap 420ms var(--ease-soft);
+}
+
+.l38-groups--row { flex-direction: row; gap: 11px; }
+.l38-groups--col { flex-direction: column; gap: 11px; }
+
+.l38-groups.is-tight { gap: 3px; }
+.l38-groups.is-open { gap: 15px; }
+
+.l38-group {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 12px;
+  transition: gap 420ms var(--ease-soft), box-shadow 240ms var(--ease-soft),
+              background 240ms var(--ease-soft), transform 240ms var(--ease-jelly);
+}
+
+.l38-groups--row .l38-group { flex-direction: column; }
+.l38-groups--col .l38-group { flex-direction: row; }
+
+.l38-group.is-framed {
+  background: rgba(255, 246, 232, 0.72);
+  box-shadow: inset 0 0 0 2px rgba(240, 168, 120, 0.7);
+}
+
+.l38-dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #FFC2A0 0%, #F0906A 52%, #D96F49 100%);
+  box-shadow: inset -1px -2px 3px rgba(150, 60, 30, 0.22),
+              0 1px 2px rgba(150, 80, 50, 0.18);
+  transition: background 200ms var(--ease-soft), transform 200ms var(--ease-jelly);
+}
+
+.l38-group.is-on .l38-dot {
+  background: radial-gradient(circle at 34% 30%, #FFD9A8 0%, #F5AE62 52%, #DE8A3E 100%);
+}
+
+/* ---------------- 算式 ---------------- */
+
+.l38-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.l38-eq--big { gap: 5px; }
+.l38-eq--big .l38-tile { min-width: 40px; height: 50px; font-size: 23px; border-radius: 14px; padding: 0 6px; }
+
+.l38-eq--tiny { gap: 1px; }
+.l38-eq--tiny .l38-op { font-size: 11px; margin: 0; }
+
+.l38-tile {
+  display: grid;
+  place-items: center;
+  min-width: 46px;
+  height: 54px;
+  padding: 0 8px;
+  border-radius: 16px;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 4px 0 #E3C9A4, 0 7px 12px rgba(150, 120, 90, 0.12),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l38-tile--sm { min-width: 36px; height: 44px; font-size: 21px; border-radius: 12px; }
+.l38-tile--xs { min-width: 16px; height: 26px; padding: 0 2px; font-size: 13px; border-radius: 7px; box-shadow: 0 2px 0 #E3C9A4; }
+.l38-tile--q { color: #C0A582; background: rgba(255, 253, 248, 0.8); border: 2.5px dashed #CBB28F; box-shadow: none; }
+.l38-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l38-tile--xs.l38-tile--res { box-shadow: 0 2px 0 #7FC3A6; }
+
+.l38-op { font-size: 20px; font-weight: 800; line-height: 1; color: #C79E6A; }
+
+.l38-note {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #A98457;
+  text-align: center;
+}
+
+.l38-fact { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.l38-fact--sm .l38-tile { min-width: 30px; height: 36px; font-size: 18px; border-radius: 10px; }
+
+/* ---------------- 答题：数字键 ---------------- */
+
+.l38-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l38-key {
+  display: grid;
+  place-items: center;
+  min-width: 92px;
+  height: 76px;
+  padding: 0 10px;
+  border-radius: 22px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1), box-shadow 92ms ease;
+}
+
+.l38-key:active { transform: translateY(5px) scale(0.96); box-shadow: 0 0 0 #E0AE45; }
+.l38-key.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 5px 0 #5FAF97; }
+
+/* ---------------- 答题：连线 ---------------- */
+
+.l38-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.l38-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.l38-line {
+  stroke: rgba(240, 168, 120, 0.9);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 7 5;
+}
+
+.l38-line.is-live { stroke: rgba(200, 150, 110, 0.75); stroke-dasharray: 6 6; }
+.l38-line.is-done { stroke: rgba(79, 176, 124, 0.95); stroke-dasharray: none; }
+
+.l38-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.l38-linkcard {
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  height: 54px;
+  padding: 0 4px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 7px 12px rgba(150, 120, 90, 0.12);
+  touch-action: none;
+  transition: transform 120ms var(--ease-jelly), box-shadow 140ms var(--ease-soft),
+              background 200ms var(--ease-soft);
+}
+
+.l38-linkcard--times { background: linear-gradient(160deg, #F4FBF7 0%, #D6EEE2 100%);
+  box-shadow: 0 4px 0 #A9D6C3, 0 7px 12px rgba(80, 150, 120, 0.12); }
+
+.l38-linkcard.is-lifted { opacity: 0.55; }
+
+.l38-linkcard.is-linked {
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 3px rgba(79, 176, 124, 0.28);
+}
+
+.l38-linknum {
+  position: absolute;
+  right: -5px;
+  top: -7px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  color: #FFFDF7;
+  background: #4FB07C;
+  box-shadow: 0 2px 4px rgba(60, 130, 100, 0.3);
+}
+
+/* ---------------- 答题：三组等式 ---------------- */
+
+.l38-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l38-card {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l38-card:active { transform: translateY(3px) scale(0.99); }
+.l38-card.is-right { box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24); }
+
+.l38-card-line { display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+.l38-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l38-dot { width: 16px; height: 16px; }
+  .l38-eq--big .l38-tile { min-width: 36px; height: 46px; font-size: 21px; }
+  .l38-tile { min-width: 42px; height: 50px; font-size: 23px; }
+  .l38-tile--xs { min-width: 15px; height: 24px; font-size: 12px; }
+  .l38-key { min-width: 82px; height: 70px; }
+  .l38-link { gap: 46px; }
+  .l38-linkcard { height: 50px; }
+}
+
+/* ============================================================
+   L39 · Stage 4 Finale（四阶结业）
+   ------------------------------------------------------------
+   玫瑰金奖杯（三层阶梯底座 + 两侧星章）与三阶的纯金奖杯刻意区分（§6.16）。
+   ============================================================ */
+
+.l39-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------------- 回顾面板 ---------------- */
+
+.l39-review {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+}
+
+.l39-review-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 102px;
+  padding: 12px 6px 10px;
+  border-radius: 18px;
+  background: rgba(255, 251, 242, 0.78);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.44), 0 6px 12px rgba(150, 120, 90, 0.1);
+  transition: box-shadow 240ms var(--ease-soft), transform 240ms var(--ease-jelly),
+              background 240ms var(--ease-soft);
+}
+
+.l39-review-card.is-on {
+  background: rgba(255, 240, 226, 0.96);
+  box-shadow: inset 0 0 0 2px rgba(240, 168, 120, 0.7), 0 8px 14px rgba(180, 130, 100, 0.16);
+}
+
+.l39-review-cap {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #B08C62;
+}
+
+.l39-mini { display: block; }
+
+.l39-mini--array { display: flex; flex-direction: column; gap: 3px; }
+.l39-mini-row { display: flex; gap: 3px; }
+.l39-mini-block {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(158deg, #F5C98C 0%, #D9944A 100%);
+}
+
+.l39-mini--candy { display: flex; gap: 8px; }
+.l39-mini-string { display: flex; flex-direction: column; gap: 2px; }
+.l39-mini-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #FFC2CE 0%, #F5738F 52%, #CF3E60 100%);
+}
+
+.l39-mini--wheel {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: conic-gradient(#FFE3C4 0 45deg, #D8ECF7 45deg 90deg, #E4F1D8 90deg 135deg,
+    #FCE8C8 135deg 180deg, #EFE0F6 180deg 225deg, #D9F0EA 225deg 270deg,
+    #FFE9D8 270deg 315deg, #E7E9F7 315deg 360deg);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.l39-mini-seg { display: none; }
+
+.l39-mini-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+  color: #C4703A;
+  background: #FFFDF8;
+  box-shadow: 0 1px 3px rgba(150, 110, 70, 0.28);
+}
+
+/* ---------------- 奖杯 ---------------- */
+
+.l39-cup {
+  width: 124px;
+  height: 152px;
+  opacity: 0;
+  transform: translateY(56px) scale(0.82);
+  transition: opacity 420ms var(--ease-soft), transform 520ms cubic-bezier(.34,1.4,.6,1);
+  filter: drop-shadow(0 10px 16px rgba(190, 110, 80, 0.32));
+}
+
+.l39-cup svg { display: block; width: 100%; height: 100%; }
+.l39-cup.is-up { opacity: 1; transform: translateY(0) scale(1); }
+
+.l39-cup.is-glow { animation: l39-glow 2.2s ease-in-out infinite; }
+
+@keyframes l39-glow {
+  0%, 100% { filter: drop-shadow(0 10px 16px rgba(190, 110, 80, 0.32)); }
+  50% { filter: drop-shadow(0 10px 24px rgba(255, 178, 138, 0.85)); }
+}
+
+.l39-ribbon {
+  padding: 6px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #7A3A24;
+  background: linear-gradient(180deg, #FFE6D8 0%, #F0A183 100%);
+  box-shadow: 0 4px 0 #C96A4A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l39-ribbon--big { font-size: 19px; padding: 8px 22px; }
+
+.l39-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #7A3A24;
+  background: linear-gradient(160deg, #FFE6D8 0%, #F2AD92 100%);
+  box-shadow: 0 4px 0 #C96A4A, 0 8px 14px rgba(190, 110, 80, 0.22);
+}
+
+.l39-badge--sticky { position: absolute; right: 14px; bottom: 14px; }
+
+/* 一次性光环 */
+.l39-halo {
+  display: block;
+  width: 180px;
+  height: 46px;
+  margin-top: -10px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 178, 138, 0.9);
+  opacity: 0;
+}
+
+.l39-halo.is-burst { animation: l39-halo 900ms ease-out forwards; }
+
+@keyframes l39-halo {
+  0% { opacity: 0.9; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+/* ---------------- 数字砖 ---------------- */
+
+.l39-tile {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  height: 60px;
+  padding: 0 9px;
+  border-radius: 18px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 4px 0 #E3C9A4, 0 7px 12px rgba(150, 120, 90, 0.12),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 200ms var(--ease-jelly), background 180ms var(--ease-soft),
+              color 180ms var(--ease-soft), opacity 180ms var(--ease-soft);
+}
+
+.l39-tile--sm { min-width: 42px; height: 48px; font-size: 22px; border-radius: 13px; }
+.l39-tile--q { color: #C0A582; background: rgba(255, 253, 248, 0.8); border: 3px dashed #CBB28F; box-shadow: none; }
+.l39-tile--res { color: #2F7C5E; background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 4px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9); }
+.l39-tile--ans { color: #8A5A12; background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 4px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8); }
+
+.l39-tile.is-flip { transform: rotateX(88deg) scaleX(0.6); opacity: 0; }
+.l39-tile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.22);
+}
+
+.l39-op { font-size: 22px; font-weight: 800; line-height: 1; color: #C79E6A; }
+
+.l39-eq { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.l39-eq--big .l39-tile { min-width: 62px; height: 72px; font-size: 34px; border-radius: 22px; }
+.l39-eq--small .l39-tile { min-width: 42px; height: 48px; font-size: 22px; border-radius: 13px; }
+
+/* ---------------- 答题 ---------------- */
+
+.l39-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.l39-grid { display: flex; flex-direction: column; gap: 4px; }
+.l39-grid-row { display: flex; gap: 4px; }
+
+.l39-block {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: linear-gradient(158deg, #F5C98C 0%, #D9944A 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(140, 100, 60, 0.18);
+}
+
+.l39-tray {
+  min-height: 108px;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  max-width: 344px;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.l39-tray--row { flex-wrap: nowrap; max-width: 100%; gap: 8px; }
+
+.l39-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1), box-shadow 92ms ease;
+}
+
+.l39-key:active { transform: translateY(5px) scale(0.96); box-shadow: 0 0 0 #E0AE45; }
+.l39-key.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 5px 0 #5FAF97; }
+.l39-key-digit { font-size: 32px; font-weight: 800; line-height: 1; text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6); }
+
+.l39-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 66px;
+  padding: 0 14px;
+  border-radius: 20px;
+  color: #6B4E31;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 12px rgba(180, 140, 70, 0.18),
+              inset 0 2px 4px rgba(255, 255, 255, 0.85);
+  transition: transform 100ms var(--ease-jelly), box-shadow 120ms var(--ease-soft);
+}
+
+.l39-opt:active { transform: translateY(3px) scale(0.98); }
+.l39-opt.is-right { background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%); box-shadow: 0 4px 0 #5FAF97; }
+.l39-opt-n { font-size: 26px; font-weight: 800; line-height: 1; }
+.l39-opt-x { font-size: 18px; font-weight: 800; line-height: 1; color: #B07D4E; }
+
+.l39-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.l39-card {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);
+  transition: transform 140ms var(--ease-jelly), box-shadow 140ms var(--ease-soft);
+}
+
+.l39-card:active { transform: translateY(3px) scale(0.99); }
+.l39-card.is-right { box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24); }
+
+.l39-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------- 结业仪式层 ---------------- */
+
+.l39-ceremony {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 96px;
+  background: radial-gradient(circle at 50% 46%, rgba(255, 236, 226, 0.94) 0%, rgba(255, 236, 226, 0.58) 46%, rgba(255, 236, 226, 0) 74%);
+  transition: opacity 300ms var(--ease-soft);
+}
+
+.l39-ceremony.is-out { opacity: 0; }
+
+.l39-ceremony-halo {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 200px;
+  height: 54px;
+  margin-left: -100px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 178, 138, 0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.l39-ceremony-halo.is-burst { animation: l39-halo 1000ms ease-out forwards; }
+
+.l39-cup--big { width: 172px; height: 210px; position: relative; z-index: 2; }
+.l39-ceremony .l39-ribbon { position: relative; z-index: 2; }
+.l39-confetti { z-index: 0; }
+
+.l39-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
+.l39-bit {
+  position: absolute;
+  top: -8%;
+  border-radius: 2px;
+  animation-name: l39-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.l39-bit--1 { clip-path: polygon(50% 0, 100% 100%, 0 100%); border-radius: 0; }
+.l39-bit--2 { border-radius: 50%; }
+
+@keyframes l39-fall {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  82% { opacity: 1; }
+  100% { transform: translateY(108vh) rotate(var(--spin, 220deg)); opacity: 0; }
+}
+
+.result { position: relative; }
+
+/* ---------------- 窄屏 ---------------- */
+
+@media (max-width: 379px) {
+  .l39-review { gap: 8px; }
+  .l39-review-card { width: 94px; padding: 10px 4px 8px; }
+  .l39-cup { width: 112px; height: 138px; }
+  .l39-cup--big { width: 156px; height: 190px; }
+  .l39-tile { min-width: 46px; height: 54px; font-size: 24px; }
+  .l39-eq--big .l39-tile { min-width: 54px; height: 64px; font-size: 30px; }
+  .l39-eq--small .l39-tile { min-width: 38px; height: 44px; font-size: 20px; }
+  .l39-block { width: 22px; height: 22px; border-radius: 5px; }
+  .l39-key { width: 78px; height: 78px; }
+  .l39-tray { min-height: 102px; max-width: 326px; }
+  .l39-opt { height: 60px; padding: 0 11px; }
+  .l39-opt-n { font-size: 23px; }
+}

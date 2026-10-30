@@ -1,0 +1,73 @@
+{
+  "level": "lv38",
+  "status": "draft",
+  "note": "Stage 4: addition and multiplication are two ways of reading the same things. Four groups of three become four times three, then two times five splits into five plus five. Quiz: listen to the repeated addition and pick the times sentence / link sums to times sentences / find the pair that does not match.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look! Four groups of three. That is twelve.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Three plus three plus three plus three equals four times three!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Two times five. That means two groups of five.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Five plus five is ten.",
+      "mood": "teach"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Five plus five plus five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Four plus four plus four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Two plus two plus two plus two plus two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Three plus three plus three plus three.",
+      "mood": "ask"
+    },
+    {
+      "key": "b_q",
+      "lang": "en",
+      "text": "Link each sum to its times sentence.",
+      "mood": "teach"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Find the pair that does not match.",
+      "mood": "ask"
+    }
+  ]
+}
