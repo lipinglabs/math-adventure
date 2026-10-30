@@ -1179,6 +1179,72 @@ window.MATH_DATA = {
           { a: 17, b: 9, shown: 10 }
         ] }
       ]
+    },
+    21: {
+      id: 21,
+      name: 'Flash Math',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_21.jpg',
+      // 第三阶段第六关：闪电心算（退位减法）。把借十法从数小棒推到纯数字，全部限时 5 秒。
+      // flash   = 纯算式 + 三个数字键（4 题）
+      // balloon = 算式卡 + 三个写着答案的气球（3 题）
+      // wrong   = 三句里限时点出错误的那一句（3 题，答对后翻结果格）
+      // 一律借位（个位 < 减数）；超时与点错同权，题目原地重做、进度条重置（§6.9）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv21/t1_a.mp3',
+          'lv21/t1_b.mp3',
+          'lv21/t1_c.mp3',
+          'lv21/t1_d.mp3',
+          'lv21/t2_a.mp3',
+          'lv21/t2_b.mp3',
+
+          'lv21/a1_q.mp3',
+          'lv21/a2_q.mp3',
+          'lv21/a3_q.mp3',
+          'lv21/a4_q.mp3',
+
+          'lv21/b1_q.mp3',
+          'lv21/b2_q.mp3',
+          'lv21/b3_q.mp3',
+
+          'lv21/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_21.jpg']
+      },
+      questions: [
+        { type: 'flash', a: 15, b: 8, options: [6, 7, 8], voice: ['a1_q'] },
+        { type: 'flash', a: 13, b: 9, options: [3, 4, 5], voice: ['a2_q'] },
+        { type: 'flash', a: 16, b: 7, options: [8, 9, 10], voice: ['a3_q'] },
+        { type: 'flash', a: 14, b: 6, options: [7, 8, 9], voice: ['a4_q'] },
+
+        { type: 'balloon', a: 14, b: 7, options: [6, 7, 8], voice: ['b1_q'] },
+        { type: 'balloon', a: 17, b: 9, options: [7, 8, 9], voice: ['b2_q'] },
+        { type: 'balloon', a: 12, b: 8, options: [3, 4, 5], voice: ['b3_q'] },
+
+        // wrong：三句里恰好一句 a − b ≠ shown，三句都借位；错法分别是 +1 / −2 / +2。
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 12, b: 6, shown: 6 },
+          { a: 16, b: 9, shown: 8 },
+          { a: 17, b: 8, shown: 9 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 14, b: 7, shown: 7 },
+          { a: 13, b: 5, shown: 8 },
+          { a: 15, b: 6, shown: 7 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sentences: [
+          { a: 12, b: 4, shown: 8 },
+          { a: 16, b: 8, shown: 8 },
+          { a: 17, b: 9, shown: 10 }
+        ] }
+      ]
     }
   }
 };

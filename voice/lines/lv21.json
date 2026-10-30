@@ -1,0 +1,31 @@
+{
+  "level": "lv21",
+  "status": "draft",
+  "note": "Stage 3, sixth level: flash mental math on borrow subtraction. Two teaching scenes — a bundle of ten plus three sticks with the vertical sum 13 - 9, the bundle breaking and nine sticks flying away, then the finished vertical sum and the call to quick math. Answer phase: ten timed questions in three types (plain equation + three keys / equation card + three balloons / find the wrong sentence), all on a five second bar. No self-answer during the quiz.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_a", "lang": "en", "text": "Look! We have thirteen. We need to take away nine.", "mood": "teach" },
+    { "key": "t1_b", "lang": "en", "text": "We don't have enough ones.", "mood": "teach" },
+    { "key": "t1_c", "lang": "en", "text": "We break the ten. Ten minus nine is one.", "mood": "teach" },
+    { "key": "t1_d", "lang": "en", "text": "One plus three is four. Thirteen minus nine equals four.", "mood": "teach" },
+
+    { "key": "t2_a", "lang": "en", "text": "Remember, when we take away, we can break the ten.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Now, let's try some quick math!", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Fifteen minus eight. Quick, tap the right answer!", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Thirteen minus nine. Quick, tap the right answer!", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Sixteen minus seven. Quick, tap the right answer!", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Fourteen minus six. Quick, tap the right answer!", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Fourteen minus seven. Which balloon?", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Seventeen minus nine. Which balloon?", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Twelve minus eight. Which balloon?", "mood": "ask" },
+
+    { "key": "c_q", "lang": "en", "text": "Quick! Find the wrong sentence!", "mood": "ask" }
+  ]
+}

@@ -8783,3 +8783,577 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l20-key { width: 78px; height: 78px; }
   .l20-tray { min-height: 102px; }
 }
+
+/* ============================================================
+   L21 · Flash Math（闪电心算 · 退位减法）
+   ------------------------------------------------------------
+   教学：一捆十根 + 三根，旁边竖式 13 − 9；解捆、拿走九根、剩四根。
+   答题：三种题型全部限时——5 秒进度条（剩余 40% 转红），超时与点错同权，
+   题目原地重做、进度条重置（§6.9）。
+   ============================================================ */
+
+.l21-teach {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.l21-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ---------------- 小棒 ---------------- */
+
+.l21-mat {
+  position: relative;
+  padding: 10px 8px 18px;
+  border-radius: 18px;
+  background: rgba(255, 251, 242, 0.5);
+  box-shadow: inset 0 0 0 1.5px rgba(214, 186, 148, 0.34),
+              0 6px 14px rgba(150, 120, 90, 0.08);
+}
+
+.l21-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.l21-slot {
+  display: grid;
+  place-items: end center;
+  width: 13px;
+  height: 120px;
+}
+
+.l21-row .l21-slot:nth-child(11) { margin-left: 16px; }
+
+.l21-stick {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 116px;
+  border-radius: 5px 5px 4px 4px;
+  background: linear-gradient(90deg, #FBE3BC 0%, #EFC084 42%, #D89B55 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+              inset -1px 0 2px rgba(160, 110, 50, 0.22),
+              0 2px 3px rgba(140, 100, 60, 0.22);
+  transform-origin: 50% 100%;
+  transition: opacity 220ms var(--ease-soft), transform 300ms var(--ease-jelly);
+  transition-delay: var(--d, 0ms);
+}
+
+.l21-stick::before,
+.l21-stick::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.l21-stick::before { top: 30%; }
+.l21-stick::after { top: 64%; background: rgba(160, 110, 50, 0.22); }
+
+.l21-stick.is-hidden { opacity: 0; transform: translateY(10px) scale(0.82, 0.86); }
+
+.l21-stick.is-away {
+  animation: l21-away 460ms cubic-bezier(.34, .9, .5, 1) var(--d, 0ms) both;
+  pointer-events: none;
+}
+
+@keyframes l21-away {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  26% { transform: translate(0, -10px) rotate(-6deg); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), -88px) rotate(var(--rot, 20deg)) scale(0.7); opacity: 0; }
+}
+
+.l21-stick.is-gone { visibility: hidden; }
+
+.l21-stick.is-worry { animation: l21-worry 520ms ease-in-out 2; }
+
+@keyframes l21-worry {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-3px) rotate(-5deg); }
+  75% { transform: translateX(3px) rotate(5deg); }
+}
+
+.l21-bundle {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 152px;
+  height: 124px;
+  border-radius: 12px;
+  transition: opacity 220ms var(--ease-soft), transform 240ms var(--ease-soft);
+}
+
+.l21-bundle-in {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 100%;
+  padding: 0 6px;
+}
+
+.l21-bundle-in .l21-stick { width: 12px; height: 116px; }
+
+.l21-band {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 46px;
+  height: 17px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #F4977C 0%, #DF6E52 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 3px rgba(150, 60, 40, 0.3),
+              0 2px 4px rgba(150, 80, 60, 0.25);
+}
+
+.l21-band.is-snap { animation: l21-band-snap 420ms cubic-bezier(.34, 1.1, .5, 1) both; }
+
+@keyframes l21-band-snap {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  34% { transform: translate(2px, 7px) scale(1.08, 1.2) rotate(2deg); opacity: 1; }
+  100% { transform: translate(28px, 62px) rotate(26deg) scale(0.92); opacity: 0; }
+}
+
+.l21-bundle.is-open { opacity: 0; transform: scale(0.97); pointer-events: none; }
+
+.l21-ring {
+  position: absolute;
+  border: 4px solid rgba(79, 176, 124, 0.66);
+  border-radius: 16px;
+  box-shadow: 0 0 0 6px rgba(79, 176, 124, 0.14);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------------- 竖式 ---------------- */
+
+.l21-vsum {
+  padding: 12px 14px 14px;
+  border-radius: 22px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 5px 0 #E7D0AE, 0 10px 18px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.92);
+}
+
+.l21-vsum--big { padding: 20px 26px 24px; }
+
+.l21-vrows { display: flex; flex-direction: column; }
+
+.l21-vrow { display: flex; align-items: center; }
+
+.l21-vcell {
+  position: relative;
+  width: 44px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  transition: color 200ms var(--ease-soft), background 200ms var(--ease-soft),
+              box-shadow 200ms var(--ease-soft);
+}
+
+.l21-vsum--big .l21-vcell { width: 62px; height: 68px; font-size: 42px; }
+
+.l21-vcell--t { color: #C0A582; }
+
+.l21-vcell--t.is-op {
+  place-items: center end;
+  padding-right: 6px;
+  font-size: 24px;
+  color: #C79E6A;
+}
+
+.l21-vdigit {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+}
+
+.l21-vcell.is-borrowed .l21-vdigit { color: #BBA68C; }
+
+.l21-vcell.is-borrowed .l21-vdigit::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(200, 90, 70, 0.72);
+  transform: translate(-50%, -50%) rotate(-14deg);
+}
+
+.l21-vsum--big .l21-vcell.is-borrowed .l21-vdigit::after { width: 36px; }
+
+.l21-vmark {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  padding: 1px 4px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #C0592F;
+  background: rgba(255, 235, 224, 0.96);
+  box-shadow: 0 1px 0 rgba(200, 120, 90, 0.35);
+}
+
+.l21-vsum--big .l21-vmark { font-size: 15px; right: -8px; top: -10px; }
+
+.l21-vq { color: #C0A582; }
+
+.l21-vcell.is-res {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l21-vline {
+  width: 92px;
+  height: 4px;
+  margin: 4px 0;
+  border-radius: 2px;
+  background: #C79E6A;
+}
+
+.l21-vsum--big .l21-vline { width: 130px; }
+
+/* 闪电徽标：说到「quick math」才亮，之后缓慢呼吸 */
+.l21-bolt {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #F2A93B;
+  background: radial-gradient(circle at 34% 30%, #FFF3CF 0%, #FFD985 100%);
+  box-shadow: 0 4px 0 #E0AE45, 0 8px 16px rgba(200, 160, 80, 0.26),
+              inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 240ms var(--ease-soft), transform 260ms var(--ease-jelly);
+}
+
+.l21-bolt.is-on {
+  opacity: 1;
+  transform: scale(1);
+  animation: l21-bolt-breathe 1.8s ease-in-out infinite;
+}
+
+@keyframes l21-bolt-breathe {
+  0%, 100% { box-shadow: 0 4px 0 #E0AE45, 0 0 0 0 rgba(242, 169, 59, 0); }
+  50% { box-shadow: 0 4px 0 #E0AE45, 0 0 0 8px rgba(242, 169, 59, 0.18); }
+}
+
+/* ---------------- 限时进度条（§6.9） ---------------- */
+
+.l21-timer {
+  width: 100%;
+  max-width: 322px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(206, 180, 148, 0.32);
+  box-shadow: inset 0 2px 4px rgba(150, 120, 90, 0.18);
+  overflow: hidden;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+/* 题干还在播时是「待命」态：条在，但压暗，表示还没开始计时 */
+.l21-timer.is-idle { opacity: 0.7; }
+.l21-timer.is-idle .l21-timer-fill { opacity: 0.45; }
+
+.l21-timer-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transform-origin: left center;
+  background: #8FD8C0;
+  transition: background 240ms var(--ease-soft), opacity 200ms var(--ease-soft);
+  will-change: transform;
+}
+
+/* 剩余不足 40%：不看数字也知道要快 */
+.l21-timer.is-low .l21-timer-fill { background: #F0917B; }
+
+.l21-timer.is-out { animation: l21-out 320ms var(--ease-soft) both; }
+
+@keyframes l21-out {
+  0%, 100% { transform: scaleY(1); }
+  40% { transform: scaleY(1.6); }
+}
+
+.l21-timer.is-done .l21-timer-fill {
+  background: linear-gradient(90deg, #9FD8C4 0%, #6FC7AA 100%);
+}
+
+/* ---------------- 算式卡与数字键 ---------------- */
+
+.l21-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l21-tile {
+  display: grid;
+  place-items: center;
+  min-width: 62px;
+  height: 70px;
+  padding: 0 12px;
+  border-radius: 21px;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(160deg, #FFF9EE 0%, #F6E3C4 100%);
+  box-shadow: 0 5px 0 #E3C9A4, 0 8px 14px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: background 160ms var(--ease-soft), color 160ms var(--ease-soft),
+              box-shadow 160ms var(--ease-soft);
+}
+
+.l21-op {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l21-tile--q {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.8);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l21-tile--blank {
+  background: rgba(255, 253, 248, 0.55);
+  box-shadow: inset 0 2px 4px rgba(190, 160, 120, 0.16);
+}
+
+.l21-tile.is-answer {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 5px rgba(79, 176, 124, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l21-card {
+  padding: 12px 18px;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 20px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l21-tray { min-height: 108px; }
+
+.l21-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease;
+}
+
+.l21-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.l21-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l21-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 气球 ---------------- */
+
+.l21-balloons {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.l21-balloon {
+  position: relative;
+  width: 106px;
+  height: 130px;
+  padding: 0;
+  background: none;
+  transition: transform 110ms cubic-bezier(.2, .8, .3, 1);
+}
+
+.l21-balloon:active { transform: scale(0.94); }
+
+.l21-balloon-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: l21-float 3.2s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+.l21-balloon-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 10px rgba(150, 120, 90, 0.18));
+}
+
+@keyframes l21-float {
+  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+  50% { transform: translateY(-9px) rotate(1.4deg); }
+}
+
+.l21-balloon-num {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 13px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: #4A3B33;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.l21-balloon.is-right .l21-balloon-art { animation-play-state: paused; }
+.l21-balloon.is-right .l21-balloon-num { color: #2F7C5E; }
+
+/* ---------------- 找错误算式 ---------------- */
+
+.l21-sents {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.l21-scard {
+  position: relative;
+  width: 248px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l21-scard:active { transform: translateY(4px) scale(0.98); }
+
+.l21-scard.is-right {
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l21-sent { display: flex; align-items: center; gap: 5px; }
+
+.l21-stile {
+  min-width: 34px;
+  height: 42px;
+  padding: 0 5px;
+  font-size: 22px;
+  border-radius: 11px;
+}
+
+.l21-stile--res {
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l21-stile.is-flip {
+  transform: rotateX(88deg) scaleX(0.6);
+  opacity: 0;
+  transition: transform 230ms var(--ease-soft), opacity 230ms var(--ease-soft);
+}
+
+.l21-stile.is-fixed {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l21-tick {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFDF7;
+  background: linear-gradient(160deg, #86D6B8 0%, #4FAF8E 100%);
+  box-shadow: 0 3px 8px rgba(60, 140, 110, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* 窄屏（≤379px）：整体缩一档 */
+@media (max-width: 379px) {
+  .l21-mat { padding: 8px 6px 16px; }
+  .l21-slot { width: 12px; height: 110px; }
+  .l21-row .l21-slot:nth-child(11) { margin-left: 14px; }
+  .l21-stick { width: 9px; height: 106px; }
+  .l21-bundle { left: 6px; top: 6px; width: 140px; height: 114px; }
+  .l21-bundle-in .l21-stick { width: 11px; height: 106px; }
+  .l21-band { top: 42px; }
+  .l21-vcell { width: 40px; height: 44px; font-size: 27px; }
+  .l21-vsum--big .l21-vcell { width: 54px; height: 60px; font-size: 36px; }
+  .l21-vline { width: 84px; }
+  .l21-tile { min-width: 52px; height: 62px; font-size: 33px; border-radius: 18px; }
+  .l21-key { width: 78px; height: 78px; }
+  .l21-tray { min-height: 102px; }
+  .l21-balloon { width: 96px; height: 118px; }
+  .l21-balloon-num { font-size: 27px; }
+  .l21-scard { width: 234px; height: 60px; }
+}
