@@ -1,0 +1,97 @@
+{
+  "level": "lv47",
+  "status": "draft",
+  "note": "Long Division Magic: forty-eight inside, four outside, one digit at a time with two aligned subtractions. Quiz: read the finished layout and pick the quotient / finish a half-written quotient / find the long division that has a mistake.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's write long division. Forty-eight inside, four outside.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Four divided by four is one. Write one on top.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "One times four is four. Four minus four is zero.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Bring down the eight. Eight divided by four is two.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e1",
+      "lang": "en",
+      "text": "Two times four is eight. Eight minus eight is zero.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e2",
+      "lang": "en",
+      "text": "Forty-eight divided by four is twelve!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Sixty-nine divided by three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Eighty-four divided by four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Ninety-six divided by three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Eighty-eight divided by four.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Eighty-four divided by four. Finish the quotient.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Sixty-nine divided by three. Finish the quotient.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Ninety-six divided by three. Finish the quotient.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which long division has a mistake?",
+      "mood": "ask"
+    }
+  ]
+}

@@ -2673,6 +2673,201 @@ window.MATH_DATA = {
         { type: 'flash', a: 17, b: 3, options: [51, 48, 54], voice: ['c2_q'] },
         { type: 'flash', a: 19, b: 2, options: [38, 36, 40], voice: ['c3_q'] }
       ]
+    },
+
+    46: {
+      id: 46,
+      name: 'Share the Sticks',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_46.jpg',
+      // 两位数除以一位数（无余数）：先分十位、再分个位。
+      // share = 看分配点结果（4 题；每人一堆小棒，问每人几根）
+      // give  = 拖拽分配（3 题；把成捆小棒分给每人，放完不判对，按提交才判，§6.10）
+      // fault = 找错误分配（3 题；恰好一组分不均匀）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv46/t1_a.mp3',
+          'lv46/t1_b.mp3',
+          'lv46/t1_c.mp3',
+          'lv46/t1_d.mp3',
+          'lv46/t1_e.mp3',
+
+          'lv46/a1_q.mp3',
+          'lv46/a2_q.mp3',
+          'lv46/a3_q.mp3',
+          'lv46/a4_q.mp3',
+
+          'lv46/b1_q.mp3',
+          'lv46/b2_q.mp3',
+          'lv46/b3_q.mp3',
+
+          'lv46/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_46.jpg']
+      },
+      questions: [
+        { type: 'share', total: 66, parts: 3, options: [22, 21, 24], voice: ['a1_q'] },
+        { type: 'share', total: 48, parts: 4, options: [12, 11, 14], voice: ['a2_q'] },
+        { type: 'share', total: 84, parts: 2, options: [42, 41, 44], voice: ['a3_q'] },
+        { type: 'share', total: 96, parts: 3, options: [32, 31, 34], voice: ['a4_q'] },
+
+        { type: 'give', total: 80, parts: 4, voice: ['b1_q'] },
+        { type: 'give', total: 90, parts: 3, voice: ['b2_q'] },
+        { type: 'give', total: 60, parts: 2, voice: ['b3_q'] },
+
+        // fault：三组里恰好一组分不均匀（deal 之和仍等于 total）
+        { type: 'fault', voice: ['c_q'], sets: [
+          { total: 48, kids: 4, deal: [11, 11, 13, 13] },
+          { total: 66, kids: 3, deal: [22, 22, 22] },
+          { total: 84, kids: 2, deal: [42, 42] }
+        ] },
+        { type: 'fault', voice: ['c_q'], sets: [
+          { total: 96, kids: 3, deal: [32, 32, 32] },
+          { total: 84, kids: 2, deal: [40, 44] },
+          { total: 72, kids: 4, deal: [18, 18, 18, 18] }
+        ] },
+        { type: 'fault', voice: ['c_q'], sets: [
+          { total: 60, kids: 2, deal: [30, 30] },
+          { total: 88, kids: 4, deal: [21, 21, 21, 25] },
+          { total: 96, kids: 3, deal: [32, 32, 32] }
+        ] }
+      ]
+    },
+
+    47: {
+      id: 47,
+      name: 'Long Division Magic',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_47.jpg',
+      // 长除法竖式：除数在左、被除数在括号内、商在上，两次减式按位对齐。
+      // take   = 看竖式点结果（4 题；商位先显示为 ?，答对才落下）
+      // fillq  = 拖拽补商（3 题；十位商已给，只补个位）
+      // faultv = 找错误竖式（3 题；恰好一组错在减式或落位）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv47/t1_a.mp3',
+          'lv47/t1_b.mp3',
+          'lv47/t1_c.mp3',
+          'lv47/t1_d.mp3',
+          'lv47/t1_e1.mp3',
+          'lv47/t1_e2.mp3',
+
+          'lv47/a1_q.mp3',
+          'lv47/a2_q.mp3',
+          'lv47/a3_q.mp3',
+          'lv47/a4_q.mp3',
+
+          'lv47/b1_q.mp3',
+          'lv47/b2_q.mp3',
+          'lv47/b3_q.mp3',
+
+          'lv47/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_47.jpg']
+      },
+      questions: [
+        { type: 'take', a: 69, b: 3, options: [23, 32, 21], voice: ['a1_q'] },
+        { type: 'take', a: 84, b: 4, options: [21, 12, 24], voice: ['a2_q'] },
+        { type: 'take', a: 96, b: 3, options: [32, 23, 36], voice: ['a3_q'] },
+        { type: 'take', a: 88, b: 4, options: [22, 24, 21], voice: ['a4_q'] },
+
+        { type: 'fillq', a: 84, b: 4, pool: [1, 2, 3, 4], voice: ['b1_q'] },
+        { type: 'fillq', a: 69, b: 3, pool: [2, 3, 4, 5], voice: ['b2_q'] },
+        { type: 'fillq', a: 96, b: 3, pool: [1, 2, 3, 4], voice: ['b3_q'] },
+
+        // faultv：恰好一组错（'sub' = 2×4 写错，'bring' = 落下的数字不对）
+        { type: 'faultv', voice: ['c_q'], sets: [
+          { a: 84, b: 4, err: 'sub' },
+          { a: 69, b: 3 },
+          { a: 96, b: 3 }
+        ] },
+        { type: 'faultv', voice: ['c_q'], sets: [
+          { a: 69, b: 3 },
+          { a: 84, b: 4, err: 'bring' },
+          { a: 96, b: 3 }
+        ] },
+        { type: 'faultv', voice: ['c_q'], sets: [
+          { a: 96, b: 3 },
+          { a: 69, b: 3 },
+          { a: 84, b: 4, err: 'sub' }
+        ] }
+      ]
+    },
+
+    48: {
+      id: 48,
+      name: 'Ultimate Math Challenge',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_48.jpg',
+      // 全项目大结局：四则运算混合大考，金星触发终极奖杯仪式。
+      // addsub = 两位数加减（3 题）
+      // times  = 表内乘法（3 题）
+      // divide = 两位数除以一位数（2 题）
+      // mixfault = 三式挑错（2 题；恰好一式结果错）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv48/t1_a.mp3',
+          'lv48/t1_b.mp3',
+          'lv48/t_gold.mp3',
+
+          'lv48/a1_q.mp3',
+          'lv48/a2_q.mp3',
+          'lv48/a3_q.mp3',
+
+          'lv48/m1_q.mp3',
+          'lv48/m2_q.mp3',
+          'lv48/m3_q.mp3',
+
+          'lv48/d1_q.mp3',
+          'lv48/d2_q.mp3',
+
+          'lv48/c1_q.mp3',
+          'lv48/c2_q.mp3'
+        ],
+        images: ['assets/bg/bg_48.jpg']
+      },
+      questions: [
+        { type: 'addsub', a: 47, b: 38, op: '+', options: [85, 83, 86], voice: ['a1_q'] },
+        { type: 'addsub', a: 92, b: 57, op: '-', options: [35, 34, 45], voice: ['a2_q'] },
+        { type: 'addsub', a: 68, b: 27, op: '+', options: [95, 94, 96], voice: ['a3_q'] },
+
+        { type: 'times', a: 7, b: 8, op: 'x', options: [56, 54, 58], voice: ['m1_q'] },
+        { type: 'times', a: 6, b: 9, op: 'x', options: [54, 52, 56], voice: ['m2_q'] },
+        { type: 'times', a: 8, b: 4, op: 'x', options: [32, 28, 36], voice: ['m3_q'] },
+
+        { type: 'divide', a: 84, b: 4, op: '/', options: [21, 24, 12], voice: ['d1_q'] },
+        { type: 'divide', a: 96, b: 3, op: '/', options: [32, 31, 33], voice: ['d2_q'] },
+
+        // mixfault：三式里恰好一式结果错
+        { type: 'mixfault', voice: ['c1_q'], sets: [
+          { a: 45, b: 28, op: '+', res: 73 },
+          { a: 6, b: 7, op: 'x', res: 42 },
+          { a: 72, b: 8, op: '/', res: 8 }
+        ] },
+        { type: 'mixfault', voice: ['c2_q'], sets: [
+          { a: 63, b: 27, op: '-', res: 35 },
+          { a: 9, b: 6, op: 'x', res: 54 },
+          { a: 56, b: 7, op: '/', res: 8 }
+        ] }
+      ]
     }
   }
 };

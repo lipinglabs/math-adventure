@@ -1,0 +1,91 @@
+{
+  "level": "lv48",
+  "status": "draft",
+  "note": "Ultimate Math Challenge: a look back over four operations, the ultimate trophy rises, then a mixed ten-question final. Gold star plays the finale voice with the trophy ceremony.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Wow! You have learned addition, subtraction, multiplication, and division!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Now, let's win the ultimate math trophy!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Forty-seven plus thirty-eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Ninety-two minus fifty-seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Sixty-eight plus twenty-seven.",
+      "mood": "ask"
+    },
+    {
+      "key": "m1_q",
+      "lang": "en",
+      "text": "Seven times eight.",
+      "mood": "ask"
+    },
+    {
+      "key": "m2_q",
+      "lang": "en",
+      "text": "Six times nine.",
+      "mood": "ask"
+    },
+    {
+      "key": "m3_q",
+      "lang": "en",
+      "text": "Eight times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "d1_q",
+      "lang": "en",
+      "text": "Eighty-four divided by four.",
+      "mood": "ask"
+    },
+    {
+      "key": "d2_q",
+      "lang": "en",
+      "text": "Ninety-six divided by three.",
+      "mood": "ask"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Which equation is wrong?",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Find the equation that is wrong.",
+      "mood": "ask"
+    },
+    {
+      "key": "t_gold",
+      "lang": "en",
+      "text": "You are a math master! The ultimate trophy is yours!",
+      "mood": "praise"
+    }
+  ]
+}
