@@ -1,0 +1,103 @@
+{
+  "level": "lv45",
+  "status": "draft",
+  "note": "Find the Missing Number: thirteen times three split into ten times three and three times three, then the same split used backwards to find a missing factor. Quiz: pick the product / drag the product into the slot / five second flash.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Thirteen times three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Ten times three is thirty. Three times three is nine.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Thirty plus nine is thirty-nine.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "What times four is forty-eight?",
+      "mood": "ask"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Let's try twelve. Twelve times four is forty-eight. Yes!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Sixteen times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Fourteen times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Twelve times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Eighteen times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Eleven times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Thirteen times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Fifteen times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "c1_q",
+      "lang": "en",
+      "text": "Thirteen times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "c2_q",
+      "lang": "en",
+      "text": "Seventeen times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "c3_q",
+      "lang": "en",
+      "text": "Nineteen times two.",
+      "mood": "ask"
+    }
+  ]
+}

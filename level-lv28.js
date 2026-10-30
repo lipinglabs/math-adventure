@@ -560,7 +560,7 @@
           correct(key);
           return;
         }
-        state.busy = true;
+        /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
         wrong(key);
         later(function () {
           if (state.locked || !alive) return;
@@ -708,7 +708,7 @@
     function pick(s, res, card) {
       if (state.locked || state.busy) return;
       if (!s.bad) {
-        state.busy = true;
+        /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
         wrong(card);
         later(function () {
           if (state.locked || !alive) return;

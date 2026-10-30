@@ -588,7 +588,7 @@
           correct(key);
           return;
         }
-        state.busy = true;
+        /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
         timer.stop();
         wrong(key);
         later(function () {
@@ -653,7 +653,7 @@
         correct(btn);
         return;
       }
-      state.busy = true;
+      /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
       timer.stop();
       wrong(btn);
       later(function () {
@@ -754,7 +754,7 @@
         return;
       }
 
-      state.busy = true;
+      /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
       timer.stop();
       wrong(c.node);
       later(function () {

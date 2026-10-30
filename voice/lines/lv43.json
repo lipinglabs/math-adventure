@@ -1,0 +1,91 @@
+{
+  "level": "lv43",
+  "status": "draft",
+  "note": "Split It Up: three groups of twelve split into tens and ones, then twelve times three splits into ten times three plus two times three. Quiz: hear a split and pick the result / drag the three results of a split / find the sentence that is split wrong.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Look! We have three groups of twelve.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Let's count the tens and ones separately.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Twelve times three is the same as ten times three, plus two times three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Thirty plus six equals thirty-six.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Twelve times three equals thirty-six!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Fourteen times two. Ten times two, plus four times two.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Twelve times four. Ten times four, plus two times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Thirteen times three. Ten times three, plus three times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Fifteen times four. Ten times four, plus five times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Fifteen times three. Ten times three, then five times three.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Twelve times four. Ten times four, then two times four.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Thirteen times five. Ten times five, then three times five.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which one is split wrong?",
+      "mood": "ask"
+    }
+  ]
+}

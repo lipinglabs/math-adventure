@@ -567,7 +567,7 @@
         correct(null);
         return;
       }
-      state.busy = true;
+      /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
       wrong(btn);
       later(function () {
         if (state.locked || !alive) return;
@@ -721,7 +721,7 @@
         correct(null);
         return;
       }
-      state.busy = true;
+      /* busy 由 wrong() 自己置位，先置会把它挡在门外（§6.17） */
       wrong(card);
       later(function () { if (!alive) return; state.busy = false; }, 420);
     }

@@ -2489,6 +2489,190 @@ window.MATH_DATA = {
           { a: 20, b: 5, n: 4, shown: 4 }
         ] }
       ]
+    },
+
+    43: {
+      id: 43,
+      name: 'Split It Up',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_43.jpg',
+      // 两位数乘一位数：把 12 拆成 10 和 2，分别乘再相加（分配律启蒙）。
+      // split      = 听拆解点结果（4 题；题面只显示算式，拆解在语音里）
+      // fill       = 拖拽三段填空（3 题；30 / 15 / 45 按顺序填，§6.15）
+      // wrongSplit = 找错误拆解（3 题；恰好一组个位拆错，答对后翻正）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv43/t1_a.mp3',
+          'lv43/t1_b.mp3',
+          'lv43/t1_c.mp3',
+          'lv43/t1_d.mp3',
+          'lv43/t1_e.mp3',
+
+          'lv43/a1_q.mp3',
+          'lv43/a2_q.mp3',
+          'lv43/a3_q.mp3',
+          'lv43/a4_q.mp3',
+
+          'lv43/b1_q.mp3',
+          'lv43/b2_q.mp3',
+          'lv43/b3_q.mp3',
+
+          'lv43/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_43.jpg']
+      },
+      questions: [
+        { type: 'split', a: 14, b: 2, options: [28, 24, 32], voice: ['a1_q'] },
+        { type: 'split', a: 12, b: 4, options: [48, 44, 52], voice: ['a2_q'] },
+        { type: 'split', a: 13, b: 3, options: [39, 33, 42], voice: ['a3_q'] },
+        { type: 'split', a: 15, b: 4, options: [60, 54, 64], voice: ['a4_q'] },
+
+        { type: 'fill', a: 15, b: 3, pool: [30, 15, 45, 35, 20, 50], voice: ['b1_q'] },
+        { type: 'fill', a: 12, b: 4, pool: [40, 8, 48, 20, 44, 50], voice: ['b2_q'] },
+        { type: 'fill', a: 13, b: 5, pool: [50, 15, 65, 45, 30, 60], voice: ['b3_q'] },
+
+        // wrongSplit：恰好一组个位拆错（shown ≠ a − 10）
+        { type: 'wrongSplit', voice: ['c_q'], sets: [
+          { a: 14, b: 3, shown: 4 },
+          { a: 12, b: 4, shown: 1 },
+          { a: 13, b: 5, shown: 3 }
+        ] },
+        { type: 'wrongSplit', voice: ['c_q'], sets: [
+          { a: 16, b: 2, shown: 6 },
+          { a: 15, b: 4, shown: 5 },
+          { a: 11, b: 6, shown: 0 }
+        ] },
+        { type: 'wrongSplit', voice: ['c_q'], sets: [
+          { a: 18, b: 3, shown: 8 },
+          { a: 12, b: 2, shown: 3 },
+          { a: 17, b: 4, shown: 7 }
+        ] }
+      ]
+    },
+
+    44: {
+      id: 44,
+      name: 'Bigger Arrays',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_44.jpg',
+      // 两位数乘法的视觉验证：3×10 与 3×2 拼成 3×12，转 90° 后又读成 12×3。
+      // pick      = 看点阵选算式（4 题；只有一张的行×列与总数都对）
+      // fillArray = 拖条拼阵列（3 题；十位阵已给，拖 r 条零散条填满，§5.29）
+      // wrong     = 找错误结果（3 题；恰好一组总数错，答对后翻正）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv44/t1_a.mp3',
+          'lv44/t1_b.mp3',
+          'lv44/t1_c.mp3',
+          'lv44/t1_d.mp3',
+          'lv44/t1_e.mp3',
+
+          'lv44/a1_q.mp3',
+          'lv44/a2_q.mp3',
+          'lv44/a3_q.mp3',
+          'lv44/a4_q.mp3',
+
+          'lv44/b1_q.mp3',
+          'lv44/b2_q.mp3',
+          'lv44/b3_q.mp3',
+
+          'lv44/c_q.mp3'
+        ],
+        images: ['assets/bg/bg_44.jpg']
+      },
+      questions: [
+        { type: 'pick', r: 4, c: 13, options: [[4, 13, 52], [4, 10, 40], [13, 3, 39]], voice: ['a1_q'] },
+        { type: 'pick', r: 3, c: 12, options: [[3, 12, 36], [3, 10, 30], [12, 12, 144]], voice: ['a2_q'] },
+        { type: 'pick', r: 5, c: 14, options: [[5, 14, 70], [5, 10, 50], [14, 4, 56]], voice: ['a3_q'] },
+        { type: 'pick', r: 2, c: 15, options: [[2, 15, 30], [2, 10, 20], [15, 5, 75]], voice: ['a4_q'] },
+
+        { type: 'fillArray', r: 4, c: 12, voice: ['b1_q'] },
+        { type: 'fillArray', r: 3, c: 13, voice: ['b2_q'] },
+        { type: 'fillArray', r: 4, c: 13, voice: ['b3_q'] },
+
+        // wrong：恰好一组「总数」错
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { r: 3, c: 12, shown: 36 },
+          { r: 4, c: 11, shown: 45 },
+          { r: 2, c: 13, shown: 26 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { r: 5, c: 12, shown: 60 },
+          { r: 3, c: 14, shown: 43 },
+          { r: 4, c: 10, shown: 40 }
+        ] },
+        { type: 'wrong', voice: ['c_q'], sets: [
+          { r: 2, c: 16, shown: 32 },
+          { r: 4, c: 12, shown: 48 },
+          { r: 3, c: 13, shown: 40 }
+        ] }
+      ]
+    },
+
+    45: {
+      id: 45,
+      name: 'Find the Missing Number',
+      status: 'ready',
+      // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
+      background: 'assets/bg/bg_45.jpg',
+      // 半抽象：拆成整十与个位，先求结果，再反过来求乘数。
+      // pick  = 点选结果（4 题；答对后补一行 10×b + u×b 的拆解提示）
+      // fill  = 拖拽填空（3 题；单空，数字池 4 个，放错弹回不记错）
+      // flash = 五秒闪电（3 题；语音播完才计时，§6.9）
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+
+          'lv45/t1_a.mp3',
+          'lv45/t1_b.mp3',
+          'lv45/t1_c.mp3',
+          'lv45/t1_d.mp3',
+          'lv45/t1_e.mp3',
+
+          'lv45/a1_q.mp3',
+          'lv45/a2_q.mp3',
+          'lv45/a3_q.mp3',
+          'lv45/a4_q.mp3',
+
+          'lv45/b1_q.mp3',
+          'lv45/b2_q.mp3',
+          'lv45/b3_q.mp3',
+
+          'lv45/c1_q.mp3',
+          'lv45/c2_q.mp3',
+          'lv45/c3_q.mp3'
+        ],
+        images: ['assets/bg/bg_45.jpg']
+      },
+      questions: [
+        { type: 'pick', a: 16, b: 2, options: [32, 30, 36], voice: ['a1_q'] },
+        { type: 'pick', a: 14, b: 3, options: [42, 40, 46], voice: ['a2_q'] },
+        { type: 'pick', a: 12, b: 5, options: [60, 55, 65], voice: ['a3_q'] },
+        { type: 'pick', a: 18, b: 2, options: [36, 34, 40], voice: ['a4_q'] },
+
+        { type: 'fill', a: 11, b: 5, pool: [55, 50, 45, 60], voice: ['b1_q'] },
+        { type: 'fill', a: 13, b: 4, pool: [52, 48, 56, 42], voice: ['b2_q'] },
+        { type: 'fill', a: 15, b: 3, pool: [45, 40, 35, 50], voice: ['b3_q'] },
+
+        { type: 'flash', a: 13, b: 2, options: [26, 24, 28], voice: ['c1_q'] },
+        { type: 'flash', a: 17, b: 3, options: [51, 48, 54], voice: ['c2_q'] },
+        { type: 'flash', a: 19, b: 2, options: [38, 36, 40], voice: ['c3_q'] }
+      ]
     }
   }
 };

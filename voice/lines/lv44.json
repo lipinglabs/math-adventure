@@ -1,0 +1,91 @@
+{
+  "level": "lv44",
+  "status": "draft",
+  "note": "Bigger Arrays: a three by ten array and a three by two array slide together into three rows of twelve, then the same array turns ninety degrees to show twelve rows of three. Quiz: read the array and pick the sentence / drag the loose strips to complete the array / find the result that does not match.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    {
+      "key": "t1_a",
+      "lang": "en",
+      "text": "Let's look at this big array.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_b",
+      "lang": "en",
+      "text": "Three rows of ten, and three rows of two.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_c",
+      "lang": "en",
+      "text": "Three times twelve is thirty-six!",
+      "mood": "praise"
+    },
+    {
+      "key": "t1_d",
+      "lang": "en",
+      "text": "Three rows of twelve is the same as twelve rows of three.",
+      "mood": "teach"
+    },
+    {
+      "key": "t1_e",
+      "lang": "en",
+      "text": "Both have thirty-six dots!",
+      "mood": "praise"
+    },
+    {
+      "key": "a1_q",
+      "lang": "en",
+      "text": "Four rows of thirteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "a2_q",
+      "lang": "en",
+      "text": "Three rows of twelve.",
+      "mood": "ask"
+    },
+    {
+      "key": "a3_q",
+      "lang": "en",
+      "text": "Five rows of fourteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "a4_q",
+      "lang": "en",
+      "text": "Two rows of fifteen.",
+      "mood": "ask"
+    },
+    {
+      "key": "b1_q",
+      "lang": "en",
+      "text": "Twelve times four. Fill the four rows of two.",
+      "mood": "ask"
+    },
+    {
+      "key": "b2_q",
+      "lang": "en",
+      "text": "Thirteen times three. Fill the three rows of three.",
+      "mood": "ask"
+    },
+    {
+      "key": "b3_q",
+      "lang": "en",
+      "text": "Thirteen times four. Fill the four rows of three.",
+      "mood": "ask"
+    },
+    {
+      "key": "c_q",
+      "lang": "en",
+      "text": "Which result does not match?",
+      "mood": "ask"
+    }
+  ]
+}
