@@ -945,6 +945,63 @@ window.MATH_DATA = {
         { type: 'split', a: 9, b: 6, split: 1, total: 15, options: [4, 5, 6], voice: ['c2_q'] },
         { type: 'split', a: 7, b: 5, split: 3, total: 12, options: [1, 2, 3], voice: ['c3_q'] }
       ]
+    },
+    18: {
+      id: 18,
+      name: 'Split It',
+      status: 'ready',
+      // 第三阶段第三关：把「拆数凑十」单独拎出来练。
+      // splitfill = 分步填空：先填「凑十要几个」，再填「还剩几个」（4 题，§6.15）
+      // pick      = 听算式，点出对应的拆解图（3 题，三张图的拆解和互不相同）
+      // calc      = 直接点选结果（3 题）
+      // 拆出来两块必须不相等（否则同一个数字键要用两次，第二空点不了）。
+      assets: {
+        audio: [
+          'common/ready.mp3',
+          'common/try_again.mp3',
+          'common/gold.mp3',
+          'common/silver.mp3',
+          'lv18/t1_q.mp3',
+          'lv18/t1_a.mp3',
+          'lv18/t2_a.mp3',
+          'lv18/t2_b.mp3',
+          'lv18/t2_c.mp3',
+          'lv18/t3_a.mp3',
+          'lv18/t3_b.mp3',
+          'lv18/a1_q.mp3',
+          'lv18/a2_q.mp3',
+          'lv18/a3_q.mp3',
+          'lv18/a4_q.mp3',
+          'lv18/a_ask_q.mp3',
+          'lv18/a_more_q.mp3',
+          'lv18/b1_q.mp3',
+          'lv18/b2_q.mp3',
+          'lv18/b3_q.mp3',
+          'lv18/c1_q.mp3',
+          'lv18/c2_q.mp3',
+          'lv18/c3_q.mp3'
+        ],
+        images: []
+      },
+      // splitfill：options 必须同时包含 (10-a) 和 (b-(10-a))，另一个是纯干扰。
+      questions: [
+        { type: 'splitfill', a: 9, b: 4, options: [1, 2, 3], voice: ['a1_q'] },
+        { type: 'splitfill', a: 8, b: 7, options: [2, 4, 5], voice: ['a2_q'] },
+        { type: 'splitfill', a: 9, b: 7, options: [1, 5, 6], voice: ['a3_q'] },
+        { type: 'splitfill', a: 6, b: 5, options: [1, 3, 4], voice: ['a4_q'] },
+
+        // pick：每张图都是「a + 凑十数 + 剩下」，干扰图的拆解和与目标不同。
+        { type: 'pick', answer: 0, voice: ['b1_q'],
+          cards: [[8, 2, 3], [7, 3, 2], [9, 1, 4]] },
+        { type: 'pick', answer: 0, voice: ['b2_q'],
+          cards: [[9, 1, 5], [8, 2, 3], [7, 3, 4]] },
+        { type: 'pick', answer: 0, voice: ['b3_q'],
+          cards: [[7, 3, 1], [6, 4, 3], [9, 1, 4]] },
+
+        { type: 'calc', a: 7, b: 6, options: [12, 13, 14], voice: ['c1_q'] },
+        { type: 'calc', a: 9, b: 8, options: [16, 17, 18], voice: ['c2_q'] },
+        { type: 'calc', a: 6, b: 5, options: [10, 11, 12], voice: ['c3_q'] }
+      ]
     }
   }
 };

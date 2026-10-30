@@ -6924,3 +6924,463 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l17-key { width: 78px; height: 78px; }
   .l17-tray { min-height: 102px; }
 }
+
+/* ============================================================
+   Split It（level-lv18）：数字拆分填空 · 进位加法
+   ------------------------------------------------------------
+   教学：两个十格阵（8 个 + 一个空的）→ 5 被劈成 2 和 3 → 竖式里 2 飞向 8
+   答题：分步填空（先凑十、再剩几）/ 听算式点拆解图 / 直接点结果
+   数字块一律 Q 弹：按下 92ms 压缩、落位 scale(1.2,.76) → 回弹。
+   ============================================================ */
+
+.l18-teach {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ---------------- 数字块 ---------------- */
+
+.l18-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.l18-tile {
+  display: grid;
+  place-items: center;
+  min-width: 46px;
+  height: 56px;
+  padding: 0 8px;
+  border-radius: 16px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(165deg, #FFFDF7 0%, #F6E7CE 100%);
+  box-shadow: 0 4px 0 #E3CDAA, 0 7px 13px rgba(150, 120, 90, 0.15),
+              inset 0 2px 5px rgba(255, 255, 255, 0.9);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 160ms var(--ease-soft),
+              color 160ms var(--ease-soft);
+}
+
+.l18-tile--big {
+  min-width: 58px;
+  height: 70px;
+  font-size: 32px;
+  border-radius: 19px;
+}
+
+.l18-op {
+  min-width: 22px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: #C79E6A;
+}
+
+.l18-blank {
+  color: #C0A582;
+  background: rgba(255, 253, 248, 0.9);
+  border: 3px dashed #CBB28F;
+  box-shadow: none;
+}
+
+.l18-filled {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  border: none;
+  box-shadow: 0 4px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.22),
+              inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l18-ten {
+  color: #7A4A0C;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 4px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* 填空进行中：当前那个空在呼吸 */
+.l18-q--left.is-active,
+.l18-q--right.is-active {
+  border-color: #E8A046;
+  color: #C98A3A;
+  animation: l18-blank-pulse 1.15s ease-in-out infinite;
+}
+
+@keyframes l18-blank-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 160, 70, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(232, 160, 70, 0.26); }
+}
+
+/* ---------------- 两个十格阵 ---------------- */
+
+.l18-frames {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.l18-frame { --cell: 26px; border-radius: 16px; }
+
+.l18-frame.is-ghost { opacity: 0.5; }
+
+.l18-dot {
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #FFD9A0 0%, #F0A94E 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(180, 120, 50, 0.3);
+}
+
+/* 差两个就满：空格闪 */
+.l18-frame.is-need .tf-cell:not(.is-on) {
+  background: rgba(255, 228, 176, 0.9);
+  animation: l18-cell-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes l18-cell-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 2px rgba(240, 170, 70, 0.45); }
+  50% { box-shadow: inset 0 0 0 3px rgba(240, 170, 70, 0.95); }
+}
+
+/* ---------------- 教学第二幕：劈开 5 ---------------- */
+
+.l18-split {
+  position: relative;
+  width: 100%;
+  height: 172px;
+}
+
+.l18-big {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 70px;
+  height: 70px;
+  margin-left: -35px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  color: #6B4E31;
+  background: linear-gradient(165deg, #FFFDF7 0%, #F6E7CE 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.16),
+              inset 0 2px 5px rgba(255, 255, 255, 0.9);
+  transition: opacity 220ms var(--ease-soft), transform 220ms var(--ease-soft);
+}
+
+/* 劈之前先裂一道缝 */
+.l18-big.is-crack::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(214, 178, 120, 0.9));
+  box-shadow: 0 0 8px rgba(255, 220, 150, 0.9);
+}
+
+.l18-big.is-out { opacity: 0.3; transform: scale(0.94); }   /* 淡出但留个影子，让拆分的两条腿有落点 */
+
+.l18-leg {
+  position: absolute;
+  left: 50%;
+  top: 62px;
+  width: 2px;
+  height: 52px;
+  margin-left: -1px;
+  background: linear-gradient(180deg, rgba(199, 158, 106, 0.75), rgba(199, 158, 106, 0.25));
+  transform-origin: 50% 0;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-soft);
+}
+
+.l18-leg--l { transform: rotate(-32deg); }
+.l18-leg--r { transform: rotate(32deg); }
+.l18-leg.is-on { opacity: 1; }
+
+.l18-chip {
+  position: absolute;
+  top: 108px;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #8A5A12;
+  background: linear-gradient(160deg, #FFF3CB 0%, #FFC94F 100%);
+  box-shadow: 0 4px 0 #D89A2C, 0 7px 13px rgba(180, 130, 40, 0.24),
+              inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.l18-chip--l { left: calc(50% - 74px); }
+.l18-chip--r { left: calc(50% + 20px); }
+
+/* ---------------- 教学第二幕：两条推导 ---------------- */
+
+.l18-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.l18-step {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: rgba(255, 253, 247, 0.9);
+  box-shadow: 0 3px 0 rgba(227, 205, 170, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  transition: opacity 240ms var(--ease-soft);
+}
+
+.l18-step .l18-tile {
+  min-width: 38px;
+  height: 42px;
+  font-size: 22px;
+  border-radius: 12px;
+  box-shadow: 0 2px 0 rgba(198, 168, 128, 0.45);
+}
+
+.l18-step.is-hidden { opacity: 0; }
+
+/* ---------------- 教学第三幕：竖式 ---------------- */
+
+.l18-vsum {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px 20px;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #FFFDF7 0%, #F8EAD2 100%);
+  box-shadow: 0 6px 0 #E7D0AE, 0 12px 22px rgba(150, 120, 90, 0.16),
+              inset 0 3px 7px rgba(255, 255, 255, 0.92);
+}
+
+.l18-vnums { display: flex; flex-direction: column; gap: 2px; }
+
+.l18-vrow { display: flex; align-items: center; }
+
+.l18-vnum {
+  width: 56px;
+  height: 56px;
+  min-width: 0;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 34px;
+  background: transparent;
+  box-shadow: none;
+  color: #6B4E31;
+  transition: color 200ms var(--ease-soft), background 200ms var(--ease-soft),
+              box-shadow 200ms var(--ease-soft);
+}
+
+.l18-vplus {
+  place-items: center end;
+  padding-right: 6px;
+  font-size: 26px;
+  color: #C79E6A;
+}
+
+.l18-vq { color: #C0A582; }
+
+.l18-vres {
+  color: #2F7C5E;
+  background: linear-gradient(160deg, #E9FAF2 0%, #BCE9D4 100%);
+  box-shadow: 0 3px 0 #7FC3A6, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.l18-vnum.is-ten {
+  color: #7A4A0C;
+  background: linear-gradient(160deg, #FFF4CF 0%, #FFDF9A 100%);
+  box-shadow: 0 3px 0 #D8A94A, inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.l18-vline {
+  width: 112px;
+  height: 4px;
+  margin: 5px 0;
+  border-radius: 3px;
+  background: #C79E6A;
+}
+
+.l18-vchips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 46px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-soft), width 320ms var(--ease-soft);
+}
+
+.l18-vchips.is-on { opacity: 1; }
+
+/* 两片都飞走之后收起这一列，卡片跟着收窄（不留下半张空白） */
+.l18-vchips.is-empty { width: 0; opacity: 0; }
+
+.l18-chip--mini {
+  position: static;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  font-size: 22px;
+}
+
+.l18-chip.is-gone { opacity: 0; }
+
+/* 凑成十的小徽章 */
+.l18-tenbadge {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+  color: #7A4A0C;
+  background: linear-gradient(180deg, #FFF3CB 0%, #FFC94F 100%);
+  box-shadow: 0 2px 0 #D89A2C, 0 5px 10px rgba(180, 130, 40, 0.28);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------------- 答题：数字键（§5.12 按下立刻有反应） ---------------- */
+
+.l18-tray { min-height: 108px; }
+
+.l18-key {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border-radius: 27px;
+  color: #7A5A2E;
+  background: linear-gradient(180deg, #FFEBC4 0%, #FFD07A 100%);
+  box-shadow: 0 5px 0 #E0AE45, 0 10px 16px rgba(180, 140, 70, 0.2),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+  transition: transform 92ms cubic-bezier(.2, .8, .3, 1),
+              box-shadow 92ms ease, background 92ms ease, color 92ms ease,
+              opacity 200ms var(--ease-soft);
+}
+
+.l18-key:active {
+  transform: translateY(5px) scale(0.96);
+  box-shadow: 0 0 0 #E0AE45, 0 3px 6px rgba(180, 140, 70, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+/* 已经用掉的键（下一步不能再点） */
+.l18-key.is-used {
+  opacity: 0.34;
+  pointer-events: none;
+  transform: translateY(4px) scale(0.94);
+  box-shadow: 0 1px 0 #E0AE45, inset 0 3px 6px rgba(255, 255, 255, 0.6);
+}
+
+.l18-key.is-right {
+  color: #2F6B5A;
+  background: linear-gradient(180deg, #D9F6EC 0%, #8FDCC4 100%);
+  box-shadow: 0 5px 0 #5FAF97, 0 10px 16px rgba(80, 150, 130, 0.22),
+              inset 0 3px 6px rgba(255, 255, 255, 0.85);
+}
+
+.l18-key-digit {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------- 答题：听算式点拆解图 ---------------- */
+
+.l18-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.l18-pick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  padding: 12px 10px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F7E9D2 100%);
+  box-shadow: 0 5px 0 #E3CDAA, 0 9px 16px rgba(150, 120, 90, 0.14),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+  transition: transform 150ms var(--ease-jelly), box-shadow 150ms var(--ease-soft);
+}
+
+.l18-pick:active { transform: translateY(4px) scale(0.99); }
+
+.l18-pick.is-right {
+  background: linear-gradient(160deg, #F1FBF5 0%, #CFF0E1 100%);
+  box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24),
+              0 10px 18px rgba(80, 150, 130, 0.18),
+              inset 0 3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.l18-check {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  background: #4FB07C;
+  box-shadow: 0 2px 0 #3E9468, 0 4px 8px rgba(60, 130, 100, 0.3);
+}
+
+/* ---------------- 答题：分步填空 ---------------- */
+
+.l18-teach--quiz { gap: 14px; }
+
+.l18-eq--split { margin-top: 2px; }
+
+/* 窄屏（≤379px）：数字块缩一档 */
+@media (max-width: 379px) {
+  .l18-frame { --cell: 23px; }
+  .l18-tile { min-width: 42px; height: 52px; font-size: 24px; }
+  .l18-eq { gap: 6px; }
+  .l18-split { height: 164px; }
+  .l18-chip { width: 50px; height: 50px; top: 104px; }
+  .l18-chip--l { left: calc(50% - 68px); }
+  .l18-chip--r { left: calc(50% + 18px); }
+  .l18-vnum { width: 50px; height: 52px; font-size: 30px; }
+  .l18-vline { width: 100px; }
+  .l18-chip--mini { width: 42px; height: 42px; }
+  .l18-pick { padding: 10px 6px; gap: 5px; }
+  .l18-key { width: 78px; height: 78px; }
+  .l18-tray { min-height: 102px; }
+}

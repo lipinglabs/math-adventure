@@ -1,0 +1,35 @@
+{
+  "level": "lv18",
+  "status": "draft",
+  "note": "Stage 3, third level: split a number to make ten. Three teaching scenes — 8+5 with two ten-frames (one empty), the 5 cracking into 2 and 3, then the vertical sum with the 2 flying onto the 8. Answer phase: fill both split blanks (two steps) / listen and pick the matching split picture / tap the total. No self-answer during the quiz.",
+  "rate": -15,
+  "pitch": 0,
+  "sampleRate": 24000,
+  "voice": {
+    "en": "en_female_allison_uranus_bigtts"
+  },
+  "lines": [
+    { "key": "t1_q", "lang": "en", "text": "Remember how to make a ten?", "mood": "ask" },
+    { "key": "t1_a", "lang": "en", "text": "Eight needs two more to fill the box.", "mood": "teach" },
+    { "key": "t2_a", "lang": "en", "text": "So, we split five into two and three.", "mood": "teach" },
+    { "key": "t2_b", "lang": "en", "text": "Eight plus two equals ten. And ten plus three equals thirteen.", "mood": "teach" },
+    { "key": "t2_c", "lang": "en", "text": "Eight plus five equals thirteen!", "mood": "praise" },
+    { "key": "t3_a", "lang": "en", "text": "When we add, we split the number to make a ten first.", "mood": "teach" },
+    { "key": "t3_b", "lang": "en", "text": "Then we add the rest.", "mood": "teach" },
+
+    { "key": "a1_q", "lang": "en", "text": "Nine plus four. Let's split four.", "mood": "ask" },
+    { "key": "a2_q", "lang": "en", "text": "Eight plus seven. Let's split seven.", "mood": "ask" },
+    { "key": "a3_q", "lang": "en", "text": "Nine plus seven. Let's split seven.", "mood": "ask" },
+    { "key": "a4_q", "lang": "en", "text": "Six plus five. Let's split five.", "mood": "ask" },
+    { "key": "a_ask_q", "lang": "en", "text": "How many do we need to make a ten?", "mood": "ask" },
+    { "key": "a_more_q", "lang": "en", "text": "And how many more?", "mood": "ask" },
+
+    { "key": "b1_q", "lang": "en", "text": "Find the picture that shows eight plus five.", "mood": "ask" },
+    { "key": "b2_q", "lang": "en", "text": "Find the picture that shows nine plus six.", "mood": "ask" },
+    { "key": "b3_q", "lang": "en", "text": "Find the picture that shows seven plus four.", "mood": "ask" },
+
+    { "key": "c1_q", "lang": "en", "text": "Seven plus six. What is the answer?", "mood": "ask" },
+    { "key": "c2_q", "lang": "en", "text": "Nine plus eight. What is the answer?", "mood": "ask" },
+    { "key": "c3_q", "lang": "en", "text": "Six plus five. What is the answer?", "mood": "ask" }
+  ]
+}
