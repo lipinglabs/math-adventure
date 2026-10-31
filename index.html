@@ -28,7 +28,6 @@
 
   <!-- ============ Map screen ============ -->
   <section id="screen-map" class="screen screen--map is-active" aria-label="Level map">
-    <div id="map-bg" class="map-bg" aria-hidden="true"></div>
     <div class="sky" aria-hidden="true">
       <span class="cloud cloud--a"></span>
       <span class="cloud cloud--b"></span>
@@ -53,6 +52,8 @@
     </header>
 
     <div class="map-wrap">
+      <!-- 阶段背景：只铺在地图容器内，压在岛屿节点之下，不碰顶栏与底部导航 -->
+      <div id="map-bg" class="map-bg" aria-hidden="true"></div>
       <!--
         分阶段地图：一屏只放一个「页」（≤6 个节点）。
         每一页自带一条轨迹（path 由 app.js 依节点坐标生成，viewBox 固定 390×620），
@@ -61,7 +62,6 @@
       <div id="map-viewport" class="map-viewport">
         <div id="map-track" class="map-track"></div>
       </div>
-
       <p id="map-note" class="map-note">Tap a level to play</p>
 
       <div class="map-nav">

@@ -100,14 +100,15 @@ svg { display: block; }
 
 .sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 
-/* 阶段背景：5 张照片按当前 Stage 轮换，压得很淡，只做「有个人陪着你」的存在感 */
+/* 阶段背景：铺在地图容器内部，压在岛屿节点之下（不碰顶栏、底部导航，也不与山丘云层打架）
+   —— 容器本身没有底色，所以照片会直接透出来，只被自己的圆角裁一刀 */
 .map-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background-size: cover;
-  background-position: center 34%;
+  background-position: center 26%;
   background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 700ms var(--ease-soft);
