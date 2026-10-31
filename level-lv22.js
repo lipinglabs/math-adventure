@@ -568,6 +568,12 @@
     var sum = q.a + q.b;
     var want = [Math.floor(q.a / 10), q.a % 10, Math.floor(q.b / 10), q.b % 10, Math.floor(sum / 10), sum % 10];
 
+    // 降难度（2026-10-31）：预先给两个孩子两个位，只剩四个要拖。
+    //   方案 A：加数的十位 + 被加数的个位
+    //   方案 B：加数的个位 + 被加数的十位
+    var GIVEN_SETS = [[0, 3], [1, 2]];
+    var given = GIVEN_SETS[Math.random() < 0.5 ? 0 : 1];
+
     var board = el('div', 'l22-board');
     var v = vsum(q.a, q.b);
     v.node.classList.add('l22-vs--slots');
@@ -592,7 +598,17 @@
     makeSlot(v.r3.tens, want[4], 'tens of the answer');
     makeSlot(v.r3.ones, want[5], 'ones of the answer');
 
-    var pool = Engine.quiz.shuffle(want.slice());
+    // 预填给定的两个位（不可再拖入），剩下的才进数字池
+    slots.forEach(function (s, i) {
+      if (given.indexOf(i) < 0) return;
+      s.filled = true;
+      s.cell.textContent = String(s.value);
+      s.cell.classList.add('is-filled', 'is-given');
+    });
+
+    var pool = Engine.quiz.shuffle(want.filter(function (v, i) {
+      return given.indexOf(i) < 0;
+    }));
     var chips = [];
 
     function paint() {
@@ -722,25 +738,15 @@
       popIn(tick, 40);
       snapPop(node);
 
-      if (s.skew) {
-        // 没对齐：把它对齐回去
-        later(function () {
-          v.node.classList.remove('is-skew');
-          v.node.classList.add('is-fixed');
-          snapPop(v.node);
-          Engine.sfx.correct();
-          later(function () { Engine.sfx.star(); }, 90);
-          burst(node);
-        }, 300);
-      } else {
-        // 算错：只翻结果格（§6.11）
+      // 只翻结果格（§6.11）；skew 题里若和也错，对齐之后再翻
+      function flipResult() {
+        var fixed = s.a + s.b;
         later(function () {
           v.r3.tens.classList.add('is-flip');
           v.r3.ones.classList.add('is-flip');
           later(function () {
             v.r3.tens.textContent = '';
             v.r3.ones.textContent = '';
-            var fixed = s.a + s.b;
             v.r3.tens.appendChild(el('i', 'l22-digit', String(Math.floor(fixed / 10))));
             v.r3.ones.appendChild(el('i', 'l22-digit', String(fixed % 10)));
             v.r3.tens.classList.remove('is-flip');
@@ -753,6 +759,21 @@
             burst(node);
           }, 230);
         }, 240);
+      }
+
+      if (s.skew) {
+        // 没对齐：把它对齐回去
+        later(function () {
+          v.node.classList.remove('is-skew');
+          v.node.classList.add('is-fixed');
+          snapPop(v.node);
+          Engine.sfx.correct();
+          later(function () { Engine.sfx.star(); }, 90);
+          burst(node);
+          if (s.a + s.b !== s.shown) flipResult();
+        }, 300);
+      } else {
+        flipResult();
       }
 
       correct(null, WRONG_HOLD);

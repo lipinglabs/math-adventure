@@ -235,11 +235,28 @@
     if (next) { next.disabled = atEnd; next.classList.toggle('is-off', atEnd); }
   }
 
+  /**
+   * 地图的阶段背景：五个 Stage 各一张照片（assets/bg/stage_1…5.jpg），
+   * 翻到哪个阶段就换哪张。只换不预载，首屏只请求当前阶段那一张。
+   * 统一压到 12%：照片构图差异大，逐阶校准反而制造跳变，统一淡度最稳。
+   */
+
+  function paintMapBg(stage) {
+    var node = byId('map-bg');
+    if (!node || !stage) return;
+    var url = 'assets/bg/stage_' + stage + '.jpg';
+    if (node.dataset.bg === url) return;
+    node.dataset.bg = url;
+    node.style.backgroundImage = 'url("' + url + '")';
+    node.classList.add('is-on');
+  }
+
   function goTo(index, animate) {
     if (!view.pages.length) return;
     view.index = Math.max(0, Math.min(view.pages.length - 1, index));
     paintTrack(0, animate !== false);
     paintStageMeta();
+    paintMapBg(view.pages[view.index].stage);
   }
 
   function stageJump(dir) {
@@ -305,6 +322,7 @@
 
     paintTrack(0, slide);
     paintStageMeta();
+    paintMapBg(view.pages[view.index] ? view.pages[view.index].stage : null);
 
     var gold = Progress.summary().gold;
     var note = byId('map-note');

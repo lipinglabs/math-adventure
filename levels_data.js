@@ -1297,7 +1297,7 @@ window.MATH_DATA = {
         { type: 'wrong', voice: ['c_q'], sums: [
           { a: 32, b: 15, shown: 47 },
           { a: 46, b: 13, shown: 59 },
-          { a: 24, b: 13, shown: 37, skew: true }
+          { a: 24, b: 13, shown: 38, skew: true }
         ] },
         { type: 'wrong', voice: ['c_q'], sums: [
           { a: 41, b: 27, shown: 68 },
