@@ -680,6 +680,11 @@
       items = [];
       list.forEach(function (s, i) {
         var v = vsum(s.a, s.b, { skew: s.skew });
+        // 答题场景不做入场动画：三行与横线直接落位，否则 .l22-vrow 的 opacity:0 会让卡片一片空白
+        v.r1.row.classList.add('is-in');
+        v.r2.row.classList.add('is-in');
+        v.line.classList.add('is-in');
+        v.r3.row.classList.add('is-in');
         var wrap = el('button', 'l22-vcard');
         wrap.type = 'button';
         wrap.dataset.key = s.a + '+' + s.b + '=' + s.shown + (s.skew ? 's' : '');

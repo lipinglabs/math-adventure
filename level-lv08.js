@@ -375,7 +375,7 @@
     if (!alive) return;
 
     // 「We put the new cars in the ones garage.」——三辆车依次开进车位
-    saySeq(['t2_a']);
+    var lineA = saySeq(['t2_a']);           // 3.6s，动画与语音并行，等它说完再换句
     var parked = [];
     laneBox.picks.forEach(function (p, i) {
       later(function () {
@@ -388,14 +388,17 @@
       }, 240 + i * 460);
     });
 
-    await sleep(2600);
+    await lineA;
     if (!alive) return;
 
     // 车都进库了，收起空车道（只淡出，不挪动任何东西 §5.7）
-    later(function () { laneBox.node.classList.add('is-clear'); }, 1500);
+    laneBox.node.classList.add('is-clear');
+
+    await sleep(420);
+    if (!alive) return;
 
     // 「Two cars plus three cars equals five cars.」——先点两辆，再点三辆，最后五辆一起
-    saySeq(['t2_b']);
+    var lineB = saySeq(['t2_b']);           // 5.5s
     later(function () {
       g.slots.slice(0, 2).forEach(function (s, i) {
         if (s.firstChild) bounce(s.firstChild, i * 140);
@@ -412,7 +415,10 @@
       badge(g.ones, '5');
     }, 3150);
 
-    await sleep(5200);
+    await lineB;
+    if (!alive) return;
+
+    await sleep(300);
     if (!alive) return;
 
     await saySeq(['t2_c']);                 // So, twelve plus three equals fifteen! One ten and five ones.
@@ -450,18 +456,21 @@
     if (!alive) return;
 
     // 「When we add, the ten garage stays the same.」
-    saySeq(['t3_a']);
+    var lineA = saySeq(['t3_a']);           // 4.7s
     g.ten.classList.add('is-ten-on');
     vert.tens.forEach(function (c, i) {
       c.classList.add('is-ten');
       bounce(c, i * 220);
     });
 
-    await sleep(2600);
+    await lineA;
+    if (!alive) return;
+
+    await sleep(260);
     if (!alive) return;
 
     // 「We only add the ones garage.」
-    saySeq(['t3_b']);
+    var lineB = saySeq(['t3_b']);           // 3.1s
     g.ones.classList.add('is-ones-on');
     vert.ones.forEach(function (c, i) {
       c.classList.add('is-ones');
@@ -473,10 +482,11 @@
       vert.sumDigits.forEach(function (c, i) { popIn(c, i * 140); });
     }, 1400);
 
-    await sleep(3800);
+    await lineB;
     if (!alive) return;
 
-    await sleep(280);
+    await sleep(1400);
+    if (!alive) return;
   }
 
   /* ---------------- 点击推进 ---------------- */

@@ -9543,7 +9543,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 }
 
 /* 没对齐：个位那一列整体右移，压在十位上 */
-.l22-vs.is-skew .l22-vcell--o { transform: translateX(13px); }
+.l22-vs.is-skew .l22-vcell--o { transform: translateX(10px); }
 
 .l22-vs.is-fixed { box-shadow: 0 5px 0 #7FC3A6, 0 0 0 4px rgba(79, 176, 124, 0.24), 0 9px 16px rgba(80, 150, 130, 0.16); }
 
@@ -9693,7 +9693,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 
 .l22-vcard {
   position: relative;
-  padding: 8px 6px;
+  padding: 8px 10px;
   border-radius: 18px;
   background: linear-gradient(160deg, #FFFDF8 0%, #F6E7CE 100%);
   box-shadow: 0 4px 0 #E3CDAA, 0 8px 14px rgba(150, 120, 90, 0.12);

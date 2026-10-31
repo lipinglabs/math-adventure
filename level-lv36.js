@@ -141,7 +141,7 @@
         if (i >= list.length) { resolve(true); return; }
         var key = list[i];
         i += 1;
-        ctx.audio.play('l36/' + key).then(step, step);
+        ctx.audio.play('lv36/' + key).then(step, step);
       }
       step();
     });
