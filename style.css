@@ -52,6 +52,9 @@ html, body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
+  /* iOS 横屏 / 微信内置浏览器会擅自放大字号，锁死排版比例 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {

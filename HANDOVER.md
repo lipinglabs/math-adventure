@@ -427,6 +427,10 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - **背景照片池**：48 张照片经 `tools/process_bg.py` 处理成 `assets/bg/bg_01…48.jpg`，
   L1–L48 已一关一张挂好；渲染规范见 §5.17（`z-index:-1` + `isolation:isolate` + 0.72 白纱 + 按关加载）；
 - 全英文改造：界面零中文，按钮全部 SVG 图标；
+- **试用反馈三修（2026-10-31，commit `1b7c0df`）**：① L8 教学把「固定 `sleep` 抢在语音前」改为 `await saySeq(...)` 驱动，
+  三处必截断的等待（2600 / 5200 / 2600 ms 对应 3.58 / 5.50 / 4.73 秒语音）全部消除；② L22 `buildWrong()` 补 `is-in`
+  —— `.l22-vrow` 默认 `opacity:0`，缺类导致三张竖式卡"有字但全透明"，同时卡片内边距 6→10px、skew 位移 13→10px 防个位列出界；
+  ③ L36 语音前缀 `l36/` → `lv36/`，此前 12 条语音全 404、`play()` 抛 `NotSupportedError` 被 `saySeq` 静默吞掉；
 - 素材持久化：Cache Storage `math-adventure-assets-v1`，二次进入不重新下载、不弹读条；
 - 语音互斥：`play()` 独占 + 答对瞬间 `stop()`，实测切题时播放中的 audio ≤ 1；
 - 应用图标：由 `tools/make_icon.py` 从照片裁上半身生成；
@@ -435,11 +439,15 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 
 ### 下一步
 
-1. **主线已完结（L1–L48 全部上线）**。后续只剩三类收尾工作：真机音频与排版复核、`docs/CURRICULUM.md` 与规则文档对齐、
-   以及新需求（多语言 / 家长面板 / 数据统计）；
+1. **主线已完结（L1–L48 全部上线）**。`docs/CURRICULUM.md` 已于 2026-10-31 按实际配置重写（48 关全覆盖、关卡名与
+   `levels_data.js` 零偏差）；仍剩真机人工确认与新需求（多语言 / 家长面板 / 数据统计）；
 2. 若扩科（几何、时间、货币），建议按「一阶段 12 关 + 结业关」的既有结构继续，结业仪式照 §6.16 差异表再换一次视觉；
    L40 的发牌式分配、L41 的圈组、L42 的连减对照可直接复用到同类题；L48 结业仪式复用 §6.13 / §6.16，
    视觉要与前三阶再拉开（奖杯造型 / 配色 / 绶带 / 彩带形状至少三处不同）；
-3. 真机（iOS Safari / Android Chrome）音频与排版复核尚未做过，建议优先；
+3. **真机复核**：已完成可自动化的部分——Safari 兼容静态审计（无 `dvh` / `:has()`，`backdrop-filter` 全带 `-webkit-` 前缀，
+   `viewport-fit=cover` + 安全区变量齐全，业务 JS 纯 ES5、无 `?.` / `??` / `structuredClone`）与四档视口排版矩阵
+   （375×667 / 390×844 / 430×932 / 360×800 × 地图 / L22 找错 / L8 第三幕，全部 0 溢出、`scrollWidth == innerWidth`）。
+   仍需一次人工真机确认两点：iOS 首次进入关卡的首句语音（`HTMLMediaElement` 自动播放策略，项目靠"点关卡卡片"提供手势）、
+   以及微信内置浏览器的字号缩放（`text-size-adjust` 未显式声明）；
 4. 抽空把 L1 的选项 / 结算逻辑与 L2 对齐（已共用 `Engine.quiz` 与 `LevelKit`）；
 5. 每关都补跑一次 §6.17 的答错断言（点错必须真记错），并跑一次静态扫描（`state.busy = true` 后 3 行内不得出现 `wrong(`）。
