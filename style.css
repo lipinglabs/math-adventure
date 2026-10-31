@@ -7402,8 +7402,8 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 /* 关卡屏自建层叠上下文：负层级才会落在「内容之下、body 之上」 */
 .screen--level {
   isolation: isolate;
-  /* 0.6 是下限；这批照片细节多，0.72 才压成「水印」（§5.17.4） */
-  --bg-veil: 0.72;
+  /* 图片本身压到 50% 透明度（见 .level-bg-img.is-on），不再靠白纱压淡 */
+  --bg-veil: 0;
 }
 
 .level-bg {
@@ -7418,14 +7418,16 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center 42%;
+  /* 素材已按 390:844 预裁，这里只需居中铺满 */
+  background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
   transform: scale(1.04);
   transition: opacity 560ms var(--ease-soft), transform 900ms var(--ease-soft);
 }
 
-.level-bg-img.is-on { opacity: 1; transform: scale(1); }
+/* 照片清晰（不模糊），靠 50% 透明度退成背景 */
+.level-bg-img.is-on { opacity: .5; transform: scale(1); }
 
 /* 上下柔边：标题栏与底部按钮区的文字不压在照片细节上 */
 .level-bg::before {
@@ -7440,7 +7442,7 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
     rgba(255, 247, 237, 0.58) 100%);
 }
 
-/* 纯白蒙版：照片只做「若隐若现的水印」，不抢前景（§5.17.4） */
+/* 白纱（默认 0）：现在靠图片自身 50% 透明度压淡，这里留作应急微调口 */
 .level-bg::after {
   content: "";
   position: absolute;

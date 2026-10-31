@@ -425,7 +425,13 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
 - **第四十八关 Ultimate Math Challenge**：大结局，4 幕教学（四则回顾 / 奖杯升起 / MATH MASTER 定格 / 邀请）+
   10 题混合大考 + 终极仪式（40 条四形状彩带、3 组金色烟花、铂金蓝宝石奖杯、`Math Master` 徽章）（§5.33）；
 - **背景照片池**：48 张照片经 `tools/process_bg.py` 处理成 `assets/bg/bg_01…48.jpg`，
-  L1–L48 已一关一张挂好；渲染规范见 §5.17（`z-index:-1` + `isolation:isolate` + 0.72 白纱 + 按关加载）；
+  L1–L48 已一关一张挂好；渲染规范见 §5.17（`z-index:-1` + `isolation:isolate` + 图片 `opacity:.5` + 按关加载）；
+- **背景改版（2026-10-31，v55）**：旧版 `blur(3px)` + 72% 白纱让人物糊成一团，改为
+  「按 390:844 预裁 + 不模糊 + `opacity:.5`」。裁切窗口以人脸为中心（OpenCV Haar），
+  8 张人脸缺失/误检的图用人工中心兜底，全部固化在 `tools/bg_layout.json`；
+  `python tools/process_bg.py --src <照片目录> --shuffle --seed 20261030 --layout tools/bg_layout.json`
+  可逐像素复现当前 48 张（已验证 48/48 一致）。**注意映射不是文件名顺序**——原项目按 seed 20261030 打乱过，
+  直接按排序生成会把每关挂成别人的照片；
 - 全英文改造：界面零中文，按钮全部 SVG 图标；
 - **试用反馈三修（2026-10-31，commit `1b7c0df`）**：① L8 教学把「固定 `sleep` 抢在语音前」改为 `await saySeq(...)` 驱动，
   三处必截断的等待（2600 / 5200 / 2600 ms 对应 3.58 / 5.50 / 4.73 秒语音）全部消除；② L22 `buildWrong()` 补 `is-in`
