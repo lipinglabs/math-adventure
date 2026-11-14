@@ -12,7 +12,7 @@
    孩子设备下一次联网就会自动取到新代码；素材则按内容 hash 精确失效。
    ============================================================ */
 
-var CACHE = 'math-adventure-shell-v1';
+var CACHE = 'math-adventure-shell-v2';   // 4 岁起步：新增 4 个独立 JS 模块，递增版本号触发外壳更新
 
 var SHELL = [
   './',
@@ -21,6 +21,10 @@ var SHELL = [
   './style.css',
   './asset-manifest.js',
   './levels_data.js',
+  './route-map.js',
+  './wellbeing.js',
+  './feedback.js',
+  './review.js',
   './engine.js',
   './progress.js',
   './cloud.js',

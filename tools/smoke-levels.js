@@ -77,6 +77,11 @@ const DRIVER = `(async function () {
   out.firstLoadScripts = document.querySelectorAll('script[src]').length;
 
   if (!window.App || !window.Engine) { out.errors.push('App / Engine missing'); return out; }
+  /* 回归专用：关掉休息画面与计时压力，保证逐关进出不被 20s 休息画面打断 */
+  try {
+    if (window.Wellbeing) window.Wellbeing.__skipRest = true;
+    window.Engine.settings.set({ noTimer: false, challengeTimers: { 9: false, 12: false } });
+  } catch (e) { out.settingsError = 'preset:' + String((e && e.message) || e); }
   for (var id = 1; id <= ${LIMIT}; id++) {
     var rec = { id: id };
     try {
@@ -129,6 +134,12 @@ const DRIVER = `(async function () {
     out.flashOff = window.Engine.settings.flashMs();
     window.Engine.settings.set({ noTimer: false });
     out.flashOn = window.Engine.settings.flashMs();
+    /* C1：L21 等取消限时 → 0；L9 家长开挑战 → 15s（默认关）。 */
+    out.flashCancel = window.Engine.settings.timer.windowMs(21);
+    window.Engine.settings.timer.setChallenge(9, true);
+    out.flashChallenge = window.Engine.settings.timer.windowMs(9);
+    window.Engine.settings.timer.setChallenge(9, false);
+    out.flashChallengeOff = window.Engine.settings.timer.windowMs(9);
 
     window.Progress.recordMistake(1, 3);
     window.Progress.recordMistake(1, 3);
@@ -234,6 +245,8 @@ async function waitForTarget() {
   console.log('REPLAY exists=' + report.replayExists + ' enabled=' + report.replayEnabled +
     ' clickOk=' + !!report.replayClickOk);
   console.log('FLASH default=' + report.flashDefault + ' off=' + report.flashOff + ' on=' + report.flashOn +
+    ' cancel(21)=' + report.flashCancel + ' challenge(9)=' + report.flashChallenge +
+    ' challengeOff=' + report.flashChallengeOff +
     '  MISTAKE=' + JSON.stringify(report.mistake) + '  MERGE_LEGACY=' + report.mergeLegacy);
   if (report.cacheError) console.log('cacheError:', report.cacheError);
   if (report.settingsError) console.log('settingsError:', report.settingsError);
@@ -246,7 +259,8 @@ async function waitForTarget() {
     report.cacheAfterPrune === report.cacheBefore &&
     report.shellCached === true &&
     report.replayExists === true &&
-    report.flashDefault === 5000 && report.flashOff === 60000 && report.flashOn === 5000 &&
+    report.flashDefault === 60000 && report.flashOff === 0 && report.flashOn === 60000 &&
+    report.flashCancel === 0 && report.flashChallenge === 15000 && report.flashChallengeOff === 60000 &&
     report.mistake && report.mistake.length === 1 &&
     report.mistake[0].q === 3 && report.mistake[0].n === 2 &&
     report.mergeLegacy >= 1;

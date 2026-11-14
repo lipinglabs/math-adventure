@@ -18751,3 +18751,59 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .l48-key { width: 74px; height: 74px; }
   .l48-ceremony .l48-cup--big { width: 168px; height: 219px; }
 }
+
+/* ============================================================
+   4 岁起步接线样式（B8 / B9–B11 / C4 / C5 / E1–E3）
+   暖黄 #FFC94A 描边、触控目标 ≥64px、间距 ≥24px、拖放区 ≥96px；
+   prefers-reduced-motion 一律降级为静态，不强闪、不倒计时红环。
+   ============================================================ */
+
+/* C4「试一试」challenge 轨：中性虚线描边，家长可关，不新增语音 */
+.node--challenge .node-disc { border-style: dashed; border-color: #FFC94A; }
+.node--challenge .node-label { color: var(--ink-soft); }
+
+/* E1/E3 家长看板 / 成长树 / 陪玩钩子 */
+.wb-dash { font-size: 13px; color: var(--ink-soft); line-height: 1.7; margin: 6px 0; }
+.wb-positive { font-size: 13px; color: var(--ink-soft); margin: 10px 0 4px; }
+.wb-hook-btn {
+  min-height: 64px;               /* 触控目标 ≥64px */
+  padding: 12px 18px;
+  border: 2px solid #FFC94A;
+  border-radius: 16px;
+  background: #FFF7E6;
+  color: var(--ink, #4A3B2A);
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+}
+.wb-gate-host { min-height: 180px; }
+.wb-tree-wrap { display: flex; align-items: center; gap: 16px; margin: 10px 0; }
+.wb-tree-meta { display: flex; flex-direction: column; }
+.wb-tree-label { font-weight: 700; font-size: 14px; }
+.wb-tree-count { font-size: 12px; color: var(--ink-soft); }
+
+/* C5 题组级轻反馈：不弹通关、不结算星、不解锁（与关卡正式结算两级） */
+.group-done { text-align: center; padding: 24px; }
+.group-done-mark { display: inline-block; }
+.group-done-label { font-size: 20px; font-weight: 700; margin: 8px 0 20px; }
+.group-done-btn {
+  min-height: 64px; min-width: 160px;      /* 触控目标 ≥64px */
+  margin: 24px auto 0;                     /* 间距 ≥24px */
+  border: 2px solid #FFC94A;
+  border-radius: 18px;
+  background: #FFF7E6;
+  font-size: 17px; font-weight: 700;
+  cursor: pointer;
+}
+
+/* B9–B11 过程性反馈：暖黄描边 + 0.3s 淡入，非目标仅降饱和约 30% 轻轻退后 */
+.fb-highlight { outline: 3px solid #FFC94A; outline-offset: 2px; transition: opacity .3s ease; }
+.fb-dim { filter: saturate(.7); opacity: .85; transform: translateY(2px); transition: all .3s ease; }
+.q-replay, .group-done-btn, .wb-hook-btn { min-width: 64px; min-height: 64px; }
+[class*="drop-zone"], .drop-zone { min-width: 96px; min-height: 96px; }
+
+/* 明确不出现：红叉 / 哭脸 / 失败音效 / 强闪 / 倒计时红环 / 抽奖盲盒 /
+   连击倍率 / 连续签到 / 体力值 / 自动连播（由 feedback.js BANNED 词表自检约束） */
+
+@media (prefers-reduced-motion: reduce) {
+  .group-done, .fb-highlight, .fb-dim { animation: none !important; transition: none !important; }
+}

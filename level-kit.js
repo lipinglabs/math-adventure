@@ -104,5 +104,44 @@
     }
   }
 
-  global.LevelKit = { showResult: showResult, ICONS: ICONS };
+  /* C5 题组级轻反馈：6+4 切分后第一组做完时的两级反馈之「轻」级。
+     只给成长点 +1 + 复用既有表扬语音（common/ready），
+     不弹通关、不结算星、不解锁；「Keep going」显式点按后才进下一组。
+     与 showResult（关卡级正式结算）互不叠加。 */
+  function showGroupDone(host, opts) {
+    opts = opts || {};
+    if (!host) return;
+    host.innerHTML = '';
+
+    var box = el('div', 'group-done');
+    box.innerHTML =
+      '<div class="group-done-mark" aria-hidden="true">' +
+        '<svg viewBox="0 0 48 48" width="56" height="56">' +
+          '<path d="M24 40C24 28 14 20 8 18c0 12 8 20 16 22z" fill="#8CCB8A"/>' +
+          '<path d="M24 40C24 28 34 20 40 18c0 12-8 20-16 22z" fill="#6FB86F"/>' +
+          '<path d="M24 42V24" fill="none" stroke="#7A5A3A" stroke-width="3" stroke-linecap="round"/>' +
+        '</svg></div>' +
+      '<p class="group-done-label">Well done!</p>';
+
+    var next = el('button', 'group-done-btn');
+    next.type = 'button';
+    next.textContent = 'Keep going';
+    next.addEventListener('click', function () {
+      if (global.Engine) global.Engine.sfx.tap();
+      if (typeof opts.onNext === 'function') opts.onNext();
+    });
+    box.appendChild(next);
+    host.appendChild(box);
+
+    // 复用既有表扬语音 key，不新增语音（B9 三轨时序：等语音 ended 后再起轻量动效）
+    if (typeof opts.play === 'function') opts.play('common/ready');
+    if (box.animate) {
+      box.animate([
+        { opacity: 0, transform: 'scale(.92)' },
+        { opacity: 1, transform: 'scale(1)' }
+      ], { duration: 300, easing: 'ease-out', fill: 'both' });
+    }
+  }
+
+  global.LevelKit = { showResult: showResult, showGroupDone: showGroupDone, ICONS: ICONS };
 })(window);

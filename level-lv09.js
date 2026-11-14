@@ -13,7 +13,19 @@
   'use strict';
 
   var TOTAL = 10;
-  var FLASH_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;            // 闪电题倒计时（毫秒）
+  var LEVEL_ID = 9;
+  /* C1/C2 4 岁起步：限时窗口在每题开始时求值（绝不加载时缓存 5 秒）；默认 60 秒，
+     L9 仅家长主动开挑战时 15 秒、默认关；windowMs()===0 表示取消限时。 */
+  function timerWindow() {
+    return (window.Engine && Engine.settings && Engine.settings.timer)
+      ? Engine.settings.timer.windowMs(LEVEL_ID) : 60000;
+  }
+  // B8 C5 FlashReplayGuard：flash 关「再听一次」常亮常驻、题干可无限重听；
+  // 图标用「眼睛 + 小海螺」，禁用闪电 / 沙漏 / 秒表 / 倒计时红环 / 速度文字。
+  function replayIcon() {
+    return (window.Engine && Engine.FlashReplayGuard && Engine.FlashReplayGuard.iconSVG)
+      ? Engine.FlashReplayGuard.iconSVG() : '';
+  }
 
   /* ---------------- 图标 ---------------- */
 
@@ -394,7 +406,8 @@
     var replay = el('button', 'q-replay');
     replay.type = 'button';
     replay.setAttribute('aria-label', 'Play the question again');
-    replay.innerHTML = ICONS.speaker;
+    // B8：flash 关「再听一次」常亮常驻，图标用「眼睛 + 小海螺」
+    replay.innerHTML = replayIcon();
     replay.addEventListener('click', function () {
       Engine.sfx.tap();
       saySeq(keys);
@@ -571,27 +584,39 @@
 
     function arm() {
       stopTimer();
+      var win = timerWindow();                       // C2 每题开始时求值，绝不缓存
+      // C1 取消限时（win===0）：不装表、不倒计时、不转红，常驻「再听一次」，本题无限时
+      if (win <= 0) { bar.style.display = 'none'; return; }
       fill.style.transform = 'scaleX(1)';
       bar.classList.remove('is-out');
-      bar.classList.remove('is-low');
-      lowTimerId = setTimeout(function () { bar.classList.add('is-low'); }, Math.round(FLASH_MS * 0.62));
+      // B11 禁用倒计时红环：不再添加 is-low，也不再设置 lowTimerId
       timerAnim = fill.animate(
         [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }],
-        { duration: FLASH_MS, easing: 'linear', fill: 'both' }
+        { duration: win, easing: 'linear', fill: 'both' }
       );
+      // C2 rebase：更宽松时立即重置当前题剩余时间
+      if (Engine.settings && Engine.settings.timer && Engine.settings.timer.registerCurrent) {
+        Engine.settings.timer.registerCurrent(function () { if (alive) arm(); });
+      }
       timeoutId = setTimeout(function () {
         timeoutId = null;
         if (locked || state.locked || !alive) return;
-        bar.classList.add('is-out');
-        try { timerAnim.cancel(); } catch (e) { /* 已取消 */ }
-        timerAnim = null;
+        if (timerAnim) { try { timerAnim.cancel(); } catch (e) { /* 已取消 */ } timerAnim = null; }
         fill.style.transform = 'scaleX(0)';
-        wrong(refs.node);                 // 记一次错，题目原地不动
-        later(function () {
-          if (locked || state.locked || !alive) return;
-          arm();                          // 进度条重置，同一题重来
-        }, 1000);
-      }, FLASH_MS);
+        // C1 超时不判错：不调 wrong()（不写 wrongCount、不失败音效、不 shake），
+        // 由 engine 统一记 challengeTimeout + emit quiz:timeout，只自动重听并重给本题。
+        if (Engine.settings && Engine.settings.timer && Engine.settings.timer.onTimeout) {
+          Engine.settings.timer.onTimeout(LEVEL_ID, function () {
+            saySeq(q.voice);                       // 自动重听（原语音 key 不变）
+            later(function () {
+              if (locked || state.locked || !alive) return;
+              arm();                               // 重给本题
+            }, 1000);
+          });
+        } else {
+          later(function () { if (!locked && !state.locked && alive) arm(); }, 1000);
+        }
+      }, win);
     }
 
     function paint() {

@@ -40,6 +40,36 @@
   // 分页状态。pages 是所有阶段摊平后的横向轨道，index 是当前页的全局序号。
   var view = { pages: [], stages: [], index: 0, ready: false, dx: 0, drag: null };
 
+  /* ---------------- 4 岁起步接线（C3/C4/E1/E3） ----------------
+     单一 4 岁档：地图只渲染 core 轨；challenge 轨默认不进解锁链，
+     家长开「试一试」(showChallenge) 才作为可选入口显示（非语音、不新增 key）。 */
+
+  function isCoreLevel(id) {
+    var R = global.RouteMap;
+    return (R && typeof R.isCore === 'function') ? !!R.isCore(id) : true;
+  }
+
+  function isLevelVisible(id) {
+    if (isCoreLevel(id)) return true;
+    var E = global.Engine;
+    return !!(E && E.settings && E.settings.showChallenge && E.settings.showChallenge());
+  }
+
+  /* E1/E3 家长看板「今日参与度」：只描述一起玩了多久，不显示达标/未达标、不比较；
+     附成长树、正向收尾文案与 2 条家长陪玩钩子之一（讲给爸爸妈妈听 → 长一片叶）。 */
+  function parentHTML() {
+    var W = global.Wellbeing;
+    if (!W || !W.dashboard || !W.growthTreeHTML) return '';
+    var p = W.dashboard().participation || {};
+    return '<div class="field-label" style="margin-top:18px">Today together</div>' +
+      '<p class="wb-dash">About ' + (p.minutes || 0) + ' min · ' +
+        (p.sessions || 0) + ' sessions · ' + (p.rests || 0) + ' little rests</p>' +
+      W.growthTreeHTML() +
+      '<p class="wb-positive">A lovely place to stop for today.</p>' +
+      '<button type="button" class="wb-hook-btn" id="wb-parent-leaf">' +
+        'Tell a grown-up · I heard you</button>';
+  }
+
   function stateOf(level) {
     if (level.status === 'coming') return 'coming';
     if (!Progress.isUnlocked(level.id)) return 'locked';
@@ -100,7 +130,8 @@
     stages.forEach(function (st) {
       var ids = [];
       for (var id = st.from; id <= st.to; id += 1) {
-        if (DATA.levels[id]) ids.push(id);
+        // C3：4 岁档只渲染 core 轨；challenge 轨仅家长开「试一试」时才出现
+        if (DATA.levels[id] && isLevelVisible(id)) ids.push(id);
       }
       if (!ids.length) return;
       stageIds.push(st.id);
@@ -159,6 +190,11 @@
     var label = document.createElement('span');
     label.className = 'node-label';
     label.textContent = state === 'coming' ? 'Coming soon' : level.name;
+    // C4「试一试」：challenge 轨用中性文字标注（非语音、不新增 key），家长可关
+    if (isLevelVisible(level.id) && !isCoreLevel(level.id)) {
+      node.classList.add('node--challenge');
+      label.textContent = 'Try it · ' + level.name;
+    }
 
     node.appendChild(disc);
     node.appendChild(label);
@@ -493,9 +529,14 @@
       anim: Engine.anim,
       step: setStep,
       complete: function (star) {
-        Progress.record(level.id, star);
-        Progress.recordAttempt(level.id);
+        // B1 完成即解锁、B4 银星完成即得（金星降为可选徽章）；
+        // C4 challenge 轨完成不写 unlocked/stars/completedLevels，由 Progress.record 按 routeMap 判定。
+        Progress.record(level.id, star, {
+          badge: star === 'gold',
+          track: isCoreLevel(level.id) ? 'core' : 'challenge'
+        });
         Cloud.schedulePush();
+        // E2「今天玩到这里」正向收尾由 Wellbeing 在会话层（休息/每日画面）给出，不在结算里叠加。
       },
       exit: exitLevel,
       restart: function () {
@@ -626,10 +667,34 @@
     currentModule = mod.mount(stage, buildContext(level));
   }
 
-  function enterLevel(id) {
+  function enterLevel(id, skipSession) {
     if (entering) return;
     var level = DATA.levels[id];
     if (!level) return;
+
+    var W = global.Wellbeing;
+    // A1/A2/B7：每次进关记一「局」并开始双口径计时；attemptCount 语义 = 进入该关次数。
+    // 休息画面后重进（skipSession）不重复计局、不重复记 attempt。
+    if (!skipSession) {
+      if (W && W.startSession) W.startSession();
+      if (W && W.onLevelEnter) W.onLevelEnter(id);
+      Progress.recordAttempt(id);
+    }
+
+    // A4/A5：连续两局或当日累计首越 50% → 先插入 20s 休息画面（无文字无语音）再进关；
+    // showRestScene 内部 markRestShown，回调重进时 shouldInsertRest 已为 false，不会重复插入。
+    if (!skipSession && W && W.shouldInsertRest && W.shouldInsertRest() && W.showRestScene) {
+      var restHost = byId('stage');
+      if (restHost) {
+        entering = true;
+        showScreen('level');
+        W.showRestScene(restHost, function () {
+          entering = false;
+          enterLevel(id, true);
+        });
+        return;
+      }
+    }
 
     entering = true;
     var demo = demoMode();
@@ -669,6 +734,8 @@
   }
 
   function exitLevel() {
+    // A2：离开关卡即停双口径计时（切后台/回地图不再累加屏幕占用）
+    if (global.Wellbeing && Wellbeing.stopClock) Wellbeing.stopClock();
     unmountCurrent();
     clearLevelBackground();
     Engine.audio.releaseLevel();
@@ -693,24 +760,46 @@
   /** 家长设置区：错题干统计 + 是否取消 5 秒计时压力。全英文界面，文案保持简短。 */
   function settingsHTML() {
     var p = Progress.read();
-    var count = 0;
-    var perLevel = 0;
+    var count = 0, perLevel = 0;
     Object.keys(p.levelMistakes || {}).forEach(function (k) {
       var list = p.levelMistakes[k] || [];
       if (list.length) perLevel += 1;
       count += list.reduce(function (sum, item) { return sum + (item.n || 1); }, 0);
     });
+    var E = Engine.settings;
+    var T = E.timer;
+    var cb = function (id, on, label) {
+      return '<label class="setting-row">' +
+        '<input id="' + id + '" type="checkbox" ' + (on ? 'checked' : '') + ' />' +
+        '<span>' + label + '</span></label>';
+    };
     return '<div class="field-label" style="margin-top:18px">Parent options</div>' +
-      '<label class="setting-row">' +
-        '<input id="setting-no-timer" type="checkbox" ' +
-          (Engine.settings.noTimer() ? 'checked' : '') + ' />' +
-        '<span>Remove the 5-second time pressure</span>' +
-      '</label>' +
+      cb('setting-no-timer', E.noTimer(), 'No countdown pressure (4-year-old baseline)') +
+      cb('setting-show-challenge', E.showChallenge(), 'Show optional "Try it" levels') +
+      cb('setting-challenge-badge', E.challengeBadge(), 'Optional gold-star badge') +
+      cb('setting-challenge-9', T.challengeEnabled(9), 'Level 9 optional 15s challenge') +
+      cb('setting-challenge-12', T.challengeEnabled(12), 'Level 12 optional 12s challenge') +
       '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
-        'Questions needing practice: ' + count + ' across ' + perLevel + ' levels</p>';
+        'Questions needing practice: ' + count + ' across ' + perLevel + ' levels</p>' +
+      parentHTML();
   }
 
   function openSavePanel() {
+    var W = global.Wellbeing;
+    // A6 ParentGate：仅防孩子误改设置（不是能力测试、不采集信息）
+    if (W && W.parentGate) {
+      Engine.modal({
+        title: 'Grown-ups only',
+        bodyHTML: '<div id="wb-gate-host" class="wb-gate-host"></div>',
+        actions: [{ label: 'Cancel', kind: 'ghost' }]
+      });
+      W.parentGate(byId('wb-gate-host'), function () { openSavePanelContent(); });
+    } else {
+      openSavePanelContent();
+    }
+  }
+
+  function openSavePanelContent() {
     var info = Cloud.info();
     var summary = Progress.summary();
 
@@ -780,16 +869,31 @@
       actions: actions
     });
 
-    var toggle = byId('setting-no-timer');
-    if (toggle) {
-      toggle.addEventListener('change', function () {
-        Engine.settings.set({ noTimer: toggle.checked });
-        // 限时常量在关卡模块加载时求值，需要重载页面才生效。
-        // 设置按钮只在地图屏出现，此刻重载不会丢失任何进行中的答题。
-        Engine.toast(toggle.checked ? 'Time pressure off — restarting…' : 'Time pressure on — restarting…');
-        setTimeout(function () { location.reload(); }, 900);
-      });
-    }
+    // C2：限时窗口每题开始时求值 + EVT_SETTINGS_CHANGED 触发 timer.rebase()，不再需要重载页面。
+    var E = Engine.settings, T = E.timer;
+    var bindToggle = function (id, apply) {
+      var el = byId(id);
+      if (el) el.addEventListener('change', function () { apply(el.checked); });
+    };
+    bindToggle('setting-no-timer', function (on) {
+      E.set({ noTimer: on });
+      Engine.toast(on ? 'No countdown pressure' : 'Countdown pressure on');
+    });
+    bindToggle('setting-show-challenge', function (on) {
+      E.setShowChallenge(on);
+      renderMap();   // 立即反映 core-only / 试一试 显示变化
+    });
+    bindToggle('setting-challenge-badge', function (on) { E.setChallengeBadge(on); });
+    bindToggle('setting-challenge-9', function (on) { T.setChallenge(9, on); });
+    bindToggle('setting-challenge-12', function (on) { T.setChallenge(12, on); });
+    // E1 陪玩钩子 1：讲给爸爸妈妈听 → 家长按「I heard you」成长树 +1 叶（不判对错、不录音、不强制）
+    var leaf = byId('wb-parent-leaf');
+    if (leaf) leaf.addEventListener('click', function () {
+      if (global.Wellbeing && Wellbeing.addParentLeaf) Wellbeing.addParentLeaf();
+      Engine.sfx.tap();
+      Engine.toast('A new leaf on the little tree');
+      openSavePanelContent();   // 刷新成长树计数
+    });
   }
 
   function updateSaveButton() {
@@ -885,8 +989,13 @@
     // 不 emit progress:change：地图不依赖错题数据，避免答题时反复重绘。
     document.addEventListener('quiz:wrong', function (e) {
       if (!currentLevel) return;
-      var index = (e.detail && e.detail.index) || 0;
-      Progress.recordMistake(currentLevel.id, index);
+      var d = e.detail || {};
+      // B7 错题收窄：撤销 / 超时 / near / 非真答错 / challenge 轨一律不写（由 Progress 判定）
+      Progress.recordMistake(currentLevel.id, d.index || 0, d);
+      // E2 陪玩钩子 2：第 1 次真答错自动重听时，给「和爸爸妈妈一起再听一遍」温和提示（非语音、不判错）
+      if (d.attempt === 1 && d.realWrong !== false && !d.timeout && !d.undo && Engine.toast) {
+        Engine.toast('Listen again together with a grown-up');
+      }
     });
   }
 

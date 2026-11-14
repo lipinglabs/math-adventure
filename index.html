@@ -11,7 +11,7 @@
   本文件只负责「骨架」，禁止在此写业务逻辑或样式。
   结构：地图屏 / 关卡屏 / 加载遮罩 / 弹层 / 轻提示 / 沙盒热区
   语言：English only，界面不得出现任何中文字符（PROJECT_MATH_RULES §5.5）
-  脚本加载顺序是硬约束：素材清单 → 数据 → 引擎 → 进度 → 云存档 → 沙盒 → 关卡工具 → 应用
+  脚本加载顺序是硬约束：素材清单 → 数据 → 4 岁起步新模块（route-map/wellbeing/feedback/review）→ 引擎 → 进度 → 云存档 → 沙盒 → 关卡工具 → 应用
   关卡模块 level-lvNN.js 不再全量同步加载，由 app.js 进关时按需动态注入。
 -->
 <link rel="manifest" href="manifest.json" />
@@ -157,8 +157,13 @@
 <noscript>Please turn on JavaScript to play.</noscript>
 
 <!-- 素材清单必须先于引擎：engine.js 靠它给每个素材 URL 挂内容 hash -->
+<!-- 4 岁起步新模块：数据表 / 护眼 / 视觉反馈 / 间隔复现，均须先于 engine.js 加载 -->
 <script src="asset-manifest.js"></script>
 <script src="levels_data.js"></script>
+<script src="route-map.js"></script>
+<script src="wellbeing.js"></script>
+<script src="feedback.js"></script>
+<script src="review.js"></script>
 <script src="engine.js"></script>
 <script src="progress.js"></script>
 <script src="cloud.js"></script>

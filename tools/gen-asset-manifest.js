@@ -55,7 +55,8 @@ const rev = crypto.createHash('sha256')
    改过任何一关/引擎代码都会自动换 URL，不需要手工维护版本号。 */
 const codeFiles = [
   'index.html', 'style.css', 'sw.js', 'levels_data.js', 'engine.js',
-  'progress.js', 'cloud.js', 'sandbox.js', 'level-kit.js', 'app.js'
+  'progress.js', 'cloud.js', 'sandbox.js', 'level-kit.js', 'app.js',
+  'route-map.js', 'wellbeing.js', 'feedback.js', 'review.js'
 ];
 for (let i = 1; i <= 48; i += 1) {
   codeFiles.push('level-lv' + String(i).padStart(2, '0') + '.js');

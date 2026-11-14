@@ -16,8 +16,20 @@
   'use strict';
 
   var TOTAL = 10;
-  var FLASH_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;           // §6.9 五秒进度条
-  var LOW_AT = 0.6;              // 走过 60% → 剩余不足 40%，转暖红
+  var LEVEL_ID = 21;
+  var FLASH_MS = 60000;              // 4 岁起步默认 60 秒（原加载缓存的 5 秒已废弃；本关取消限时，实际不装表）
+  var LOW_AT = 0.6;                  // B11：取消限时后不装表、不转红，此比例不生效
+  /* C1/C2 4 岁起步：窗口每题开始时求值（不缓存）；L21 取消限时 → windowMs()===0。 */
+  function timerWindow() {
+    return (window.Engine && Engine.settings && Engine.settings.timer)
+      ? Engine.settings.timer.windowMs(LEVEL_ID) : 0;
+  }
+  // B8 C5 FlashReplayGuard：禁用闪电 / 沙漏 / 秒表 / 倒计时红环 / 速度文字，
+  // flash 关常亮常驻「再听一次」，图标用「眼睛 + 小海螺」。
+  function replayIcon() {
+    return (window.Engine && Engine.FlashReplayGuard && Engine.FlashReplayGuard.iconSVG)
+      ? Engine.FlashReplayGuard.iconSVG() : '';
+  }
   var NEXT_MS = 700;             // 答对到下一题
   var WRONG_HOLD = 1500;         // 找错句答对后的定格（§6.11）
   var REARM_MS = 1000;           // 超时后停一下再重新计时
@@ -196,6 +208,9 @@
     function arm(fn) {
       stop();
       if (fn) handler = fn;
+      // C1 4 岁起步：本关取消限时（windowMs()===0）→ 不装表、不倒计时、不转红、不超时，
+      // 题目无限时、常驻「再听一次」；原超时写错 handler（wrong()）永不触发。
+      if (timerWindow() <= 0) { bar.style.display = 'none'; return; }
       bar.classList.remove('is-idle', 'is-out', 'is-done', 'is-low');
       fill.style.transform = 'scaleX(1)';
       armed = true;
@@ -451,7 +466,7 @@
     wrap.appendChild(v.node);
 
     var bolt = el('div', 'l21-bolt');
-    bolt.innerHTML = ICONS.bolt;
+    bolt.innerHTML = replayIcon();   // B8：中性「再听」图标，去掉闪电速度符号
     wrap.appendChild(bolt);
 
     host.appendChild(wrap);

@@ -10,11 +10,21 @@
        updatedAt: 1730000000000
      }
 
-   规则（PROJECT_MATH_RULES §6.2）：
-     · 第一遍 10 题全对 → gold，解锁下一关
-     · 中途错过 → 错题原地重做，通关给 silver，不解锁下一关
-     · 星级只升不降；重打拿到 gold 会覆盖 silver 并解锁
+   规则（4 岁起步 · 专家团意见清单 B1/B4/B7/C4）：
+     · 完成即解锁（EVT_LEVEL_COMPLETE）——删除原「第一遍全对才解锁」整条规则，
+       与对错/星级/提示/重听/撤销全无关；解锁链只在 core 轨串联
+     · 银星 = 完成即得；金星降为可选徽章（settings.challengeBadge 默认 false、
+       不是解锁条件、不显示差距）
+     · challenge 轨完成不写 unlocked/stars/completedLevels，只记 challengePlayed[]
+     · 错题写入收窄（只记非误触撤销、非超时的真答错）+ wrongTag
+     · attemptCount 语义 =「进入该关次数」，不再因答错增加
      · 沙盒模式下内存全解锁，但绝不写 localStorage
+
+   ★ 关键：read()/normalize()/merge() 的序列化对象仍只有
+     {version, unlockedLevel, stars, cleared, levelMistakes, attempts, updatedAt}，
+     字段 / 结构 / 版本号全部不变；新增 settings/usage/daily/levelCursor/
+     pendingQuestions/challengePlayed 全部落在 wellbeing.js 的独立 localStorage
+     分区，只通过下方代理读取，绝不进 Gist 白名单、不跨设备同步。
    ============================================================ */
 
 window.Progress = (function () {
@@ -128,21 +138,37 @@ window.Progress = (function () {
     return cache;
   }
 
-  /** 记录一次通关。star = 'gold' | 'silver' */
-  function record(levelId, star) {
+  /** B1/B4/C4 记录一次通关：完成即解锁（删除「第一遍全对才解锁」）。
+      银星 = 完成即得；金星仅当家长主动开启可选徽章且整关 clean 时追加（收集徽章），
+      不是解锁条件、不显示差距。challenge 轨只记 challengePlayed[] 到独立分区。 */
+  function record(levelId, star, opts) {
     var id = Math.floor(Number(levelId));
-    if (!id || !RANK[star]) return read();
+    if (!id) return read();
+    opts = opts || {};
+    var R = window.RouteMap;
+    var isChallenge = !!(R && !R.isCore(id));
+
+    // C4：challenge 完成不写 unlocked/stars/completedLevels，答错也不进复习池
+    if (isChallenge) {
+      if (window.Wellbeing && window.Wellbeing.store) window.Wellbeing.store.addChallengePlayed(id);
+      return read();
+    }
 
     var next = normalize(read());
-    var prev = next.stars[String(id)] || 'none';
-
-    if (RANK[star] > RANK[prev]) next.stars[String(id)] = star;
+    var badge = false;
+    if (window.Engine && window.Engine.settings && window.Engine.settings.challengeBadge()) {
+      badge = !!opts.badge;
+    }
+    var finalStar = badge ? 'gold' : 'silver';   // 银星 = 完成即得
+    if (RANK[finalStar] > RANK[next.stars[String(id)] || 'none']) {
+      next.stars[String(id)] = finalStar;
+    }
     if (next.cleared.indexOf(id) < 0) next.cleared.push(id);
 
-    // 只有金星才推进解锁线
-    if (star === 'gold') {
-      next.unlockedLevel = Math.max(next.unlockedLevel, id + 1);
-    }
+    // B1：完成即解锁，与对错/星级/提示/重听/撤销全无关；只在 core 轨串联
+    next.unlockedLevel = Math.max(next.unlockedLevel, id + 1);
+    // 等量成长点（完成/收尾都给、不惩罚），落独立分区，不进 payload
+    if (window.Wellbeing) window.Wellbeing.addGrowthPoints(1);
     return save(next);
   }
 
@@ -208,8 +234,14 @@ window.Progress = (function () {
     return out;
   }
 
-  /** 记录一次答错。刻意不 emit：答题很密集，不能每错一次就重绘地图。 */
-  function recordMistake(levelId, index) {
+  /** B7 错题写入收窄：只记「非误触撤销、非超时」的真答错。
+      wrongTag（needListen / needHint / concept）只写独立分区，绝不进 Gist payload。
+      保留 levelMistakes 字段结构（= wrongByLevel）。刻意不 emit：答题密集不重绘地图。 */
+  function recordMistake(levelId, index, opts) {
+    opts = opts || {};
+    // 收窄条件：撤销 / 超时 / near / 非真答错 / challenge 轨答错 一律不写
+    if (opts.undo || opts.timeout || opts.near || opts.realWrong === false ||
+        opts.countsForReview === false) return read();
     var id = Math.floor(Number(levelId));
     var q = Math.floor(Number(index));
     if (!id || q < 0 || sandbox) return read();
@@ -221,12 +253,16 @@ window.Progress = (function () {
     }
     if (hit) hit.n += 1; else list.push({ q: q, n: 1 });
     p.levelMistakes[String(id)] = list;
+    // wrongTag 落独立分区（家长看板用），不进 payload
+    if (window.Wellbeing && window.Wellbeing.store && opts.wrongTag) {
+      window.Wellbeing.store.addWrongTag(String(id) + ':' + q, opts.wrongTag);
+    }
     cache = p;
     writeStorage(p);
     return p;
   }
 
-  /** 记录一次完整通关尝试（用于家长了解卡关次数） */
+  /** B7 attemptCount 语义 =「进入该关次数」（app.enterLevel 时调用），不再因答错增加。 */
   function recordAttempt(levelId) {
     var id = Math.floor(Number(levelId));
     if (!id || sandbox) return read();
@@ -236,6 +272,21 @@ window.Progress = (function () {
     writeStorage(p);
     return p;
   }
+
+  /* ---------------- 独立本地分区代理（A6/C5/C7，绝不并入 read() 序列化） ----------------
+     这些 getter 只转发到 wellbeing.js 的 'math-adventure.local.v1'，
+     Cloud 写远端时显式白名单序列化，payload 字段 / 结构 / 版本号不变。 */
+  function localStore() { return window.Wellbeing && window.Wellbeing.store; }
+  function levelCursor(levelId) { var s = localStore(); return s ? s.getCursor(levelId) : null; }
+  function pendingQuestions() { var s = localStore(); return s ? s.pendingAll() : []; }
+  function daily() { return window.Wellbeing ? window.Wellbeing.daily() : null; }
+  function challengePlayed() {
+    return window.Wellbeing ? window.Wellbeing.usage().challengePlayed.slice() : [];
+  }
+  // 保留 wrongByLevel / attemptCount / wrongByWord 语义（前两者映射既有 payload 字段）
+  function wrongByLevel() { return read().levelMistakes; }
+  function attemptCount() { return read().attempts; }
+  function wrongByWord() { var s = localStore(); return s ? s.wrongTags() : {}; }
 
   function summary() {
     var p = read();
@@ -283,6 +334,14 @@ window.Progress = (function () {
     merge: merge,
     summary: summary,
     snapshot: function () { return JSON.parse(JSON.stringify(read())); },
+    // 独立本地分区代理（不进 Gist 白名单）
+    levelCursor: levelCursor,
+    pendingQuestions: pendingQuestions,
+    daily: daily,
+    challengePlayed: challengePlayed,
+    wrongByLevel: wrongByLevel,
+    attemptCount: attemptCount,
+    wrongByWord: wrongByWord,
     enterSandbox: enterSandbox,
     exitSandbox: exitSandbox,
     isSandbox: function () { return sandbox; },

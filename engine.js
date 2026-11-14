@@ -23,6 +23,34 @@
     assetConcurrency: 4     // 同时下载的素材数；弱网下 20 个并发会互相抢带宽导致超时
   };
 
+  /* ---------------- 4 岁起步 · 集中接线的共享状态 ----------------
+     全部 48 关都通过 Engine.session({total}) 与 Engine.quiz.shuffle(questions)
+     两个统一入口驱动，因此把 B/C 组的机制集中在本文件接线，不改 48 个关卡文件。 */
+  var activeLevelId = 0;     // loadLevel 时记录，供呈现规划识别当前关
+  var lastSession = null;    // 最近一次 createSession，供呈现规划 setTotal 修正题量
+  var sessionFlags = { groupComplete: false, lastGroupOnly: false, track: 'core', isChallenge: false };
+
+  // 事件名来自 wellbeing.js（先加载）；这里做兜底，保证单独加载 engine.js 也不报错
+  var EVT = global.EVT || {
+    TICK: 'wb:tick', LEVEL_ENTER: 'wb:levelEnter', QUESTION_ENTER: 'wb:questionEnter',
+    LEVEL_COMPLETE: 'wb:levelComplete', SETTINGS_CHANGED: 'wb:settingsChanged',
+    UNDO: 'wb:undo', TAP: 'wb:tap', CONFIRM: 'wb:confirm', ADVANCE: 'wb:advance',
+    GROUP_DONE: 'wb:groupDone', WRONG: 'quiz:wrong'
+  };
+
+  function emit(name, detail) {
+    if (typeof document === 'undefined' || !document.dispatchEvent) return;
+    try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); }
+    catch (e) { try { document.dispatchEvent(new CustomEvent(name)); } catch (e2) { /* noop */ } }
+  }
+
+  /** C7 跨关「再玩一次」原题：voice 被写成 'lvNN/../lvMM/key' 相对路径，
+      规范化回 'lvMM/key' —— 仍是既有语音 key，零新增、零改文案。 */
+  function normSrc(src) {
+    if (typeof src !== 'string') return src;
+    return src.replace(/lv\d+\/\.\.\//g, '');
+  }
+
   /* ---------------- 微工具 ---------------- */
 
   function $(sel, root) {
@@ -97,8 +125,9 @@
 
   function resolveUrl(src, base) {
     if (!src) return '';
-    if (/^(https?:|data:|blob:)/.test(src)) return src;
-    return versionedUrl((base || '') + src);
+    var s = normSrc(src);   // C7 跨关原题的相对路径规范化（既有 key，零新增）
+    if (/^(https?:|data:|blob:)/.test(s)) return s;
+    return versionedUrl((base || '') + s);
   }
 
   /* ---------------- 素材持久化（Cache Storage） ----------------
@@ -575,7 +604,9 @@
       tone(987.77, 0.12, { gain: 0.14 });
       tone(1318.51, 0.22, { gain: 0.13, delay: 0.1 });
     },
-    wrong: function () { tone(300, 0.22, { gain: 0.1, type: 'sine', to: 196 }); },
+    // B5/B11 禁用失败音效：保留函数名以兼容 48 关调用，改为极轻的中性「再听一次」
+    // 提示（无下行、无负面暗示、<1s），不出现哭脸/失败音/强闪。
+    wrong: function () { tone(523.25, 0.09, { gain: 0.045, type: 'sine' }); },
     star: function () {
       tone(1567.98, 0.18, { gain: 0.12, type: 'triangle' });
       tone(2093, 0.3, { gain: 0.1, delay: 0.08 });
@@ -628,58 +659,278 @@
     budgetLeft: budgetLeft
   };
 
-  /* ---------------- 10 题会话状态机 ----------------
-     规则（PROJECT_MATH_RULES §6）：
-       · 共 total 题
-       · 答错 → 原地重做，firstPass 变 false，但题号不前进
-       · 全部答完 → 第一遍全对给 gold，否则 silver
-       · gold 才解锁下一关（由 Progress 负责落盘） */
-
+  /* ---------------- 局内会话状态机（B1–B6 / A3 / C5 集中接线） ----------------
+     兼容 48 关既有调用约定：answer(correct) 仍返回 {done, advance, retry, star, wrongCount}。
+     4 岁起步：完成即解锁、银星=完成即得、金星可选徽章默认关、防误触 0.4s、
+     重听/提示/撤销豁免（不计 firstTryCleanCorrect 但答对仍前进不降星）、
+     三级分级反馈、三态 correct/near/wrong/shown（禁用 fail）、near 不写 wrongCount。 */
   function createSession(opts) {
     opts = opts || {};
     var total = opts.total || 10;
+    var levelId = opts.levelId || activeLevelId || 0;
+    var W = global.Wellbeing;
+    var CAP = (W && W.CAP) || { MAX_DWELL: 3, CONFIRM_MS: 400, GROUP_SPLIT: [6, 4] };
+    var groupSizes = opts.groupSizes || CAP.GROUP_SPLIT || [6, 4];
+    var maxDwell = opts.maxDwell || CAP.MAX_DWELL || 3;
+    var confirmMs = CAP.CONFIRM_MS || 400;
+    var isChallenge = !!(global.RouteMap && levelId && !global.RouteMap.isCore(levelId));
+    sessionFlags.track = isChallenge ? 'challenge' : 'core';
+    sessionFlags.isChallenge = isChallenge;
+
     var index = 0;
     var firstPass = true;
     var wrong = [];
+    var attempts = {};          // 每题答错次数（maxDwell 到上限必放行）
+    var outcomes = {};          // 每题 correct/near/wrong/shown（禁用 fail）
+    var flags = {};             // 每题 replayUsed/hintUsed/undoUsed
+    var cleanCount = 0;         // firstTryCleanCorrect（B4 可选徽章用）
+    var correctCount = 0;
+    var shownPendingAdvance = false;
+    var confirm = null;         // S_CONFIRM 预选高亮
+    var queue = null;
+    var plannedRefs = [];       // 本组题的全局引用（不改题目对象）
+    var answerHints = [];       // 每题数值答案（near 判定用）
+    var solvedRefs = [];        // 本关已做对的题引用
+    var groupsDone = [];
+    var groupResults = {};
+    var lastValue = null;       // 最近一次选项点击 data-value（near 判定用）
 
-    return {
+    function flagsOf(i) { return flags[i] || (flags[i] = { replayUsed: false, hintUsed: false, undoUsed: false }); }
+    function settings() { return W && W.settings ? W.settings() : { challengeBadge: false }; }
+
+    function currentGroupId() {
+      var acc = 0;
+      for (var g = 0; g < groupSizes.length; g += 1) {
+        acc += groupSizes[g];
+        if (index < acc) return g;
+      }
+      return groupSizes.length - 1;
+    }
+
+    // C5 逐题写盘：每次答题后把 levelCursor 写进独立本地分区（不进 Gist）
+    function persist() {
+      if (!W || !W.store || !levelId) return;
+      W.store.setCursor(levelId, {
+        nextQIndex: index,
+        currentGroupId: currentGroupId(),
+        groupsDone: groupsDone.slice(),
+        groupResults: groupResults,
+        solved: solvedRefs.slice(),
+        total: total
+      });
+    }
+
+    function wrongTagOf(detail) {
+      var f = flagsOf(index);
+      if (detail && detail.needListen) return 'needListen';
+      if (f.replayUsed || (detail && detail.replayUsed)) return 'needListen';
+      if (f.hintUsed || (detail && detail.hintUsed)) return 'needHint';
+      return 'concept';
+    }
+
+    // B6 near：20 以内整数 |选中−正确|≤1 / 拖拽外接圈 / 同族相邻干扰项；不以耗时判定
+    function isNear(value, answer, d) {
+      d = d || {};
+      if (d.dragInOuterRing) return true;
+      if (d.adjacentDistractor) return true;
+      var v = Number(value), a = Number(answer);
+      if (!isFinite(v) || !isFinite(a)) return false;
+      return Math.abs(a) <= 20 && Math.abs(v - a) <= 1;
+    }
+
+    function finishResult() {
+      // B4：银星 = 完成即得；金星降为可选徽章（默认 false、不是解锁条件、不显示差距）
+      var s = settings();
+      var badge = !!(s.challengeBadge && cleanCount >= total && firstPass);
+      sessionFlags.groupComplete = true;
+      if (W && W.store && levelId) {
+        var c = W.store.getCursor(levelId) || {};
+        var gd = (c.groupsDone || []).slice();
+        var g = currentGroupId();
+        if (gd.indexOf(g) < 0) gd.push(g);
+        c.currentGroupId = Math.min(g + 1, groupSizes.length - 1);
+        c.groupsDone = gd;
+        c.solved = solvedRefs.slice();
+        W.store.setCursor(levelId, c);
+        sessionFlags.lastGroupOnly = (gd.length >= groupSizes.length); // 关卡级正式结算
+      }
+      emit(EVT.LEVEL_COMPLETE, {
+        levelId: levelId, track: sessionFlags.track, star: 'silver', badge: badge,
+        cleanCount: cleanCount, correctCount: correctCount, wrongCount: wrong.length,
+        lastGroupOnly: sessionFlags.lastGroupOnly
+      });
+      return {
+        done: true, advance: false, retry: false, star: 'silver', badge: badge,
+        wrongCount: wrong.length, cleanCount: cleanCount, correctCount: correctCount,
+        track: sessionFlags.track, lastGroupOnly: sessionFlags.lastGroupOnly
+      };
+    }
+
+    var api = {
       total: total,
+      levelId: levelId,
       get index() { return index; },
       get firstPass() { return firstPass; },
       get wrongCount() { return wrong.length; },
       get finished() { return index >= total; },
+      get cleanCorrectCount() { return cleanCount; },
+      get correctCount() { return correctCount; },
+      get track() { return sessionFlags.track; },
 
-      answer: function (correct) {
+      setTotal: function (n) { total = Math.max(1, Math.floor(n) || 1); return total; },
+      setQueue: function (q, hints, solved, refs) {
+        queue = q || null;
+        answerHints = hints || [];
+        solvedRefs = (solved || []).slice();
+        plannedRefs = (refs || []).slice();
+        if (W && W.store && levelId) {
+          var c = W.store.getCursor(levelId);
+          if (c) { groupsDone = (c.groupsDone || []).slice(); groupResults = c.groupResults || {}; }
+        }
+      },
+      setLastValue: function (v) { lastValue = v; },
+
+      // B2 防误触：EVT_TAP → S_CONFIRM 0.4s 单点确认（预选高亮、大目标二次确认）
+      tap: function (target) {
+        confirm = { target: target || null, at: Date.now(), done: false };
+        emit(EVT.TAP, { levelId: levelId, confirmMs: confirmMs });
+        return { pending: true, confirmAfterMs: confirmMs };
+      },
+      confirmTap: function () {
+        if (!confirm) return false;
+        confirm.done = true; confirm = null;
+        emit(EVT.CONFIRM, { levelId: levelId });
+        return true;
+      },
+      // B2 EVT_UNDO 撤销不写任何数据
+      undo: function () {
+        confirm = null;
+        flagsOf(index).undoUsed = true;
+        emit(EVT.UNDO, { levelId: levelId, index: index });
+        return true;
+      },
+      markReplay: function (i) { flagsOf(i == null ? index : i).replayUsed = true; },
+      markHint: function (i) { flagsOf(i == null ? index : i).hintUsed = true; },
+      isNear: isNear,
+
+      // A3：本题 resolved 之后、下一题 enter 之前才收尾；deadlineReached 不影响本题判定
+      resolve: function () { if (W && W.resolveQuestion) W.resolveQuestion(); },
+      beginQuestion: function () {
+        if (W && W.beginQuestion) W.beginQuestion();
+        emit(EVT.QUESTION_ENTER, { levelId: levelId, index: index, track: sessionFlags.track });
+      },
+      beforeAdvance: function () {
+        return W && W.beforeAdvance ? W.beforeAdvance() : false;  // onAdvance 唯一拦截点
+      },
+
+      answer: function (correct, detail) {
+        detail = detail || {};
+        // C1 超时守卫（兜底）：关卡超时回调登记 timerApi.onTimeout 后，紧随其后的
+        // wrong()/answer(false) 一律判为 timeout，绝不写 wrongCount、不进复习池。
+        // 正常路径已由 7 个限时关改走 timer.onTimeout（重听重给本题），此守卫是第二道保险。
+        if (!correct && timerApi.isTimeoutPending()) detail.timeout = true;
+        var i = index;
+        var f = flagsOf(i);
+        var hint = answerHints[i];
+
+        // B6 near 判定：显式 detail 优先，否则用 data-value 与数值答案推断（能算才判，安全降级）
+        var near = !!detail.near;
+        if (!near && !correct && detail.value == null && lastValue != null && hint != null) {
+          near = isNear(lastValue, hint, detail);
+        }
+        if (!near && !correct && detail.value != null) {
+          near = isNear(detail.value, detail.answer != null ? detail.answer : hint, detail);
+        }
+        lastValue = null;
+
         if (correct) {
+          // B6 用过「再听一次」后答对直接算 correct；判定瞬间清过程动效（三轨时序）
+          if (global.Feedback) global.Feedback.bus.correct({});
+          var exempt = f.replayUsed || f.hintUsed || f.undoUsed;
+          // B3 豁免不影响前进与星，只是不计 firstTryCleanCorrect
+          if (!exempt && !attempts[i] && !shownPendingAdvance) cleanCount += 1;
+          correctCount += 1;
+          outcomes[i] = 'correct';
+          shownPendingAdvance = false;
           index += 1;
-          if (index >= total) {
-            return {
-              done: true,
-              star: firstPass ? 'gold' : 'silver',
-              wrongCount: wrong.length
-            };
-          }
-          return { done: false, advance: true };
+          solvedRefs.push(plannedRefs[i] || (String(levelId) + ':' + i));
+          api.resolve();
+          persist();     // C5 逐题写盘
+          emit('quiz:correct', { levelId: levelId, index: i, track: sessionFlags.track });
+          if (index >= total) return finishResult();
+          return { done: false, advance: true, retry: false, outcome: 'correct',
+                   wrongCount: wrong.length, correctCount: correctCount };
         }
+
+        // 未答对：答错无表扬语音无星（三轨时序）
+        if (global.Feedback) global.Feedback.bus.wrong();
+
+        // C1 超时不判错：不写 wrongCount、不进复习池、不扣、不卡关，只自动重听重给本题。
+        // challengeTimeout 与 quiz:timeout 统一由 timerApi.onTimeout 登记（避免重复计数）；
+        // 本分支只更新状态机 outcome，主要服务「超时守卫」兜底路径。
+        if (detail.timeout) {
+          outcomes[i] = 'timeout';
+          return { done: false, advance: false, retry: true, outcome: 'timeout',
+                   replay: true, writeWrong: false, wrongCount: wrong.length };
+        }
+        // B2 撤销：不写任何数据
+        if (detail.undo) {
+          emit(EVT.UNDO, { levelId: levelId, index: i });
+          return { done: false, advance: false, retry: true, outcome: 'undo', writeWrong: false };
+        }
+        // B6 near：差一点，不写 wrongCount、不进复习池、不判 fail
+        if (near) {
+          outcomes[i] = 'near';
+          emit('quiz:near', { levelId: levelId, index: i, value: detail.value, answer: hint });
+          return { done: false, advance: false, retry: true, outcome: 'near', near: true,
+                   writeWrong: false, wrongCount: wrong.length };
+        }
+
+        // B7 真答错（非误触撤销、非超时）；challenge 轨答错不进复习池（C4）
         firstPass = false;
-        if (wrong.indexOf(index) < 0) wrong.push(index);
-        // 供 app.js 记录错题干（关卡模块不需要知道 levelId，由监听方补上）
-        if (global.document && document.dispatchEvent && global.CustomEvent) {
-          try {
-            document.dispatchEvent(new CustomEvent('quiz:wrong', {
-              detail: { index: index, attempt: wrong.length }
-            }));
-          } catch (e) { /* 老浏览器忽略 */ }
+        attempts[i] = (attempts[i] || 0) + 1;
+        var n = attempts[i];
+        if (wrong.indexOf(i) < 0) wrong.push(i);
+        outcomes[i] = 'wrong';
+        var tag = wrongTagOf(detail);
+        var toReview = !isChallenge;
+        emit(EVT.WRONG, {
+          levelId: levelId, index: i, attempt: n, wrongTag: tag,
+          realWrong: true, timeout: false, undo: false,
+          countsForReview: toReview, track: sessionFlags.track
+        });
+        if (global.Review && toReview && typeof global.Review.recordWrong === 'function') {
+          global.Review.recordWrong(levelId, i, tag);
         }
-        return { done: false, advance: false, retry: true };
+
+        var result = { done: false, advance: false, retry: true, outcome: 'wrong',
+                       attempt: n, wrongCount: wrong.length, writeWrong: true, wrongTag: tag };
+        if (n === 1) {
+          // B5 第 1 次：提示（高亮 + 自动重听 + 示范），保持 3 选 1
+          result.level = 1; result.hint = true; result.autoReplay = true; result.demo = true;
+        } else if (n === 2) {
+          // B5 第 2 次：降级 3 选 1 → 2 选 1（运算题追加实物计数支架）
+          result.level = 2; result.degrade = true; result.optionCount = 2; result.countingScaffold = true;
+        } else if (n >= 3 || n >= maxDwell) {
+          // B5 第 3 次：展示答案并前进（正确项放大停留 1.5s、outcome=shown、无条件前进）
+          result.level = 3; result.outcome = 'shown'; result.forceAdvance = true;
+          result.revealHoldMs = (global.FB_SPEC && global.FB_SPEC.revealHoldMs) || 1500;
+          outcomes[i] = 'shown';
+          shownPendingAdvance = true;
+          emit('quiz:shown', { levelId: levelId, index: i, holdMs: result.revealHoldMs });
+        }
+        persist();
+        return result;
       },
 
       reset: function () {
-        index = 0;
-        firstPass = true;
-        wrong = [];
+        index = 0; firstPass = true; wrong = []; attempts = {}; outcomes = {};
+        flags = {}; cleanCount = 0; correctCount = 0;
+        shownPendingAdvance = false; confirm = null;
       }
     };
+    lastSession = api;
+    return api;
   }
 
   /* ---------------- 选择题选项（各关共用） ----------------
@@ -693,6 +944,133 @@
       var tmp = list[k]; list[k] = list[j]; list[j] = tmp;
     }
     return list;
+  }
+
+  /* ---------------- 题目队列呈现规划（C5/C6/C7 集中接线） ----------------
+     48 关统一用 Engine.quiz.shuffle(ctx.level.questions.slice()) 生成队列。
+     这里识别「题目对象数组」并接管呈现顺序；普通选项数组仍走原洗牌。
+     只搬引用、不改题目对象、不删 480 题；跨关原题用相对路径复用既有语音 key。 */
+
+  function looksLikeQuestionList(list) {
+    if (!list || !list.length) return false;
+    var f = list[0];
+    if (!f || typeof f !== 'object') return false;
+    return ('voice' in f) || ('type' in f) || ('object' in f) ||
+           ('options' in f) || ('sentences' in f) || ('a' in f && 'b' in f);
+  }
+
+  function pad2(n) { return n < 10 ? '0' + n : String(n); }
+
+  /** 数值答案（near 判定用，不改题目对象；算不出就返回 null，安全降级不误判） */
+  function numericAnswerOf(q) {
+    if (!q) return null;
+    if (q.answer != null && isFinite(Number(q.answer))) return Number(q.answer);
+    if (q.a != null && q.b != null && isFinite(Number(q.a)) && isFinite(Number(q.b))) {
+      var op = q.op || '+';
+      if (op === '+') return Number(q.a) + Number(q.b);
+      if (op === '-') return Number(q.a) - Number(q.b);
+      if (op === 'x' || op === '*') return Number(q.a) * Number(q.b);
+      if (op === '/') return Number(q.b) ? Number(q.a) / Number(q.b) : null;
+    }
+    return null;
+  }
+
+  function voiceKeyOf(q, lid, qi) {
+    var key = (q && q.voice && q.voice[0]) || ('q' + (qi + 1));
+    return 'lv' + pad2(lid) + '/' + key;
+  }
+
+  function planQuestionQueue(list) {
+    var W = global.Wellbeing, R = global.RouteMap, Rev = global.Review, D = global.MATH_DATA;
+    if (!W || !R || !D || !activeLevelId || !lastSession) return shuffleList(list);
+    var levelId = activeLevelId;
+    var n = list.length;
+
+    // C6 同族聚成连续块、块首 isFirstOfType（只重排呈现顺序，不改题目对象、不删题）
+    var plan6 = R.planPresentation(list, 2);
+    var ordered = plan6.shown.concat(plan6.moved);
+    var orderedRefs = ordered.map(function (q) { return String(levelId) + ':' + list.indexOf(q); });
+    sessionFlags.firstOfTypeIndex = plan6.firstOfTypeIndex;
+    sessionFlags.familyBudget = {
+      families: plan6.families, moved: plan6.movedFamilies,
+      movedRefs: plan6.moved.map(function (q) { return String(levelId) + ':' + list.indexOf(q); })
+    };
+
+    var cursor = W.store.getCursor(levelId) || {};
+    var solved = (cursor.solved || []).slice();
+    var gIdx = Math.min(Number(cursor.currentGroupId) || 0, 1);
+    var groupSizes = [6, 4];   // 4 岁起步：10 题切 6+4 两局
+
+    var globalPending = W.store.pendingAll();
+    var localPending = globalPending.filter(function (r) {
+      return String(r).indexOf(String(levelId) + ':') === 0;
+    });
+    var otherPending = globalPending.filter(function (r) {
+      return String(r).indexOf(String(levelId) + ':') !== 0;
+    });
+
+    // C7 每 3 关「再玩一次」（仅 core 轨、收尾局不插、整组替换当次新题）
+    var reviewRefs = null;
+    var isCore = R.isCore(levelId);
+    var coreLevelsDone = 0;
+    if (global.Progress && typeof global.Progress.read === 'function') {
+      (global.Progress.read().cleared || []).forEach(function (id) { if (R.isCore(id)) coreLevelsDone += 1; });
+    }
+    if (isCore && Rev) {
+      var grp = Rev.buildReviewGroup(coreLevelsDone, D, {
+        groupSize: groupSizes[gIdx], isFinale: (levelId === 26), isCoreComplete: false
+      });
+      if (grp && grp.insert && grp.refs.length) reviewRefs = grp.refs.slice(0, groupSizes[gIdx]);
+    }
+
+    // C5/C7 呈现规划：6+4 分组 + 断点续做 + pending 优先出队 + 整组替换（守恒可校验）
+    var res = R.planQueue(levelId, orderedRefs, {
+      solved: solved, pending: localPending, groupIndex: gIdx,
+      groupSizes: groupSizes, reviewRefs: reviewRefs,
+      groupsDone: cursor.groupsDone || [], groupResults: cursor.groupResults || {},
+      nextQIndex: cursor.nextQIndex || 0
+    });
+
+    function refToQuestion(ref) {
+      var p = String(ref).split(':');
+      var lid = Number(p[0]), qi = Number(p[1]);
+      if (lid === levelId) return list[qi];
+      // 跨关「再玩一次」原题：浅拷贝、voice 指向源关既有 key 的相对路径（零新增 key）
+      var srcLv = D.levels[lid];
+      var srcQ = srcLv && srcLv.questions && srcLv.questions[qi];
+      if (!srcQ) return list[0];
+      var copy = {};
+      Object.keys(srcQ).forEach(function (k) { copy[k] = srcQ[k]; });
+      copy.voice = ['../' + voiceKeyOf(srcQ, lid, qi)];
+      copy.__reviewRef = String(ref);
+      return copy;
+    }
+
+    var queue = res.queue.map(refToQuestion).filter(function (q) { return !!q; });
+    var hints = queue.map(numericAnswerOf);
+
+    // 写盘：全局 pending（含 C7 被替换的新题）+ 本关 levelCursor（逐题写盘基准）
+    var finalPending = otherPending.concat(res.pending);
+    W.store.patch(function (s) { s.pendingQuestions = finalPending; });
+    W.store.setCursor(levelId, {
+      nextQIndex: 0, currentGroupId: gIdx,
+      groupsDone: (cursor.groupsDone || []).slice(),
+      groupResults: cursor.groupResults || {},
+      solved: solved.slice(), total: queue.length, planned: res.queue.slice()
+    });
+
+    lastSession.setQueue(queue, hints, solved, res.queue.slice());
+    lastSession.setTotal(queue.length);   // 关卡模块按本组题数结算，不越界
+
+    if (global.Feedback) {
+      sessionFlags.demoKind = global.Feedback.firstSeenKind(levelId, queue[0] && queue[0].type);
+    }
+    return queue;
+  }
+
+  function quizShuffle(list) {
+    if (looksLikeQuestionList(list)) return planQuestionQueue(list);
+    return shuffleList(list);
   }
 
   function optionsFor(answer, opts) {
@@ -903,6 +1281,10 @@
   function loadLevel(level, options) {
     options = options || {};
     var started = Date.now();
+    // 记录当前关号，供 quiz.shuffle 的呈现规划与 timer.flashMs(levelId) 使用
+    activeLevelId = (level && level.id) ? Number(level.id) : 0;
+    sessionFlags.groupComplete = false;
+    sessionFlags.lastGroupOnly = false;
     var tasks = buildTasks(level, options);
     var done = 0;
     var failed = [];
@@ -974,38 +1356,177 @@
     });
   }
 
-  /* ---------------- 家长设置（只存本机，不进云存档） ---------------- */
+  /* ---------------- 家长设置（A6：独立分区，不进云存档） ----------------
+     settings / usage 落在 wellbeing.js 的 'math-adventure.local.v1' 独立分区，
+     Gist 白名单序列化仍只含 progress.*，绝不跨设备同步。 */
 
-  var SETTINGS_KEY = 'math-adventure.settings.v1';
+  var SETTINGS_KEY = 'math-adventure.settings.v1';   // 兼容上一轮旧分区（只读回退）
 
   function readSettings() {
-    try {
-      return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') || {};
-    } catch (e) {
-      return {};
-    }
+    if (global.Wellbeing && global.Wellbeing.settings) return global.Wellbeing.settings();
+    try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') || {}; }
+    catch (e) { return {}; }
   }
 
   function writeSettings(patch) {
-    var s = readSettings();
-    Object.keys(patch || {}).forEach(function (k) { s[k] = patch[k]; });
-    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { /* 隐私模式 */ }
-    return s;
+    var next;
+    if (global.Wellbeing && global.Wellbeing.setSettings) {
+      next = global.Wellbeing.setSettings(patch);   // 内部派发 EVT_SETTINGS_CHANGED
+    } else {
+      var s = readSettings();
+      Object.keys(patch || {}).forEach(function (k) { s[k] = patch[k]; });
+      try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { /* 隐私模式 */ }
+      next = s;
+      emit(EVT.SETTINGS_CHANGED, { settings: next });
+    }
+    timerApi.rebaseLast();
+    return next;
   }
+
+  var timerCurrentReset = null;
+  var lastWindowMs = 60000;
+  var timeoutGuard = null;   // C1：关卡登记 onTimeout 后，随后的 wrong() 一律视为超时
+
+  /** C1/C2：窗口在每题开始时求值（不缓存），4 岁起步默认 60 秒、绝不 5 秒；
+      L21/30/33/36/L45 取消限时返回 0；L9/L12 可选挑战默认关、仅家长主动开。 */
+  function flashMs(levelId) {
+    var s = readSettings();
+    // 家长关掉「计时压力」＝全程不装表（返回 0）。4 岁起步默认 60 秒已很宽松，
+    // 这里保留该开关是为了让任何倒计时视觉都不出现，避免开关变成空壳。
+    if (s.noTimer) return 0;
+    var R = global.RouteMap;
+    if (!R || !levelId || R.TIMER_LEVELS.indexOf(Number(levelId)) < 0) return 60000;
+    var cfg = R.TIMER_CONFIG[Number(levelId)];
+    if (!cfg) return 60000;
+    if (cfg.cancelTimer || cfg.timed === false) return 0;         // 取消限时：不装表、不超时
+    var timers = s.challengeTimers || {};
+    if (timers[String(levelId)] && cfg.challengeMs) return cfg.challengeMs;  // 家长主动开
+    return cfg.defaultWindowMs;                                    // 默认 60 秒
+  }
+
+  var timerApi = {
+    /** C2：EVT_SETTINGS_CHANGED 触发 rebase。更宽松立即重置当前题剩余时间；
+        更严格从下一题生效（flashMs 每题读取，下一题自然用新窗口）。 */
+    rebase: function (levelId, prevMs, nextMs) {
+      var prev = Number(prevMs == null ? lastWindowMs : prevMs);
+      var next = Number(nextMs == null ? flashMs(levelId) : nextMs);
+      var looser = next > prev || next === 0;   // 0 = 取消限时，视为更宽松
+      if (looser && typeof timerCurrentReset === 'function') {
+        try { timerCurrentReset(next); } catch (e) { /* noop */ }
+      }
+      lastWindowMs = next;
+      emit(EVT.SETTINGS_CHANGED, {
+        levelId: levelId, prevMs: prev, nextMs: next, looser: looser,
+        effectiveFromNextQuestion: !looser
+      });
+      return { looser: looser, nextMs: next, effectiveFromNextQuestion: !looser };
+    },
+    rebaseLast: function () {
+      return timerApi.rebase(activeLevelId, lastWindowMs, flashMs(activeLevelId));
+    },
+    /** 限时关 arm 时注册「重置当前题剩余时间」函数，供更宽松的 rebase 立即调用 */
+    registerCurrent: function (resetFn) { timerCurrentReset = resetFn || null; },
+    clearCurrent: function () { timerCurrentReset = null; },
+    /** C1 超时不判错：写独立 challengeTimeout（仅家长可见、不计达成），
+        不写 wrongCount、不进复习池、不扣、不卡关，只自动重听并重给本题。
+        登记超时守卫：关卡超时回调随后触发的 wrong() 会被状态机识别为 timeout。 */
+    onTimeout: function (levelId, replayFn) {
+      timeoutGuard = { levelId: levelId, at: Date.now() };
+      setTimeout(function () { timeoutGuard = null; }, 1200);   // 1.2s 后自动失效，避免误判
+      if (global.Wellbeing && global.Wellbeing.store) global.Wellbeing.store.addChallengeTimeout(levelId);
+      emit('quiz:timeout', { levelId: levelId, replay: true, writeWrong: false });
+      if (typeof replayFn === 'function') replayFn();
+      return true;
+    },
+    isTimeoutPending: function () {
+      return !!(timeoutGuard && (Date.now() - timeoutGuard.at) < 1200);
+    },
+    isCancelled: function (levelId) {
+      var R = global.RouteMap;
+      return !!(R && R.CANCELLED_TIMER_LEVELS.indexOf(Number(levelId)) >= 0);
+    },
+    challengeEnabled: function (levelId) {
+      var s = readSettings();
+      return !!(s.challengeTimers && s.challengeTimers[String(levelId)]);
+    },
+    setChallenge: function (levelId, on) {
+      var s = readSettings(), t = {};
+      Object.keys(s.challengeTimers || {}).forEach(function (k) { t[k] = s.challengeTimers[k]; });
+      t[String(levelId)] = !!on;
+      return writeSettings({ challengeTimers: t });
+    },
+    windowMs: function (levelId) { return flashMs(levelId); }
+  };
 
   var settingsApi = {
     get: readSettings,
     set: writeSettings,
     noTimer: function () { return !!readSettings().noTimer; },
-    /* 限时题默认 5 秒；关掉计时压力时给 60 秒。
-       关卡里的停表 / 进度条 / 超时判定逻辑一行都不用改。 */
-    flashMs: function () { return readSettings().noTimer ? 60000 : 5000; }
+    flashMs: flashMs,
+    timer: timerApi,
+    // B4 金星可选徽章：默认 false、不是解锁条件、不显示差距
+    challengeBadge: function () { return !!readSettings().challengeBadge; },
+    setChallengeBadge: function (on) { return writeSettings({ challengeBadge: !!on }); },
+    // C4「试一试」标注，家长可关
+    showChallenge: function () { return !!readSettings().showChallenge; },
+    setShowChallenge: function (on) { return writeSettings({ showChallenge: !!on }); },
+    // A6 ParentGate 图形验证：仅防孩子误改设置
+    parentGate: function (host, onPass) {
+      if (global.Wellbeing && global.Wellbeing.parentGate) global.Wellbeing.parentGate(host, onPass);
+      else if (typeof onPass === 'function') onPass();
+    }
   };
+
+  /* ---------------- B9–B11 / C8–C10 全局过程反馈接线（不改 48 关） ----------------
+     通过事件监听给当前关卡屏挂 F1–F10 视觉反馈，并用 data-value 推断 near。
+     选项级精确高亮需关卡侧配合，故这里做通用挂载（报告标为部分实现）。 */
+  function stageHost() {
+    return typeof document !== 'undefined' ? document.getElementById('stage') : null;
+  }
+
+  function installFeedbackWiring() {
+    if (typeof document === 'undefined' || !document.addEventListener) return;
+    // B6 near + B2 EVT_TAP：从选项 data-value 推断选中值（能算数值答案时才判 near）
+    document.addEventListener('click', function (e) {
+      var t = e && e.target;
+      var btn = t && t.closest ? t.closest('[data-value]') : null;
+      if (btn && lastSession && lastSession.setLastValue) {
+        lastSession.setLastValue(btn.getAttribute('data-value'));
+      }
+      if (lastSession && lastSession.tap) lastSession.tap(btn);  // 进入 S_CONFIRM 预选态
+    }, true);
+
+    document.addEventListener(EVT.WRONG, function (e) {
+      var F = global.Feedback; if (!F) return;
+      var d = (e && e.detail) || {};
+      var host = stageHost();
+      if (d.attempt === 1) {
+        // F3 再试一次：暖黄描边高亮 + 自动重听（F2 柔蓝波纹）
+        var story = host && host.querySelector ? host.querySelector('.lv-story') : null;
+        if (story) F.highlight(story);
+        var r = host && host.querySelector ? host.querySelector('.q-replay') : null;
+        if (r) F.F.F2_replay(r.parentNode || host);
+      } else if (d.attempt === 2) {
+        // F6 我们一起做：非目标仅降饱和约 30%、轻轻退后（不消失不打叉不变灰）
+        if (host) F.dimNonTargets(host.querySelectorAll('button'));
+      }
+      if (host) F.ensureTouchTargets(host);
+    });
+    document.addEventListener('quiz:near', function () {
+      var F = global.Feedback; if (F) F.F.F4_near(stageHost());
+    });
+    document.addEventListener('quiz:shown', function () {
+      var F = global.Feedback; if (F) F.F.F7_reveal(stageHost(), function () {});
+    });
+    document.addEventListener('quiz:correct', function () {
+      var F = global.Feedback; if (F) F.ensureTouchTargets(stageHost());
+    });
+  }
 
   /* ---------------- 对外接口 ---------------- */
 
   global.Engine = {
-    version: '0.1.0',
+    version: '0.2.0',          // 4 岁起步机制升级（Gist payload 版本不变）
     limits: LIMITS,
     loadLevel: loadLevel,
     loader: loader,
@@ -1031,13 +1552,31 @@
       poolSize: function () { return Object.keys(audioPool).length; }
     },
     settings: settingsApi,
+    settingsTimer: timerApi,      // C2 兼容别名
     sfx: sfx,
     anim: anim,
     session: createSession,
+    sessionLast: function () { return lastSession; },
+    flags: sessionFlags,
+    bus: {
+      emit: emit,
+      EVT: EVT,
+      activeLevelId: function () { return activeLevelId; }
+    },
+    /* B8 C5 FlashReplayGuard：flash 期间不释放语音 key、「再听一次」常亮常驻；
+       图标用「眼睛 + 小海螺」，禁用闪电/沙漏/秒表/倒计时红环。 */
+    FlashReplayGuard: {
+      keepAlive: true,
+      iconSVG: function () { return global.Feedback ? global.Feedback.replayIconSVG() : ''; },
+      isBannedIcon: function (name) {
+        return /bolt|lightning|hourglass|stopwatch|timer|countdown/i.test(String(name));
+      }
+    },
     quiz: {
       optionsFor: optionsFor,
       reshuffle: reshuffleOptions,
-      shuffle: shuffleList
+      shuffle: quizShuffle,
+      planQueue: function (list) { return planQuestionQueue(list); }
     },
     three: three,
     modal: openModal,
@@ -1051,4 +1590,5 @@
       withTimeout: withTimeout
     }
   };
+  installFeedbackWiring();
 })(window);

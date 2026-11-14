@@ -15,8 +15,20 @@
   var TOTAL = 10;
   var NEXT_MS = 700;
   var WRONG_HOLD = 1500;
-  var LIMIT_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;
-  var LOW_AT = 3000;                  // 剩余 40% 时转红（5s 的 60% 处）
+  var LEVEL_ID = 30;
+  var LIMIT_MS = 60000;              // 4 岁起步默认 60 秒（原加载缓存的 5 秒已废弃；本关取消限时，实际不装表）
+  var LOW_AT = 3000;                 // B11：取消限时后不装表、不转红，此值不生效
+  /* C1/C2 4 岁起步：窗口每题开始时求值（不缓存）；L30 取消限时 → windowMs()===0。 */
+  function timerWindow() {
+    return (window.Engine && Engine.settings && Engine.settings.timer)
+      ? Engine.settings.timer.windowMs(LEVEL_ID) : 0;
+  }
+  // B8 C5 FlashReplayGuard：禁用闪电 / 沙漏 / 秒表 / 倒计时红环 / 速度文字，
+  // flash 关常亮常驻「再听一次」，图标用「眼睛 + 小海螺」。
+  function replayIcon() {
+    return (window.Engine && Engine.FlashReplayGuard && Engine.FlashReplayGuard.iconSVG)
+      ? Engine.FlashReplayGuard.iconSVG() : '';
+  }
 
   var ICONS = {
     hand:
@@ -172,6 +184,9 @@
 
     function arm() {
       if (running) return;
+      // C1 4 岁起步：本关取消限时（windowMs()===0）→ 不装表、不倒计时、不转红、不超时，
+      // 题目无限时、常驻「再听一次」；原超时写错回调（onEnd/timeout()）永不触发。
+      if (timerWindow() <= 0) { bar.style.display = 'none'; return; }
       running = true;
       bar.classList.remove('is-idle', 'is-low', 'is-over', 'is-done');
       bar.classList.add('is-armed');
@@ -398,7 +413,7 @@
     l2.classList.add('is-hidden');
 
     var badge = el('div', 'l30-badge');
-    badge.innerHTML = ICONS.bolt + '<span>quick math</span>';
+    badge.innerHTML = replayIcon();   // B8：中性「再听」图标，去掉「quick math」速度文字
     badge.classList.add('is-hidden');
     card.appendChild(badge);
 
@@ -628,7 +643,7 @@
     board.appendChild(eq);
 
     var hint = el('div', 'l30-combo');
-    hint.innerHTML = ICONS.bolt + '<span>5 seconds</span>';
+    hint.innerHTML = replayIcon();   // B8：中性「再听」图标，去掉「5 seconds」速度文字
     board.appendChild(hint);
     story.appendChild(board);
     popIn(board);

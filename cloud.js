@@ -13,6 +13,12 @@
      · 写回用 If-Match + ETag 条件写；远端被别的设备改过时重新拉取再合并
      · 只有 401/403 才判定令牌失效；网络抖动保留凭据并后台退避重试
 
+   Gist payload 白名单（A6/E3，4 岁起步改造）：
+     · 写远端前一律过 payloadOf()，只序列化 7 个既有字段，结构/字段/版本号不变
+     · settings/usage/daily/levelCursor/pendingQuestions/challengePlayed 等本地态
+       全部落在独立分区，绝不进云同步白名单、不跨设备同步
+     · 旧 Gist 存档可读、跨设备无需 migration
+
    浏览器要求：ES2017（近三年移动端浏览器均满足）
    ============================================================ */
 
@@ -124,6 +130,23 @@ window.Cloud = (function () {
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
+  /** A6/E3：Gist payload 白名单序列化。
+      只保留 7 个既有字段（version:1 / unlockedLevel / stars / cleared /
+      levelMistakes / attempts / updatedAt），结构 / 字段 / 版本号绝对不变；
+      任何新增本地态字段都会被丢弃，旧存档可读、跨设备无需 migration。 */
+  function payloadOf(p) {
+    p = p || {};
+    return {
+      version: 1,
+      unlockedLevel: p.unlockedLevel || 1,
+      stars: p.stars || {},
+      cleared: p.cleared || [],
+      levelMistakes: p.levelMistakes || {},
+      attempts: p.attempts || {},
+      updatedAt: p.updatedAt || 0
+    };
+  }
+
   /** 同一时刻只跑一次同步；三个触发源并发时复用同一个 Promise */
   function singleFlight(task) {
     if (inFlight) return inFlight;
@@ -159,7 +182,7 @@ window.Cloud = (function () {
         public: false,
         files: (function () {
           var files = {};
-          files[FILE] = { content: JSON.stringify(Progress.read(), null, 2) };
+          files[FILE] = { content: JSON.stringify(payloadOf(Progress.read()), null, 2) };
           return files;
         })()
       }
@@ -196,7 +219,7 @@ window.Cloud = (function () {
           description: DESC,
           files: (function () {
             var files = {};
-            files[FILE] = { content: JSON.stringify(progress, null, 2) };
+            files[FILE] = { content: JSON.stringify(payloadOf(progress), null, 2) };
             return files;
           })()
         }
