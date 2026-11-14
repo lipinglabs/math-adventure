@@ -52,6 +52,27 @@ python tools/push_via_api.py "提交说明" --dry-run   # 只看清单，不推�
 
 ---
 
+## 1.5 4 岁起步参数（2026-11-14 专家团清单落地）
+
+孩子刚满 4 周岁、私人自用，**不做 3–4 岁档**，所有参数取「4 岁起步」列：
+
+| 参数 | 值 | 落在哪 |
+|---|---|---|
+| 单局上限 / 每日上限 / 绝对上限 | 600s / 1200s / 900·1800 | `wellbeing.js` `CAP` |
+| 休息画面 / 去抖窗口 | 20s / `REST_GAP_MS=180000`（仅去抖，第 2 局强制兜底） | `wellbeing.js` |
+| 题组切分 | 10 题切 6+4（2 局），逐题写 `levelCursor` | `engine.js` session |
+| 解锁条件 | **完成即解锁**（与一次全对解绑）；金星=家长可开徽章，默认关 | `progress.js` / `engine.js` |
+| 答错三级 | 1 提示 → 2 降级 3选1→2选1 → 3 展示答案并前进 | `engine.js` 状态机 |
+| 单题停留上限 / 防误触 | 3 次 / 0.4s 单点确认 | `CAP` |
+| 限时关 | 全部默认 60s；L21/30/33/36/45 **取消**；L9/L12 可选 15s/12s 挑战、默认关 | `route-map.js` `TIMER_CONFIG` |
+| 超时 | **不判错**：不写 wrongCount、不进复习池、不扣分，只自动重听重给本题 | `engine.js` `timer.onTimeout` |
+| 双轨 | core = L1…L15→L17→L18→L25→L26；4 岁档只渲染 core | `route-map.js` |
+| 错题 | 只记真答错（非撤销/非超时）+ `wrongTag`；`attemptCount` 语义=进关次数 | `progress.js` |
+
+**两条硬约束**：① 480 题一题不删、674 个 mp3 与语音 key 零改动；② `settings` / `usage` / `daily` / `levelCursor` 全在 `wellbeing.js` 的独立 localStorage 分区，**不进云同步白名单**，年龄与设置不跨设备。
+
+**冒烟基线已随之更新**：`tools/smoke-levels.js` 现在断言 `flashDefault=60000 / noTimer→0 / L21→0 / L9 挑战→15000`，并会临时置 `Wellbeing.__skipRest=true` 跳过 20s 休息画面（仅自动化，不影响真实玩法）。
+
 ## 2. 密钥
 
 > 本文件以及仓库内任何文件都**不得出现完整密钥**。

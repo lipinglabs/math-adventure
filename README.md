@@ -174,7 +174,11 @@ python -m http.server 8765 --bind 127.0.0.1
 | `style.css` | 果冻 / 粘土风样式 |
 | `sw.js` | 应用外壳离线缓存（HTML / JS / CSS 一律 network-first） |
 | `asset-manifest.js` | 素材内容 hash 清单，**自动生成，勿手改** |
-| `levels_data.js` | 地图坐标与关卡配置（纯数据） |
+| `levels_data.js` | 地图坐标与关卡配置（纯数据，480 题一题不删） |
+| `route-map.js` | 坡度表 / core-challenge 双轨 / 限时配置 / `identify-*` 标记（4 岁档只渲染 core） |
+| `wellbeing.js` | 护眼时长（单局 600s / 每日 1200s / 休息 20s）、settings+usage 独立分区、成长树 |
+| `feedback.js` | F1–F10 过程性反馈、示范动画（≤3.5s）、`feedbackBus` 三轨时序、禁止项断言 |
+| `review.js` | 每 3 关「再玩一次」组（只从已玩 core 原题取，引用原语音 key） |
 | `engine.js` | 资源加载、进度条、音频、动画、判定、3D 扩展位 |
 | `progress.js` | 进度、星级、解锁、合并 |
 | `cloud.js` | Gist 云存档（最高关卡覆盖） |
@@ -188,11 +192,11 @@ python -m http.server 8765 --bind 127.0.0.1
 | `level-lv06.js` | 第六关：数字连线教学、拖线配对（一笔画出） |
 | `level-lv07.js` | 第七关：积木堆叠教学、拖数字进空格 |
 | `level-lv08.js` | 第八关：车库教学、拖车进个位车库 |
-| `level-lv09.js` | 第九关：纯数字算式、找错句、限时闪电（5 秒进度条） |
+| `level-lv09.js` | 第九关：纯数字算式、找错句、限时闪电（默认 60s；家长可开 15s 挑战） |
 | `level-lv10.js` | 第十关：树枝与小鸟教学、飞走 / 选树枝 / 点鸟消除 |
 | `level-lv11.js` | 第十一关：糖果盒教学、拖糖进盘 / 选糖果组 / 找错句并改正 |
-| `level-lv12.js` | 第十二关：纯数字教学、数字砖 / 气球选答案 / 5 秒闪电 |
-| `level-kit.js` | 关卡共用结算页（金星 / 银星） |
+| `level-lv12.js` | 第十二关：纯数字教学、数字砖 / 气球选答案 / 闪电（默认 60s，可开 12s 挑战） |
+| `level-kit.js` | 关卡共用结算页（银星=完成即得；金星为家长可开徽章） |
 
 ## 文档
 
