@@ -18,7 +18,7 @@
   var TOTAL = 10;
   var NEXT_MS = 720;
   var WRONG_HOLD = 1500;
-  var LIMIT_MS = 5000;
+  var LIMIT_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;
   var LOW_AT = 3000;
 
   var ICONS = {

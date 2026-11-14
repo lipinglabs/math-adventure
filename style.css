@@ -219,6 +219,37 @@ svg { display: block; }
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05), 0 4px 8px rgba(122, 92, 68, 0.12);
 }
 
+/* 关卡内「再听一次」：还没有可重播的语音时置灰，避免孩子点了没反应 */
+.icon-btn--replay {
+  flex: 0 0 auto;
+  color: var(--mint-deep, #3f8f6d);
+}
+.icon-btn--replay:disabled {
+  opacity: 0.38;
+  color: var(--ink-soft, #8a7c70);
+  box-shadow: none;
+  cursor: default;
+}
+.icon-btn--replay:disabled:active { transform: none; }
+
+/* 家长设置行（Settings & cloud save 面板） */
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  cursor: pointer;
+}
+.setting-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  accent-color: var(--mint-deep, #3f8f6d);
+}
+
 /* 地图画布：分阶段，一屏一页，所有页排在一条横向轨道上 */
 .map-wrap {
   position: relative;

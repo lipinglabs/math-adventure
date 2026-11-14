@@ -9,6 +9,8 @@
   · 必须带 base_tree，否则会删掉远端新增文件
   · 空仓库首次提交自动切换为「无 base_tree / 无 parents / 新建 ref」
   · 文件清单里一旦出现 secret / .local.json，直接中止
+  · 只推送白名单扩展名；临时产物、备份目录一律不进清单
+  · 远端多出来的文件会以 sha=null 删除（例如 JPG 转 WebP 后残留的旧图）
 """
 
 from __future__ import annotations
@@ -28,9 +30,28 @@ REPO = "math-adventure"
 BRANCH = "main"
 ROOT = Path(__file__).resolve().parent.parent
 
-EXCLUDE_DIRS = {".git", ".shots", ".edge-profile", ".edge-prof", "tmp", "__pycache__", "node_modules", ".idea", ".vscode"}
+# 白名单：宁可少推一个临时文件，也不要把本机私钥 / 截图 / 缓存带进公开仓库
+ALLOWED_SUFFIX = {
+    ".html", ".css", ".js", ".mjs", ".json", ".md", ".txt",
+    ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".mp3",
+    ".py", ".yaml", ".yml",
+}
+EXCLUDE_DIRS = {
+    ".git", ".shots", ".edge-profile", ".edge-prof", "tmp", "__pycache__",
+    "node_modules", ".idea", ".vscode",
+}
 EXCLUDE_SUFFIX = {".pyc", ".log", ".tmp"}
 FORBIDDEN_PARTS = ("secret", ".local.json")
+
+
+def excluded(rel: Path) -> bool:
+    parts = rel.parts
+    if any(part in EXCLUDE_DIRS for part in parts):
+        return True
+    # 各类 backups-YYYYMMDD/ 目录里装着原图和代码快照，体积大且含历史内容
+    if any(part.startswith("backups-") for part in parts):
+        return True
+    return False
 
 
 def collect_files() -> list[str]:
@@ -39,7 +60,9 @@ def collect_files() -> list[str]:
         if not path.is_file():
             continue
         rel = path.relative_to(ROOT)
-        if any(part in EXCLUDE_DIRS for part in rel.parts):
+        if excluded(rel):
+            continue
+        if path.suffix.lower() not in ALLOWED_SUFFIX:
             continue
         if path.suffix.lower() in EXCLUDE_SUFFIX:
             continue
@@ -101,11 +124,11 @@ def main() -> int:
     for rel in files:
         print(f"  · {rel:<40} {(ROOT / rel).stat().st_size:>9} B")
 
-    if args.dry_run:
-        return 0
-
     head = try_head()
     if not head:
+        if args.dry_run:
+            print("dry-run：远端仓库为空，未做任何写入")
+            return 0
         # Git Data API 在「完全空仓库」上会返回 409 Git Repository is empty，
         # 因此先用 Contents API 写一个 README 制造首个提交，再走后续流程。
         seed_path = ROOT / "README.md"
@@ -130,7 +153,23 @@ def main() -> int:
     local_map = {rel: blob_sha((ROOT / rel).read_bytes()) for rel in files}
     changed = [rel for rel in files if remote_map.get(rel) != local_map[rel]]
     gone = [rel for rel in remote_map if rel not in local_map]
-    print(f"内容有变 {len(changed)} 个，未变 {len(files) - len(changed)} 个" + (f"，远端多出 {len(gone)} 个" if gone else ""))
+    # 只删除本项目类型的文件，避免误伤 Pages 自动生成的内容
+    deletable = [rel for rel in gone if Path(rel).suffix.lower() in ALLOWED_SUFFIX]
+    kept = [rel for rel in gone if rel not in deletable]
+    print(f"内容有变 {len(changed)} 个，未变 {len(files) - len(changed)} 个，"
+          f"远端待删 {len(deletable)} 个" + (f"（保留 {len(kept)} 个非项目文件）" if kept else ""))
+    if args.dry_run and deletable:
+        for rel in deletable[:60]:
+            print(f"  - {rel}")
+        if len(deletable) > 60:
+            print(f"  - ... 另 {len(deletable) - 60} 个")
+    if args.dry_run:
+        for rel in changed[:60]:
+            print(f"  ~ {rel}")
+        if len(changed) > 60:
+            print(f"  ~ ... 另 {len(changed) - 60} 个")
+        print("dry-run：未推送任何内容")
+        return 0
 
     tree = []
     for rel in changed:
@@ -140,6 +179,9 @@ def main() -> int:
             "encoding": "base64",
         })
         tree.append({"path": rel, "mode": "100644", "type": "blob", "sha": blob["sha"]})
+    # sha=null 是 Git Data API 的删除语义：JPG 转 WebP 后必须把旧图清掉
+    for rel in deletable:
+        tree.append({"path": rel, "mode": "100644", "type": "blob", "sha": None})
 
     tree_sha = gh("POST", f"repos/{OWNER}/{REPO}/git/trees",
                   {"base_tree": base_tree, "tree": tree})["sha"]

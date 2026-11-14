@@ -11,7 +11,8 @@
   本文件只负责「骨架」，禁止在此写业务逻辑或样式。
   结构：地图屏 / 关卡屏 / 加载遮罩 / 弹层 / 轻提示 / 沙盒热区
   语言：English only，界面不得出现任何中文字符（PROJECT_MATH_RULES §5.5）
-  脚本加载顺序是硬约束：数据 → 引擎 → 进度 → 云存档 → 沙盒 → 关卡 → 应用
+  脚本加载顺序是硬约束：素材清单 → 数据 → 引擎 → 进度 → 云存档 → 沙盒 → 关卡工具 → 应用
+  关卡模块 level-lvNN.js 不再全量同步加载，由 app.js 进关时按需动态注入。
 -->
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
@@ -41,7 +42,7 @@
         <span class="brand-mark" aria-hidden="true">+</span>
         <span class="brand-text">Math Adventure</span>
       </div>
-      <button id="btn-save" class="icon-btn" type="button" aria-label="Cloud save">
+      <button id="btn-save" class="icon-btn" type="button" aria-label="Settings and cloud save">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
           <path d="M7 18a4.5 4.5 0 0 1-.6-8.96A5.5 5.5 0 0 1 17.2 9.3 4 4 0 0 1 17 17.2"
                 fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
@@ -103,6 +104,14 @@
         <span id="level-index" class="level-index">Level 1</span>
         <span id="level-name" class="level-name">Apple Addition</span>
       </div>
+      <button id="btn-replay" class="icon-btn icon-btn--replay" type="button"
+              aria-label="Repeat the last instruction" disabled>
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M4 9.5h3.2L11 6v12l-3.8-3.5H4z" fill="currentColor"/>
+          <path d="M14.4 9.2a4 4 0 0 1 0 5.6M17 6.6a7.5 7.5 0 0 1 0 10.8" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
       <div id="level-stars" class="level-stars" aria-label="Stars for this level"></div>
     </header>
 
@@ -147,60 +156,22 @@
 
 <noscript>Please turn on JavaScript to play.</noscript>
 
+<!-- 素材清单必须先于引擎：engine.js 靠它给每个素材 URL 挂内容 hash -->
+<script src="asset-manifest.js"></script>
 <script src="levels_data.js"></script>
 <script src="engine.js"></script>
 <script src="progress.js"></script>
 <script src="cloud.js"></script>
 <script src="sandbox.js"></script>
 <script src="level-kit.js"></script>
-<script src="level-lv01.js"></script>
-<script src="level-lv02.js"></script>
-<script src="level-lv03.js"></script>
-<script src="level-lv04.js"></script>
-<script src="level-lv05.js"></script>
-<script src="level-lv06.js"></script>
-<script src="level-lv07.js"></script>
-<script src="level-lv08.js"></script>
-<script src="level-lv09.js"></script>
-<script src="level-lv10.js"></script>
-<script src="level-lv11.js"></script>
-<script src="level-lv12.js"></script>
-<script src="level-lv13.js"></script>
-<script src="level-lv14.js"></script>
-<script src="level-lv15.js"></script>
-<script src="level-lv16.js"></script>
-<script src="level-lv17.js"></script>
-<script src="level-lv18.js"></script>
-<script src="level-lv19.js"></script>
-<script src="level-lv20.js"></script>
-<script src="level-lv21.js"></script>
-<script src="level-lv22.js"></script>
-<script src="level-lv23.js"></script>
-<script src="level-lv24.js"></script>
-<script src="level-lv25.js"></script>
-<script src="level-lv26.js"></script>
-<script src="level-lv27.js"></script>
-<script src="level-lv28.js"></script>
-<script src="level-lv29.js"></script>
-<script src="level-lv30.js"></script>
-<script src="level-lv31.js"></script>
-<script src="level-lv32.js"></script>
-<script src="level-lv33.js"></script>
-<script src="level-lv34.js"></script>
-<script src="level-lv35.js"></script>
-<script src="level-lv36.js"></script>
-<script src="level-lv37.js"></script>
-<script src="level-lv38.js"></script>
-<script src="level-lv39.js"></script>
-<script src="level-lv40.js"></script>
-<script src="level-lv41.js"></script>
-<script src="level-lv42.js"></script>
-<script src="level-lv43.js"></script>
-<script src="level-lv44.js"></script>
-<script src="level-lv45.js"></script>
-<script src="level-lv46.js"></script>
-<script src="level-lv47.js"></script>
-<script src="level-lv48.js"></script>
 <script src="app.js"></script>
+<script>
+  // 应用外壳由 sw.js 以 network-first 接管；首次访问（SW 尚未安装）也能正常玩。
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { });
+    });
+  }
+</script>
 </body>
 </html>

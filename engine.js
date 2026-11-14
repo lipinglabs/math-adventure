@@ -16,10 +16,11 @@
   'use strict';
 
   var LIMITS = {
-    maxMotion: 10,        // 同屏运动元素上限，超过则丢弃新的装饰动画
-    loaderMinMs: 460,     // 加载遮罩最短停留，避免闪一下就消失
-    assetTimeout: 15000,  // 单个素材超时
-    maxAudioNodes: 40     // 音频元素上限（iOS 媒体元素超限会静默失声）
+    maxMotion: 10,          // 同屏运动元素上限，超过则丢弃新的装饰动画
+    loaderMinMs: 460,       // 加载遮罩最短停留，避免闪一下就消失
+    assetTimeout: 15000,    // 单个素材超时
+    maxAudioNodes: 40,      // 音频元素上限（iOS 媒体元素超限会静默失声）
+    assetConcurrency: 4     // 同时下载的素材数；弱网下 20 个并发会互相抢带宽导致超时
   };
 
   /* ---------------- 微工具 ---------------- */
@@ -58,10 +59,46 @@
     });
   }
 
+  /** 限流并发：弱网下 20 个素材同时请求会互相抢带宽，反而更容易触发 15s 超时 */
+  function runPool(items, limit, worker) {
+    return new Promise(function (resolve) {
+      var next = 0;
+      var left = items.length;
+      if (!left) return resolve();
+      function launch() {
+        if (next >= items.length) return;
+        var item = items[next++];
+        Promise.resolve().then(function () { return worker(item); }).then(function () {
+          left -= 1;
+          if (left === 0) resolve(); else launch();
+        }, function () {
+          left -= 1;
+          if (left === 0) resolve(); else launch();
+        });
+      }
+      for (var k = 0; k < Math.min(limit, items.length); k += 1) launch();
+    });
+  }
+
+  /**
+   * 给素材 URL 挂内容 hash。asset-manifest.js 由 tools/gen-asset-manifest.js 生成：
+   * 内容不变 → URL 不变 → 老设备继续命中本地缓存；内容变了 → URL 变 → 自动取新副本。
+   * 已带 v= 的 URL 原样返回，保证多次经过本函数时幂等。
+   */
+  function versionedUrl(url) {
+    if (!url || /^(https?:|data:|blob:)/.test(url)) return url;
+    if (/[?&]v=/.test(url)) return url;
+    var mf = global.ASSET_MANIFEST;
+    var clean = url.split('?')[0].replace(/^\.\//, '');
+    var hash = mf && mf.files && mf.files[clean];
+    if (!hash) return url;                    // 清单外的资源（例如开发期新加的）保持原样
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + hash;
+  }
+
   function resolveUrl(src, base) {
     if (!src) return '';
     if (/^(https?:|data:|blob:)/.test(src)) return src;
-    return (base || '') + src;
+    return versionedUrl((base || '') + src);
   }
 
   /* ---------------- 素材持久化（Cache Storage） ----------------
@@ -97,6 +134,38 @@
         return key.indexOf('math-adventure-assets-') === 0 && key !== CACHE_NAME;
       }).map(function (key) { return caches.delete(key); }));
     }).catch(function () { /* 忽略 */ });
+  }
+
+  /**
+   * 增量清理：只删「hash 已过期」或「清单里已不存在」的条目。
+   * 以前靠改 CACHE_NAME 让整库失效，改一张图就要重下全部 20MB 素材；
+   * 现在每个 URL 自带内容 hash，过期条目可被精确识别。
+   */
+  function pruneAssetCache() {
+    if (!cacheSupported()) return Promise.resolve();
+    var mf = global.ASSET_MANIFEST;
+    return cleanupOldAssetCaches().then(function () {
+      return openAssetCache();
+    }).then(function (cache) {
+      if (!cache || !cache.keys || !mf || !mf.files) return;
+      var basePath;
+      try { basePath = new URL('.', location.href).pathname; } catch (e) { basePath = '/'; }
+      return cache.keys().then(function (requests) {
+        var doomed = [];
+        requests.forEach(function (req) {
+          var u;
+          try { u = new URL(req.url); } catch (e) { return; }
+          var rel = decodeURIComponent(u.pathname.indexOf(basePath) === 0
+            ? u.pathname.slice(basePath.length) : u.pathname.replace(/^\//, ''));
+          var want = mf.files[rel];
+          var got = u.searchParams ? u.searchParams.get('v') : null;
+          if (!want || got !== want) doomed.push(req);
+        });
+        return Promise.all(doomed.map(function (req) {
+          return cache.delete(req).catch(function () { /* 配额/权限问题忽略 */ });
+        }));
+      });
+    }).catch(function () { /* 清理失败不影响游玩 */ });
   }
 
   function absoluteUrl(url) {
@@ -371,35 +440,57 @@
     // 语音互斥：默认先停掉正在播的，再播新的，避免两条题干叠在一起
     if (opts.exclusive !== false) stopAudio();
     var url = resolveUrl(src, opts.base || '');
-    var a = audioPool[url];
-    if (!a) {
-      a = new Audio(url);
-      audioPool[url] = a;
+
+    function doPlay(a) {
+      if (!a) return Promise.resolve(false);
+      if (!unlocked) unlock();
+      return new Promise(function (resolve) {
+        var done = false;
+        var timer = null;
+        function finish(v) {
+          if (done) return;
+          done = true;
+          if (timer) clearTimeout(timer);
+          a.removeEventListener('ended', finishTrue);
+          a.removeEventListener('error', finishFalse);
+          resolve(v);
+        }
+        function finishTrue() { finish(true); }
+        function finishFalse() { finish(false); }
+
+        a.addEventListener('ended', finishTrue);
+        a.addEventListener('error', finishFalse);
+        try { a.currentTime = 0; } catch (e) { /* 未就绪 */ }
+        a.volume = opts.volume == null ? 1 : clamp(opts.volume, 0, 1);
+        a.muted = !!opts.muted;
+
+        try {
+          var p = a.play();
+          if (p && p.catch) p.catch(function () { finish(false); });
+        } catch (e) {
+          return finish(false);
+        }
+
+        // 兜底：音频事件丢失时也不能卡住流程；finish() 会清掉这个定时器
+        var guess = (isFinite(a.duration) && a.duration > 0) ? a.duration * 1000 : 8000;
+        timer = setTimeout(function () { finish(true); }, guess + 900);
+      });
     }
-    if (!unlocked) unlock();
 
-    return new Promise(function (resolve) {
-      var done = false;
-      function finish(v) {
-        if (done) return;
-        done = true;
-        a.removeEventListener('ended', finishTrue);
-        resolve(v);
-      }
-      function finishTrue() { finish(true); }
+    if (audioPool[url]) return doPlay(audioPool[url]);
 
-      a.addEventListener('ended', finishTrue);
-      try { a.currentTime = 0; } catch (e) { /* 未就绪 */ }
-      a.volume = opts.volume == null ? 1 : clamp(opts.volume, 0, 1);
-      a.muted = !!opts.muted;
-
-      var p = a.play();
-      if (p && p.catch) {
-        p.catch(function () { finish(false); });
-      }
-      // 兜底：音频事件丢失时也不能卡住流程
-      var guess = (isFinite(a.duration) && a.duration > 0) ? a.duration * 1000 : 8000;
-      setTimeout(function () { finish(true); }, guess + 900);
+    /* 未预载的语音改走和关卡素材同一条 Cache Storage 管道。
+       旧实现直接 new Audio(网络 URL)：既绕过离线缓存，又不写进 levelAudio，
+       40 个音频名额会被永久占满，最终表现为「读条失败 / 没声音」。 */
+    if (global.console && console.warn) {
+      console.warn('[engine] voice not preloaded, falling back: ' + url);
+    }
+    return openAssetCache().then(function (cache) {
+      return loadAudio(src, opts.base || '', cache, null);
+    }).then(function (loadedUrl) {
+      return doPlay(audioPool[loadedUrl]);
+    }).catch(function () {
+      return false;
     });
   }
 
@@ -572,6 +663,14 @@
         }
         firstPass = false;
         if (wrong.indexOf(index) < 0) wrong.push(index);
+        // 供 app.js 记录错题干（关卡模块不需要知道 levelId，由监听方补上）
+        if (global.document && document.dispatchEvent && global.CustomEvent) {
+          try {
+            document.dispatchEvent(new CustomEvent('quiz:wrong', {
+              detail: { index: index, attempt: wrong.length }
+            }));
+          } catch (e) { /* 老浏览器忽略 */ }
+        }
         return { done: false, advance: false, retry: true };
       },
 
@@ -831,14 +930,21 @@
       return countMissing(tasks, cache).then(function (missing) {
         if (missing > 0 || (options.simulate || 0) > 0 || !cache) openLoader();
 
-        var work = Promise.all(tasks.map(function (task) {
-          return withTimeout(task.run(cache, stats), LIMITS.assetTimeout).then(function () {
+        function runTask(task) {
+          var p;
+          try {
+            p = withTimeout(task.run(cache, stats), LIMITS.assetTimeout);
+          } catch (e) {
+            p = Promise.reject(e);
+          }
+          return p.then(function () {
             done += 1; tick();
           }, function (err) {
             done += 1; tick();
             failed.push({ src: task.src, error: String((err && err.message) || err) });
           });
-        }));
+        }
+        var work = runPool(tasks, LIMITS.assetConcurrency, runTask);
 
         var minDelay = needLoader ? sleep(LIMITS.loaderMinMs) : Promise.resolve();
 
@@ -868,6 +974,34 @@
     });
   }
 
+  /* ---------------- 家长设置（只存本机，不进云存档） ---------------- */
+
+  var SETTINGS_KEY = 'math-adventure.settings.v1';
+
+  function readSettings() {
+    try {
+      return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function writeSettings(patch) {
+    var s = readSettings();
+    Object.keys(patch || {}).forEach(function (k) { s[k] = patch[k]; });
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { /* 隐私模式 */ }
+    return s;
+  }
+
+  var settingsApi = {
+    get: readSettings,
+    set: writeSettings,
+    noTimer: function () { return !!readSettings().noTimer; },
+    /* 限时题默认 5 秒；关掉计时压力时给 60 秒。
+       关卡里的停表 / 进度条 / 超时判定逻辑一行都不用改。 */
+    flashMs: function () { return readSettings().noTimer ? 60000 : 5000; }
+  };
+
   /* ---------------- 对外接口 ---------------- */
 
   global.Engine = {
@@ -876,11 +1010,13 @@
     loadLevel: loadLevel,
     loader: loader,
     assets: {
-      /** 关卡素材加载后拿到可用的图片地址（blob URL）；未加载则退回原路径 */
+      /** 关卡素材加载后拿到可用的图片地址（blob URL）；未加载则退回带 hash 的路径 */
       imageUrl: function (src) {
         var url = resolveUrl(src, '');
         return objectUrls[url] || url;
-      }
+      },
+      /** 给不经过 engine 管道的资源（地图阶段背景）挂同样的内容 hash */
+      versionedUrl: versionedUrl
     },
     audio: {
       armUnlock: armUnlock,
@@ -890,10 +1026,11 @@
       say: say,
       stop: stopAudio,
       releaseLevel: releaseLevel,
-      init: cleanupOldAssetCaches,
+      init: pruneAssetCache,
       cacheName: CACHE_NAME,
       poolSize: function () { return Object.keys(audioPool).length; }
     },
+    settings: settingsApi,
     sfx: sfx,
     anim: anim,
     session: createSession,

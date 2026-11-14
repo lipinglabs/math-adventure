@@ -43,6 +43,12 @@ python tools/push_via_api.py "提交说明" --dry-run   # 只看清单，不推�
 - Pages 已开启，源 `main` / 根目录，构建约 30–60 秒。
 - 查看构建：`gh api repos/lipinglabs/math-adventure/pages/builds/latest`。
 - 核验线上要加 `?cb=<时间戳>` 绕过缓存。
+- **2026-11-14 起有 Service Worker**：`sw.js` 对外壳走 network-first，
+  正常打开一次页面就会自动取到新代码，家长不必手动清缓存；
+  `?cb=` 只用于首次升级、SW 尚未接管时的即时核验。
+- **改动任何 mp3 / webp / 核心 JS 后必须先跑 `node tools/gen-asset-manifest.js`**，
+  它会重算每个素材的内容 hash 和源码 `codeRev`。漏跑会让线上继续命中旧素材，
+  症状是「读条已就绪却没声音」。详见 README「素材与缓存」。
 
 ---
 

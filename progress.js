@@ -28,7 +28,10 @@ window.Progress = (function () {
   var sandboxBase = null;
 
   function blank() {
-    return { version: 1, unlockedLevel: 1, stars: {}, cleared: [], updatedAt: 0 };
+    return {
+      version: 1, unlockedLevel: 1, stars: {}, cleared: [],
+      levelMistakes: {}, attempts: {}, updatedAt: 0
+    };
   }
 
   function normalize(raw) {
@@ -48,6 +51,29 @@ window.Progress = (function () {
       p.cleared = raw.cleared
         .map(function (v) { return Math.floor(Number(v)); })
         .filter(function (v) { return v > 0; });
+    }
+
+    // 旧存档 / 旧云端 Gist 没有这两个字段，必须补齐空壳再 merge，
+    // 否则 Object.keys(undefined) 会把云同步异常误报成网络失败。
+    if (raw.levelMistakes && typeof raw.levelMistakes === 'object') {
+      Object.keys(raw.levelMistakes).forEach(function (key) {
+        var list = raw.levelMistakes[key];
+        if (!Array.isArray(list)) return;
+        var clean = [];
+        list.forEach(function (item) {
+          var q = Math.floor(Number(item && item.q));
+          var n = Math.floor(Number(item && item.n));
+          if (q >= 0 && n > 0) clean.push({ q: q, n: n });
+        });
+        if (clean.length) p.levelMistakes[String(key)] = clean;
+      });
+    }
+
+    if (raw.attempts && typeof raw.attempts === 'object') {
+      Object.keys(raw.attempts).forEach(function (key) {
+        var n = Math.floor(Number(raw.attempts[key]));
+        if (n > 0) p.attempts[String(key)] = n;
+      });
     }
 
     p.updatedAt = Number(raw.updatedAt) || 0;
@@ -153,7 +179,62 @@ window.Progress = (function () {
     });
     out.cleared.sort(function (x, y) { return x - y; });
 
+    // 错题按 (关卡, 题号) 累加次数
+    var mistakes = {};
+    [left, right].forEach(function (side) {
+      Object.keys(side.levelMistakes).forEach(function (k) {
+        if (!mistakes[k]) mistakes[k] = {};
+        side.levelMistakes[k].forEach(function (item) {
+          mistakes[k][item.q] = (mistakes[k][item.q] || 0) + item.n;
+        });
+      });
+    });
+    Object.keys(mistakes).forEach(function (k) {
+      out.levelMistakes[k] = Object.keys(mistakes[k]).map(function (q) {
+        return { q: Number(q), n: mistakes[k][q] };
+      }).sort(function (a, b) { return a.q - b.q; });
+    });
+
+    // 尝试次数取较大值：同一份进度经常在 local 与 remote 各存一份，
+    // 相加会虚高，取 max 更接近真实次数。
+    var attemptIds = {};
+    Object.keys(left.attempts).concat(Object.keys(right.attempts)).forEach(function (k) {
+      attemptIds[k] = 1;
+    });
+    Object.keys(attemptIds).forEach(function (k) {
+      out.attempts[k] = Math.max(left.attempts[k] || 0, right.attempts[k] || 0);
+    });
+
     return out;
+  }
+
+  /** 记录一次答错。刻意不 emit：答题很密集，不能每错一次就重绘地图。 */
+  function recordMistake(levelId, index) {
+    var id = Math.floor(Number(levelId));
+    var q = Math.floor(Number(index));
+    if (!id || q < 0 || sandbox) return read();
+    var p = normalize(cache || readStorage());
+    var list = p.levelMistakes[String(id)] || [];
+    var hit = null;
+    for (var i = 0; i < list.length; i += 1) {
+      if (list[i].q === q) { hit = list[i]; break; }
+    }
+    if (hit) hit.n += 1; else list.push({ q: q, n: 1 });
+    p.levelMistakes[String(id)] = list;
+    cache = p;
+    writeStorage(p);
+    return p;
+  }
+
+  /** 记录一次完整通关尝试（用于家长了解卡关次数） */
+  function recordAttempt(levelId) {
+    var id = Math.floor(Number(levelId));
+    if (!id || sandbox) return read();
+    var p = normalize(cache || readStorage());
+    p.attempts[String(id)] = (p.attempts[String(id)] || 0) + 1;
+    cache = p;
+    writeStorage(p);
+    return p;
   }
 
   function summary() {
@@ -195,6 +276,8 @@ window.Progress = (function () {
     read: read,
     save: save,
     record: record,
+    recordMistake: recordMistake,
+    recordAttempt: recordAttempt,
     isUnlocked: isUnlocked,
     starOf: starOf,
     merge: merge,

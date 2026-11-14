@@ -16,7 +16,7 @@
   'use strict';
 
   var TOTAL = 10;
-  var FLASH_MS = 5000;           // §6.9 五秒进度条
+  var FLASH_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;           // §6.9 五秒进度条
   var LOW_AT = 0.6;              // 走过 60% → 剩余不足 40%，转暖红
   var NEXT_MS = 700;             // 答对到下一题
   var WRONG_HOLD = 1500;         // 找错句答对后的定格（§6.11）

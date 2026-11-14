@@ -13,7 +13,7 @@
   'use strict';
 
   var TOTAL = 10;
-  var FLASH_MS = 5000;            // 闪电题倒计时（毫秒）
+  var FLASH_MS = (window.Engine && Engine.settings) ? Engine.settings.flashMs() : 5000;            // 闪电题倒计时（毫秒）
 
   /* ---------------- 图标 ---------------- */
 

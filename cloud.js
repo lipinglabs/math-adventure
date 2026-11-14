@@ -4,9 +4,14 @@
    规则（PROJECT_MATH_RULES §7）：
      · 令牌只存本机 localStorage，绝不入库、绝不进页面源码
      · 任何同步都先「拉取 → 合并 → 回写」，禁止直接覆盖
-     · 合并策略：最高关卡覆盖、每关最高星级覆盖、通关记录取并集
+     · 合并策略：最高关卡覆盖、每关最高星级覆盖、通关取并集、错题累加
      · 失败只做有限次退避（15/30/60/120 秒），不空转重试
-     · 沙盒模式下六个入口全部静默短路，绝不污染云端
+     · 沙盒模式下所有入口静默短路，绝不污染云端
+
+   并发安全（2026-11-14）：
+     · visibilitychange / online / schedulePush 三处入口全部走 singleFlight
+     · 写回用 If-Match + ETag 条件写；远端被别的设备改过时重新拉取再合并
+     · 只有 401/403 才判定令牌失效；网络抖动保留凭据并后台退避重试
 
    浏览器要求：ES2017（近三年移动端浏览器均满足）
    ============================================================ */
@@ -29,6 +34,7 @@ window.Cloud = (function () {
   var failures = 0;
   var pushTimer = null;
   var backoffTimer = null;
+  var inFlight = null;
 
   function sandboxed() {
     return !!(window.Sandbox && window.Sandbox.active && window.Sandbox.active());
@@ -81,6 +87,9 @@ window.Cloud = (function () {
       Authorization: 'Bearer ' + token,
       'X-GitHub-Api-Version': '2022-11-28'
     };
+    if (options.headers) {
+      Object.keys(options.headers).forEach(function (k) { headers[k] = options.headers[k]; });
+    }
     if (options.body) headers['Content-Type'] = 'application/json';
 
     var res = await fetch(API + path, {
@@ -91,18 +100,41 @@ window.Cloud = (function () {
     });
 
     if (res.status === 401 || res.status === 403) {
-      throw new Error('Invalid token, or the token lacks gist permission');
+      var auth = new Error('Invalid token, or the token lacks gist permission');
+      auth.authError = true;
+      throw auth;
+    }
+    // 条件写失败：远端已被另一台设备更新，需要重新合并
+    if (res.status === 412 || res.status === 409) {
+      var conflict = new Error('Cloud save changed on another device');
+      conflict.conflict = true;
+      throw conflict;
     }
     if (!res.ok) {
       var text = await res.text();
       throw new Error('HTTP ' + res.status + ': ' + text.slice(0, 120));
     }
-    if (res.status === 204) return null;
-    return res.json();
+    var data = res.status === 204 ? null : await res.json();
+    return options.withMeta
+      ? { data: data, etag: res.headers.get('etag') || '' }
+      : data;
   }
 
   function same(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
+  }
+
+  /** 同一时刻只跑一次同步；三个触发源并发时复用同一个 Promise */
+  function singleFlight(task) {
+    if (inFlight) return inFlight;
+    inFlight = Promise.resolve().then(task).then(function (v) {
+      inFlight = null;
+      return v;
+    }, function (e) {
+      inFlight = null;
+      throw e;
+    });
+    return inFlight;
   }
 
   /** 找到本项目存档 Gist；没有就新建一个私密 Gist */
@@ -137,74 +169,86 @@ window.Cloud = (function () {
     return gistId;
   }
 
-  async function readRemote(id) {
-    var gist = await api('/gists/' + id);
+  /** 读取远端内容并保留 ETag，供条件写使用 */
+  async function readRemoteWithEtag(id) {
+    var snap = await api('/gists/' + id, { withMeta: true });
+    var gist = snap.data;
     var file = gist.files && gist.files[FILE];
-    if (!file) return null;
+    if (!file) return { data: null, etag: snap.etag };
 
     // 单文件超过 1MB 时 GitHub 会截断，需要走 raw_url
     if (file.truncated && file.raw_url) {
       var res = await fetch(file.raw_url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Could not read the cloud save');
-      return JSON.parse(await res.text());
+      return { data: JSON.parse(await res.text()), etag: snap.etag };
     }
-    if (!file.content) return null;
-    return JSON.parse(file.content);
+    if (!file.content) return { data: null, etag: snap.etag };
+    return { data: JSON.parse(file.content), etag: snap.etag };
   }
 
-  async function writeRemote(id, progress) {
-    await api('/gists/' + id, {
-      method: 'PATCH',
-      body: {
-        description: DESC,
-        files: (function () {
-          var files = {};
-          files[FILE] = { content: JSON.stringify(progress, null, 2) };
-          return files;
-        })()
+  /** 返回 false 表示 ETag 冲突，调用方应重新拉取再合并 */
+  async function writeRemote(id, progress, etag) {
+    try {
+      await api('/gists/' + id, {
+        method: 'PATCH',
+        headers: etag ? { 'If-Match': etag } : null,
+        body: {
+          description: DESC,
+          files: (function () {
+            var files = {};
+            files[FILE] = { content: JSON.stringify(progress, null, 2) };
+            return files;
+          })()
+        }
+      });
+      return true;
+    } catch (err) {
+      if (err && err.conflict) return false;
+      throw err;
+    }
+  }
+
+  /** 拉取 → 合并 → 条件写。冲突最多重试两轮，绝不拿旧快照覆盖新进度。 */
+  function syncMerge() {
+    return singleFlight(async function () {
+      var id = await ensureGist();
+      for (var attempt = 0; attempt < 3; attempt += 1) {
+        var snap = await readRemoteWithEtag(id);
+        var local = Progress.read();
+        var merged = snap.data ? Progress.merge(local, snap.data) : local;
+
+        if (!same(merged, local)) Progress.save(merged);
+        if (same(merged, snap.data)) {
+          lastSync = Date.now();
+          failures = 0;
+          return merged;
+        }
+        if (await writeRemote(id, merged, snap.etag)) {
+          lastSync = Date.now();
+          failures = 0;
+          return merged;
+        }
+        // 412：远端刚被别的设备改过，下一轮用新快照重新合并
       }
+      throw new Error('Cloud save kept changing, please try again');
     });
   }
 
-  /** 拉取并合并；本地与云端都更新为「最高进度」 */
-  async function pull() {
-    if (!token || sandboxed()) return Progress.read();
-    var id = await ensureGist();
-    var remote = await readRemote(id);
-    var local = Progress.read();
-    if (!remote) return local;
-
-    var merged = Progress.merge(local, remote);
-    if (!same(merged, local)) Progress.save(merged);
-    if (!same(merged, remote)) await writeRemote(id, merged);
-
-    lastSync = Date.now();
-    failures = 0;
-    return merged;
+  function pull() {
+    if (!token || sandboxed()) return Promise.resolve(Progress.read());
+    return syncMerge();
   }
 
-  /** 推送：先合并再写，绝不允许低进度覆盖高进度 */
-  async function push() {
-    if (!token || sandboxed()) return Progress.read();
-    var id = await ensureGist();
-    var remote = await readRemote(id);
-    var local = Progress.read();
-    var merged = remote ? Progress.merge(local, remote) : local;
-
-    if (!same(merged, local)) Progress.save(merged);
-    if (!same(merged, remote)) await writeRemote(id, merged);
-
-    lastSync = Date.now();
-    failures = 0;
-    return merged;
+  function push() {
+    if (!token || sandboxed()) return Promise.resolve(Progress.read());
+    return syncMerge();
   }
 
   async function syncNow() {
     if (!token || sandboxed()) return;
     setStatus('syncing', 'Syncing…');
     try {
-      await pull();
-      await push();
+      await syncMerge();
       setStatus('ok', 'Synced');
     } catch (err) {
       setStatus('error', String(err.message || err));
@@ -234,14 +278,19 @@ window.Cloud = (function () {
       login = me.login || '';
       gistId = String(nextGistId || '').trim();
       saveCredentials();
-      await pull();
-      await push();
+      await syncMerge();
       setStatus('ok', 'Connected as ' + login);
       return info();
     } catch (err) {
-      token = '';
-      login = '';
-      saveCredentials();
+      // 旧实现无论什么错误都清空 token，网络抖一下就要重新粘贴令牌。
+      // 现在只有鉴权失败才清；其余保留凭据并走后台退避重试。
+      if (err && err.authError) {
+        token = '';
+        login = '';
+        saveCredentials();
+      } else {
+        scheduleRetry();
+      }
       setStatus('error', String(err.message || err));
       throw err;
     }
@@ -252,6 +301,7 @@ window.Cloud = (function () {
     gistId = '';
     login = '';
     failures = 0;
+    inFlight = null;
     clearTimeout(pushTimer);
     clearTimeout(backoffTimer);
     try { localStorage.removeItem(LS_KEY); } catch (e) { /* noop */ }

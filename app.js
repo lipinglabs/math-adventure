@@ -17,6 +17,8 @@
   var currentLevel = null;
   var currentModule = null;
   var entering = false;
+  var lastVoiceKey = null;      // 全局重播按钮：最近一次播放的语音 key
+  var modulePromises = {};      // id -> Promise，关卡模块的按需加载缓存
 
   function byId(id) { return document.getElementById(id); }
 
@@ -236,7 +238,7 @@
   }
 
   /**
-   * 地图的阶段背景：五个 Stage 各一张照片（assets/bg/stage_1…5.jpg），
+   * 地图的阶段背景：五个 Stage 各一张照片（assets/bg/stage_1…5.webp），
    * 翻到哪个阶段就换哪张。只换不预载，首屏只请求当前阶段那一张。
    * 统一压到 12%：照片构图差异大，逐阶校准反而制造跳变，统一淡度最稳。
    */
@@ -244,7 +246,9 @@
   function paintMapBg(stage) {
     var node = byId('map-bg');
     if (!node || !stage) return;
-    var url = 'assets/bg/stage_' + stage + '.jpg';
+    var url = Engine.assets.versionedUrl
+      ? Engine.assets.versionedUrl('assets/bg/stage_' + stage + '.webp')
+      : 'assets/bg/stage_' + stage + '.webp';
     if (node.dataset.bg === url) return;
     node.dataset.bg = url;
     node.style.backgroundImage = 'url("' + url + '")';
@@ -394,6 +398,50 @@
 
   /* ---------------- 关卡 ---------------- */
 
+  /**
+   * 关卡代码按需加载。旧版在 index.html 里同步挂 48 个 script（约 1.5MB），
+   * 孩子一次只玩一关却要把全部关卡解析一遍。codeRev 由素材清单脚本从
+   * 全部源码算出，任何代码改动都会自动换 URL，不会命中陈旧缓存。
+   */
+  function levelModuleUrl(id) {
+    var rev = (global.ASSET_MANIFEST && global.ASSET_MANIFEST.codeRev) || 'dev';
+    return 'level-lv' + String(id).padStart(2, '0') + '.js?v=' + rev;
+  }
+
+  function loadLevelModule(id) {
+    if (global.LEVELS && global.LEVELS[id]) return Promise.resolve(global.LEVELS[id]);
+    if (modulePromises[id]) return modulePromises[id];
+
+    modulePromises[id] = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = levelModuleUrl(id);
+      s.async = true;
+      s.onload = function () {
+        var mod = global.LEVELS && global.LEVELS[id];
+        if (mod && typeof mod.mount === 'function') resolve(mod);
+        else reject(new Error('Level module ' + id + ' did not register'));
+      };
+      s.onerror = function () { reject(new Error('Could not load level ' + id)); };
+      document.head.appendChild(s);
+    }).catch(function (err) {
+      delete modulePromises[id];       // 允许下次重试，不把失败永久缓存
+      throw err;
+    });
+    return modulePromises[id];
+  }
+
+  /** 通关后空闲预取下一关代码，切关时几乎零等待；失败静默忽略 */
+  function prefetchLevelModule(id) {
+    if (!id || !DATA.levels[id] || (global.LEVELS && global.LEVELS[id])) return;
+    if (document.querySelector('link[data-prefetch-level="' + id + '"]')) return;
+    var link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.as = 'script';
+    link.href = levelModuleUrl(id);
+    link.setAttribute('data-prefetch-level', String(id));
+    document.head.appendChild(link);
+  }
+
   function demoMode() {
     var m = /[?&]demo=([\w-]+)/.exec(location.search);
     return m ? m[1] : '';
@@ -435,6 +483,9 @@
       quick: /[?&]quick=1/.test(location.search),
       audio: {
         play: function (key) {
+          lastVoiceKey = key;
+          var btn = byId('btn-replay');
+          if (btn) btn.disabled = false;
           return Engine.audio.play(key + '.mp3', { base: DATA.meta.audioBase });
         }
       },
@@ -443,6 +494,7 @@
       step: setStep,
       complete: function (star) {
         Progress.record(level.id, star);
+        Progress.recordAttempt(level.id);
         Cloud.schedulePush();
       },
       exit: exitLevel,
@@ -591,15 +643,28 @@
       enterLevel(id);
     };
 
-    Engine.loadLevel(level, options).then(function (result) {
+    // 关卡代码与素材并行准备，任一失败都给可点击的重试，绝不静默进关
+    return Promise.all([
+      loadLevelModule(id),
+      Engine.loadLevel(level, options)
+    ]).then(function (results) {
       entering = false;
-      if (!result.ok) {
+      if (!results[1].ok) {
         Engine.toast('Could not load the sounds. Try again?');
         return;
       }
       currentLevel = level;
       showScreen('level');
       mountLevel(level);
+      prefetchLevelModule(id + 1);
+    }).catch(function (err) {
+      entering = false;
+      if (global.console && console.error) console.error('[app] enterLevel', err);
+      Engine.loader.open('Loading ' + level.name);
+      Engine.loader.fail('Could not open this level', function () {
+        Engine.loader.close();
+        enterLevel(id);
+      });
     });
   }
 
@@ -608,6 +673,9 @@
     clearLevelBackground();
     Engine.audio.releaseLevel();
     Engine.anim.clear(document);
+    lastVoiceKey = null;
+    var replay = byId('btn-replay');
+    if (replay) replay.disabled = true;
     currentLevel = null;
     showScreen('map');
     renderMap();
@@ -622,6 +690,26 @@
     return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
 
+  /** 家长设置区：错题干统计 + 是否取消 5 秒计时压力。全英文界面，文案保持简短。 */
+  function settingsHTML() {
+    var p = Progress.read();
+    var count = 0;
+    var perLevel = 0;
+    Object.keys(p.levelMistakes || {}).forEach(function (k) {
+      var list = p.levelMistakes[k] || [];
+      if (list.length) perLevel += 1;
+      count += list.reduce(function (sum, item) { return sum + (item.n || 1); }, 0);
+    });
+    return '<div class="field-label" style="margin-top:18px">Parent options</div>' +
+      '<label class="setting-row">' +
+        '<input id="setting-no-timer" type="checkbox" ' +
+          (Engine.settings.noTimer() ? 'checked' : '') + ' />' +
+        '<span>Remove the 5-second time pressure</span>' +
+      '</label>' +
+      '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
+        'Questions needing practice: ' + count + ' across ' + perLevel + ' levels</p>';
+  }
+
   function openSavePanel() {
     var info = Cloud.info();
     var summary = Progress.summary();
@@ -633,14 +721,16 @@
         ' · last ' + formatTime(info.lastSync) + '</p>' +
         '<p style="margin-top:12px;font-size:13px;color:var(--ink-soft)">' +
         'Gold ' + summary.gold + ' · Silver ' + summary.silver +
-        ' · unlocked to Level ' + summary.unlockedLevel + '</p>'
+        ' · unlocked to Level ' + summary.unlockedLevel + '</p>' +
+        settingsHTML()
       : '<p style="font-size:13px;line-height:1.7;color:var(--ink-soft)">' +
         'Sync progress across devices. The token stays on this device only.</p>' +
         '<label class="field-label" style="margin-top:14px" for="cloud-token">Access token</label>' +
         '<input id="cloud-token" class="field" type="password" autocomplete="off" placeholder="ghp_… or github_pat_…" />' +
         '<label class="field-label" style="margin-top:12px" for="cloud-gist">Save ID (optional)</label>' +
         '<input id="cloud-gist" class="field" type="text" autocomplete="off" placeholder="Leave empty to create one" />' +
-        '<p id="cloud-msg" style="margin-top:12px;font-size:12px;color:#c2593f;min-height:16px"></p>';
+        '<p id="cloud-msg" style="margin-top:12px;font-size:12px;color:#c2593f;min-height:16px"></p>' +
+        settingsHTML();
 
     var actions = info.connected
       ? [
@@ -684,11 +774,22 @@
         ];
 
     Engine.modal({
-      title: 'Cloud save',
+      title: 'Settings & cloud save',
       text: info.connected ? '' : 'An internet connection is required.',
       bodyHTML: body,
       actions: actions
     });
+
+    var toggle = byId('setting-no-timer');
+    if (toggle) {
+      toggle.addEventListener('change', function () {
+        Engine.settings.set({ noTimer: toggle.checked });
+        // 限时常量在关卡模块加载时求值，需要重载页面才生效。
+        // 设置按钮只在地图屏出现，此刻重载不会丢失任何进行中的答题。
+        Engine.toast(toggle.checked ? 'Time pressure off — restarting…' : 'Time pressure on — restarting…');
+        setTimeout(function () { location.reload(); }, 900);
+      });
+    }
   }
 
   function updateSaveButton() {
@@ -706,6 +807,13 @@
     if (back) back.addEventListener('click', function () {
       Engine.sfx.tap();
       exitLevel();
+    });
+
+    var replay = byId('btn-replay');
+    if (replay) replay.addEventListener('click', function () {
+      if (!lastVoiceKey) return;
+      Engine.sfx.tap();
+      Engine.audio.play(lastVoiceKey + '.mp3', { base: DATA.meta.audioBase });
     });
 
     var save = byId('btn-save');
@@ -772,6 +880,14 @@
     Cloud.init();
     Sandbox.install();
     updateSaveButton();
+
+    // 关卡答错时由 Engine.session 派发，这里补上 levelId 后静默落盘。
+    // 不 emit progress:change：地图不依赖错题数据，避免答题时反复重绘。
+    document.addEventListener('quiz:wrong', function (e) {
+      if (!currentLevel) return;
+      var index = (e.detail && e.detail.index) || 0;
+      Progress.recordMistake(currentLevel.id, index);
+    });
   }
 
   global.App = {

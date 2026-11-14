@@ -172,6 +172,8 @@ python -m http.server 8765 --bind 127.0.0.1
 |---|---|
 | `index.html` | 页面骨架（地图屏 / 关卡屏 / 加载遮罩 / 弹层） |
 | `style.css` | 果冻 / 粘土风样式 |
+| `sw.js` | 应用外壳离线缓存（HTML / JS / CSS 一律 network-first） |
+| `asset-manifest.js` | 素材内容 hash 清单，**自动生成，勿手改** |
 | `levels_data.js` | 地图坐标与关卡配置（纯数据） |
 | `engine.js` | 资源加载、进度条、音频、动画、判定、3D 扩展位 |
 | `progress.js` | 进度、星级、解锁、合并 |
@@ -221,9 +223,31 @@ python tools/gen_tts.py voice/lines/lv01.json --out voice/lv01             # 生
 
 密钥只从 `DOUBAO_API_KEY` 环境变量或本机 `config/secrets.local.json` 读取，绝不入库。
 
+## 素材与缓存（改动前必读）
+
+按关素材（`voice/**/*.mp3`、`assets/bg/*.webp`）由 `engine.js` 的 Cache Storage 管道管理，
+每个 URL 带 `?v=<内容 hash>`，内容不变就一直命中本地缓存，内容一变只失效那一个文件。
+应用外壳由 `sw.js` 以 network-first 接管，联网时永远拿最新代码，断网回落缓存。
+
+**改动任何 mp3 / webp / 核心 JS 之后，必须重跑清单再推送**：
+
+```bash
+node tools/gen-asset-manifest.js       # 重算 rev / codeRev，并校验引用无缺失
+node tools/smoke-levels.js             # 48 关进关 / 退关 / 零 JS 错误 / 零语音兜底
+python tools/push_via_api.py "提交说明" --dry-run
+python tools/push_via_api.py "提交说明"
+```
+
+漏跑第一步的后果：线上仍会按旧 hash 取素材，表现为「读条显示就绪但没声音 / 背景是旧图」。
+清单脚本同时校验所有 `levels_data.js` 引用都指向真实文件，缺失会直接报错中止。
+
+背景图是 WebP（780×1688，质量 76）。若拿到新的 JPG 原图，先放进 `assets/bg/`
+再运行 `python tools/convert_bg.py` 转换；原图请先自行备份。
+
 ## 推送
 
-本机 `git push` 被网络拦截，统一走 Git Data API：
+本机 `git push` 被网络拦截，统一走 Git Data API（`tools/push_via_api.py`
+只推送白名单扩展名，并会以 `sha=null` 删除远端已移除的旧文件）：
 
 ```bash
 python tools/push_via_api.py "提交说明"
