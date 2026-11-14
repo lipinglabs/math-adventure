@@ -624,8 +624,17 @@
         prev.style.backgroundImage = '';
       }, 640);
     };
+    var fellBack = false;
     probe.onerror = function () {
       if (seq !== bgSeq) return;
+      /* blob 地址失效（退关时被 revoke、或本地副本损坏）时直接清空，
+         整关背景就会凭空消失——这正是「关卡图片丢失」最直观的来源。
+         先退回带内容 hash 的原始路径再试一次，仍失败才真正隐藏。 */
+      if (!fellBack && /^blob:/.test(url) && Engine.assets && Engine.assets.versionedUrl) {
+        fellBack = true;
+        probe.src = Engine.assets.versionedUrl(src);
+        return;
+      }
       next.classList.remove('is-on');
       next.style.backgroundImage = '';
     };

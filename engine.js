@@ -18,9 +18,13 @@
   var LIMITS = {
     maxMotion: 10,          // 同屏运动元素上限，超过则丢弃新的装饰动画
     loaderMinMs: 460,       // 加载遮罩最短停留，避免闪一下就消失
-    assetTimeout: 15000,    // 单个素材超时
+    /* 单个素材超时。GitHub Pages 只提供 HTTP/1.1，同源并发上限 6，
+       首次进关每个请求都要付 TLS+TTFB（实测 0.8–1.2s），偶尔排队到十几秒。
+       原来 15s 会把「只是慢」误判成「加载失败」，直接挡在关卡外面。 */
+    assetTimeout: 45000,
     maxAudioNodes: 40,      // 音频元素上限（iOS 媒体元素超限会静默失声）
-    assetConcurrency: 4     // 同时下载的素材数；弱网下 20 个并发会互相抢带宽导致超时
+    /* 同源上限就是 6（HTTP/1.1），用满；再多只会排队不会更快 */
+    assetConcurrency: 6
   };
 
   /* ---------------- 4 岁起步 · 集中接线的共享状态 ----------------
@@ -215,14 +219,24 @@
     }).catch(function () { return null; });
   }
 
-  function downloadAsset(cache, url) {
+  function downloadAsset(cache, url, isRetry) {
     return fetch(url, { credentials: 'same-origin' }).then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!res.ok) {
+        var httpErr = new Error('HTTP ' + res.status);
+        httpErr.status = res.status;
+        throw httpErr;
+      }
       var copy = res.clone();
       return res.blob().then(function (blob) {
         if (cache) cache.put(absoluteUrl(url), copy).catch(function () { /* 配额满则跳过 */ });
         return blob;
       });
+    }).catch(function (err) {
+      // 4xx 是确定性错误（文件确实不在），重试没有意义；
+      // 网络抖动 / 5xx / 超时值得隔 400ms 再试一次，弱网下这一次能把失败率压掉大半。
+      var definite = err && err.status >= 400 && err.status < 500;
+      if (isRetry || definite) throw err;
+      return sleep(400).then(function () { return downloadAsset(cache, url, true); });
     });
   }
 
@@ -1230,10 +1244,22 @@
       });
     });
 
-    (assets.images || []).forEach(function (src) {
+    /* 背景图是纯装饰，语音是玩法必需。原先两者一视同仁，
+       一张背景图超时就把整关判成失败，孩子看到的是「进不去 / 图没了」。
+       这里给背景图单独打 optional 标记：失败只少一层背景，不拦人。 */
+    var bgSrc = level.background || '';
+    var imgSeen = {};
+    var imgList = [];
+    if (bgSrc) imgList.push(bgSrc);
+    (assets.images || []).forEach(function (src) { imgList.push(src); });
+
+    imgList.forEach(function (src) {
+      if (!src || imgSeen[src]) return;        // background 与 images 常是同一张，去重
+      imgSeen[src] = true;
       tasks.push({
         src: src,
         base: '',
+        optional: src === bgSrc,
         run: function (cache, stats) { return loadImage(src, cache, stats); }
       });
     });
@@ -1323,6 +1349,11 @@
             done += 1; tick();
           }, function (err) {
             done += 1; tick();
+            // 可选素材（背景图）失败只记账，不进 failed，因此不会把孩子挡在关外
+            if (task.optional) {
+              stats.optionalMissed = (stats.optionalMissed || 0) + 1;
+              return;
+            }
             failed.push({ src: task.src, error: String((err && err.message) || err) });
           });
         }

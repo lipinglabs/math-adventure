@@ -12,7 +12,7 @@
    孩子设备下一次联网就会自动取到新代码；素材则按内容 hash 精确失效。
    ============================================================ */
 
-var CACHE = 'math-adventure-shell-v2';   // 4 岁起步：新增 4 个独立 JS 模块，递增版本号触发外壳更新
+var CACHE = 'math-adventure-shell-v3';   // v3：背景图改可选 + 提超时/重试 + 阶段图 cache-first
 
 var SHELL = [
   './',
@@ -66,6 +66,13 @@ function engineManaged(pathname) {
   return /\.mp3$/i.test(pathname) || /\/assets\/bg\/bg_\d+\.webp$/i.test(pathname);
 }
 
+/* 带内容 hash 的静态图（地图五个阶段背景）：URL 变了才需要重新下载，
+   所以可以放心 cache-first。原来跟着外壳走 network-first + cache:reload，
+   等于每次打开首页都强制重下 87KB，弱网下白等一轮往返。 */
+function hashStableAsset(pathname) {
+  return /\/assets\/bg\/stage_\d+\.webp$/i.test(pathname);
+}
+
 function offlineFallback(req) {
   return caches.match(req, { ignoreSearch: true }).then(function (hit) {
     if (hit) return hit;
@@ -88,6 +95,24 @@ self.addEventListener('fetch', function (e) {
   // 云存档走 api.github.com，一律放行，不缓存
   if (url.origin !== self.location.origin) return;
   if (engineManaged(url.pathname)) return;
+
+  if (hashStableAsset(url.pathname)) {
+    e.respondWith(
+      caches.open(CACHE).then(function (c) {
+        return c.match(req).then(function (hit) {
+          if (hit) return hit;
+          return fetch(new Request(req, { cache: 'reload' })).then(function (res) {
+            if (res && res.status === 200) {
+              var copy = res.clone();
+              c.put(req, copy).catch(function () { });
+            }
+            return res;
+          });
+        });
+      }).catch(function () { return offlineFallback(req); })
+    );
+    return;
+  }
 
   e.respondWith(
     fetch(new Request(req, { cache: 'reload' })).then(function (res) {
