@@ -1026,6 +1026,41 @@
         Engine.toast('Listen again together with a grown-up');
       }
     });
+
+    scheduleWarmNextLevel();
+  }
+
+  /**
+   * 挑「孩子接下来最可能点的那一关」：
+   * 先看有没有做了一半的断点关（levelCursor），再看第一个还没拿星的关。
+   * 拿不准就退回第 1 关——反正预取错了也只是多下一次，不会报错。
+   */
+  function pickWarmTarget() {
+    var ids = Object.keys(DATA.levels).map(Number).sort(function (a, b) { return a - b; });
+    for (var i = 0; i < ids.length; i += 1) {
+      if (Progress.levelCursor && Progress.levelCursor(ids[i])) return DATA.levels[ids[i]];
+    }
+    for (var j = 0; j < ids.length; j += 1) {
+      if (Progress.starOf(ids[j]) === 'none') return DATA.levels[ids[j]];
+    }
+    return DATA.levels[ids[0]];
+  }
+
+  /**
+   * 首页空闲时把这一关的语音包先拉下来。
+   * 天花板不在这里，而在于 GitHub Pages 国内带宽可能低到 25KB/s：
+   * 一关 640KB 怎么优化都要 25 秒。唯一能做的就是把这段时间挪到
+   * 孩子还在看地图、还没点关卡的时候。延迟 3 秒是为了不和首页自身资源抢链路。
+   */
+  function scheduleWarmNextLevel() {
+    if (!Engine.prefetchLevel) return;
+    setTimeout(function () {
+      if (navigator.onLine === false) return;
+      if (navigator.connection && navigator.connection.saveData) return;
+      if (currentLevel) return;                      // 已经在关里了，别添乱
+      var target = pickWarmTarget();
+      if (target) Engine.prefetchLevel(target);
+    }, 3000);
   }
 
   global.App = {

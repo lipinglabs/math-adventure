@@ -1313,38 +1313,47 @@
   function prefetchLevel(level) {
     if (!level || !cacheSupported()) return Promise.resolve(0);
     var base = (window.MATH_DATA && window.MATH_DATA.meta.audioBase) || '';
-    var jobs = (level.assets && level.assets.audio || []).map(function (src) {
-      return { src: src, base: base };
-    });
-    if (level.background) jobs.push({ src: level.background, base: '' });
-    (level.assets && level.assets.images || []).forEach(function (src) {
-      jobs.push({ src: src, base: '' });
-    });
-    if (!jobs.length) return Promise.resolve(0);
-
-    var seen = {};
-    jobs = jobs.filter(function (j) {
-      var k = j.base + j.src;
-      if (seen[k]) return false;
-      seen[k] = true;
-      return true;
-    });
 
     return openAssetCache().then(function (cache) {
       if (!cache) return 0;
-      var warmed = 0;
-      return runPool(jobs, 2, function (job) {
-        var url = resolveUrl(job.src, job.base);
-        var abs = absoluteUrl(url);
-        return cache.match(abs).then(function (hit) {
-          if (hit) return null;
-          return fetch(url, { credentials: 'same-origin' }).then(function (res) {
-            if (!res || res.status !== 200) return null;
-            warmed += 1;
-            return cache.put(abs, res);
+
+      /* 能走语音包就走包：1 次请求 > 23 次。传 null 作 ui，
+         后台预取绝不能弹读条打断孩子看地图。 */
+      return ensureVoicePack(level, cache, null).then(function (packedVoice) {
+        var jobs = [];
+        if (!packedVoice) {
+          (level.assets && level.assets.audio || []).forEach(function (src) {
+            jobs.push({ src: src, base: base });
           });
-        }).catch(function () { /* 预取失败不打扰孩子，真进关时会带重试再取 */ });
-      }).then(function () { return warmed; });
+        }
+        if (level.background) jobs.push({ src: level.background, base: '' });
+        (level.assets && level.assets.images || []).forEach(function (src) {
+          jobs.push({ src: src, base: '' });
+        });
+
+        var seen = {};
+        jobs = jobs.filter(function (j) {
+          var k = j.base + j.src;
+          if (seen[k]) return false;
+          seen[k] = true;
+          return true;
+        });
+        if (!jobs.length) return packedVoice ? 1 : 0;
+
+        var warmed = 0;
+        return runPool(jobs, packedVoice ? 3 : 2, function (job) {
+          var url = resolveUrl(job.src, job.base);
+          var abs = absoluteUrl(url);
+          return cache.match(abs).then(function (hit) {
+            if (hit) return null;
+            return fetch(url, { credentials: 'same-origin' }).then(function (res) {
+              if (!res || res.status !== 200) return null;
+              warmed += 1;
+              return cache.put(abs, res);
+            });
+          }).catch(function () { /* 预取失败不打扰孩子，真进关时会带重试再取 */ });
+        }).then(function () { return warmed; });
+      });
     }).catch(function () { return 0; });
   }
 
