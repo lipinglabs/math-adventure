@@ -1299,6 +1299,56 @@
   }
 
   /**
+   * 预取某一关的素材进 Cache Storage。
+   *
+   * 为什么需要它：GitHub Pages 只提供 HTTP/1.1（同源上限 6 连接），
+   * 国内单次往返实测 0.3–10s 波动极大。一关 16–24 个素材同时要，首次进关
+   * 就只能在读条上干等。趁孩子还在玩第 N 关，把第 N+1 关悄悄备好，
+   * 点进去就是秒开——这比提高并发更有效，因为把等待挪到了看不见的地方。
+   *
+   * 只写 Cache Storage，不生成 blob URL：预取几十关也不会堆内存，
+   * 而且真进关时仍走 loadImage/loadAudio 的正规流程。
+   * 并发压到 2，把连接让给正在播放的语音。
+   */
+  function prefetchLevel(level) {
+    if (!level || !cacheSupported()) return Promise.resolve(0);
+    var base = (window.MATH_DATA && window.MATH_DATA.meta.audioBase) || '';
+    var jobs = (level.assets && level.assets.audio || []).map(function (src) {
+      return { src: src, base: base };
+    });
+    if (level.background) jobs.push({ src: level.background, base: '' });
+    (level.assets && level.assets.images || []).forEach(function (src) {
+      jobs.push({ src: src, base: '' });
+    });
+    if (!jobs.length) return Promise.resolve(0);
+
+    var seen = {};
+    jobs = jobs.filter(function (j) {
+      var k = j.base + j.src;
+      if (seen[k]) return false;
+      seen[k] = true;
+      return true;
+    });
+
+    return openAssetCache().then(function (cache) {
+      if (!cache) return 0;
+      var warmed = 0;
+      return runPool(jobs, 2, function (job) {
+        var url = resolveUrl(job.src, job.base);
+        var abs = absoluteUrl(url);
+        return cache.match(abs).then(function (hit) {
+          if (hit) return null;
+          return fetch(url, { credentials: 'same-origin' }).then(function (res) {
+            if (!res || res.status !== 200) return null;
+            warmed += 1;
+            return cache.put(abs, res);
+          });
+        }).catch(function () { /* 预取失败不打扰孩子，真进关时会带重试再取 */ });
+      }).then(function () { return warmed; });
+    }).catch(function () { return 0; });
+  }
+
+  /**
    * 加载当前关全部素材。
    * · 全部命中本地缓存 → 不显示读条，静默进入
    * · 有任何一条需要下载 → 才弹进度条
@@ -1560,6 +1610,7 @@
     version: '0.2.0',          // 4 岁起步机制升级（Gist payload 版本不变）
     limits: LIMITS,
     loadLevel: loadLevel,
+    prefetchLevel: prefetchLevel,
     loader: loader,
     assets: {
       /** 关卡素材加载后拿到可用的图片地址（blob URL）；未加载则退回带 hash 的路径 */

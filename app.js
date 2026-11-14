@@ -478,6 +478,25 @@
     document.head.appendChild(link);
   }
 
+  /**
+   * 预取下一关的语音与背景（不只是关卡代码）。
+   * 延迟 6 秒再动手：先把当前关的第一句语音和背景让出带宽，
+   * 等孩子已经在答题、网络闲下来了，再偷偷把下一关备好。
+   * 离线时直接跳过，免得白忙。
+   */
+  var prefetchAssetsTimer = null;
+  function schedulePrefetchAssets(id) {
+    var next = id && DATA.levels[id];
+    if (!next || !Engine.prefetchLevel) return;
+    clearTimeout(prefetchAssetsTimer);
+    prefetchAssetsTimer = setTimeout(function () {
+      if (navigator.onLine === false) return;
+      if (typeof navigator.connection === 'object' && navigator.connection &&
+          navigator.connection.saveData) return;   // 省流量模式就别偷跑
+      Engine.prefetchLevel(next);
+    }, 6000);
+  }
+
   function demoMode() {
     var m = /[?&]demo=([\w-]+)/.exec(location.search);
     return m ? m[1] : '';
@@ -731,6 +750,7 @@
       showScreen('level');
       mountLevel(level);
       prefetchLevelModule(id + 1);
+      schedulePrefetchAssets(id + 1);
     }).catch(function (err) {
       entering = false;
       if (global.console && console.error) console.error('[app] enterLevel', err);

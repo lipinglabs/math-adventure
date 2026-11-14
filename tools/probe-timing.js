@@ -35,6 +35,7 @@ function conn(u) { return new Promise((res, rej) => { const w = new WebSocket(u,
   const ret = await ev(`window.App.openLevel(${LV})`);
   const ms = Date.now() - t0;
 
+  await sleep(1600);   // 等 loader 关闭动画走完，避免误判成遮罩没关
   const info = await ev(`(function(){
     var rs = performance.getEntriesByType('resource').filter(function(r){return /voice|assets/.test(r.name);});
     rs.sort(function(a,b){return b.duration-a.duration;});
