@@ -63,7 +63,11 @@ self.addEventListener('activate', function (e) {
 });
 
 function engineManaged(pathname) {
-  return /\.mp3$/i.test(pathname) || /\/assets\/bg\/bg_\d+\.webp$/i.test(pathname);
+  /* .bin 是语音包（voice/packs/lvNN.bin），由 engine 自己切片后写进素材库；
+     SW 再存一份等于白占一倍配额，所以一律放行。 */
+  return /\.mp3$/i.test(pathname) ||
+    /\.bin$/i.test(pathname) ||
+    /\/assets\/bg\/bg_\d+\.webp$/i.test(pathname);
 }
 
 /* 带内容 hash 的静态图（地图五个阶段背景）：URL 变了才需要重新下载，

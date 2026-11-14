@@ -1349,6 +1349,56 @@
   }
 
   /**
+   * 语音包：构建期把一关的 mp3 拼成单个 .bin（tools/pack-voice.js）。
+   * 运行时一次取回 → 按索引切片 → 逐条写进 Cache Storage，
+   * 之后 loadAudio 仍走原来的「缓存命中」路径，播放逻辑一行都不用改。
+   *
+   * 为什么值得：GitHub Pages 只有 HTTP/1.1，一关 23 个 mp3 逐个请求，
+   * 实测首次进关 10–33 秒且随文件个数线性增长；拼包后请求数 24 → 2
+   * （包 + 背景图），耗时只跟总字节数有关。
+   *
+   * 返回 true 表示本关语音已全部就位；任何一步失败都返回 false，
+   * 调用方随即回退到逐条下载，所以「包没部署 / 下载失败 / 配额满」都不会卡住孩子。
+   */
+  function ensureVoicePack(level, cache, ui) {
+    var packs = global.VOICE_PACKS;
+    var pack = packs && level && packs[level.id];
+    if (!pack || !cache || !pack.entries) return Promise.resolve(false);
+
+    var base = (window.MATH_DATA && window.MATH_DATA.meta.audioBase) || '';
+    var keys = Object.keys(pack.entries);
+    if (!keys.length) return Promise.resolve(false);
+
+    // 只探第一条：切片是全成功后才算完，不会出现半包被误判为就绪
+    var probeUrl = absoluteUrl(resolveUrl(keys[0], base));
+
+    return cache.match(probeUrl).then(function (hit) {
+      if (hit) return true;
+
+      if (ui && ui.open) ui.open();
+      if (ui && ui.set) ui.set(0.03, '…');
+
+      var packUrl = absoluteUrl(pack.file + '?v=' + pack.rev);
+      return fetch(packUrl, { credentials: 'same-origin' }).then(function (res) {
+        if (!res || res.status !== 200) throw new Error('HTTP ' + (res && res.status));
+        return res.arrayBuffer();
+      }).then(function (buf) {
+        if (!buf || !buf.byteLength) throw new Error('空包');
+        if (ui && ui.set) ui.set(0.72, '…');
+        return Promise.all(keys.map(function (key) {
+          var e = pack.entries[key];
+          var blob = new Blob([buf.slice(e[0], e[0] + e[1])], { type: 'audio/mpeg' });
+          return cache.put(absoluteUrl(resolveUrl(key, base)), new Response(blob))
+            .catch(function () { /* 单条写失败留给逐条下载兜底 */ });
+        })).then(function () {
+          if (ui && ui.set) ui.set(1, '…');
+          return true;
+        });
+      });
+    }).catch(function () { return false; });
+  }
+
+  /**
    * 加载当前关全部素材。
    * · 全部命中本地缓存 → 不显示读条，静默进入
    * · 有任何一条需要下载 → 才弹进度条
@@ -1366,6 +1416,7 @@
     var failed = [];
     var stats = { downloaded: 0 };
     var needLoader = false;
+    var shownRatio = 0;      // 读条已展示到的比例，用于防止进度倒退
 
     function title() {
       return level && level.name ? 'Loading ' + level.name : 'Loading';
@@ -1380,12 +1431,29 @@
 
     function tick() {
       if (needLoader) {
-        loader.set(tasks.length ? done / tasks.length : 1, done + ' / ' + tasks.length);
+        var r = tasks.length ? done / tasks.length : 1;
+        // 进度只增不减：语音包会先把读条推到 100%，随后逐条命中缓存时
+        // done 从 0 重新计数，不锁住的话进度条会突然倒退回去。
+        if (r < shownRatio) r = shownRatio;
+        shownRatio = r;
+        loader.set(r, done + ' / ' + tasks.length);
       }
     }
 
     return openAssetCache().then(function (cache) {
-      return countMissing(tasks, cache).then(function (missing) {
+      /* 先走语音包：一次请求拿下整关语音，把 23 次往返压成 1 次。
+         包不可用时返回 false，下面 countMissing 自然会看到缺失并逐条下载。 */
+      return ensureVoicePack(level, cache, {
+        open: openLoader,
+        set: function (ratio, detail) {
+          if (!needLoader) openLoader();
+          if (ratio > shownRatio) shownRatio = ratio;
+          loader.set(shownRatio, detail);
+        }
+      }).then(function (packed) {
+        if (packed) stats.packed = true;
+        return countMissing(tasks, cache);
+      }).then(function (missing) {
         if (missing > 0 || (options.simulate || 0) > 0 || !cache) openLoader();
 
         function runTask(task) {

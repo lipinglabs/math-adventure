@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 ALLOWED_SUFFIX = {
     ".html", ".css", ".js", ".mjs", ".json", ".md", ".txt",
     ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".mp3",
+    ".bin",   # 语音包 voice/packs/lvNN.bin（tools/pack-voice.js 产物）
     ".py", ".yaml", ".yml",
 }
 EXCLUDE_DIRS = {
