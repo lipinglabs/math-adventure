@@ -23,6 +23,9 @@ const PROFILE = path.join(ROOT, 'tmp', '.smoke-profile');
 const SHOTS = path.join(ROOT, '.shots');
 const argLevels = process.argv.find((a) => a.indexOf('--levels=') === 0);
 const LIMIT = argLevels ? Math.max(1, Math.min(48, Number(argLevels.split('=')[1]) || 48)) : 48;
+// --url=https://... 时直接验收线上站点，不再起本地服务
+const argUrl = process.argv.find((a) => a.indexOf('--url=') === 0);
+const TARGET = argUrl ? argUrl.slice(6).trim() : null;
 
 const EDGE = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
@@ -182,26 +185,31 @@ async function waitForTarget() {
 }
 
 (async function main() {
-  await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
+  if (!TARGET) await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
   const edge = spawn(EDGE, [
     '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
     '--disable-background-networking', `--remote-debugging-port=${CDP_PORT}`,
     `--user-data-dir=${PROFILE}`, '--window-size=390,844',
-    `http://127.0.0.1:${PORT}/index.html?smoke=1`
+    TARGET || `http://127.0.0.1:${PORT}/index.html?smoke=1`
   ], { stdio: 'ignore' });
 
   let report = null;
   let fatal = null;
   try {
     const wsUrl = await waitForTarget();
-    // 给 boot() 与首次 SW 安装一点时间
-    await new Promise((r) => setTimeout(r, 1200));
+    // 等 boot 真正完成再注入：线上首次访问还要装 SW，固定 sleep 不够稳
+    for (let i = 0; i < 60; i += 1) {
+      const ready = await cdpEval(wsUrl,
+        '!!(window.App && window.Engine && window.ASSET_MANIFEST)', 10000);
+      if (ready) break;
+      await new Promise((r) => setTimeout(r, 300));
+    }
     report = await cdpEval(wsUrl, DRIVER, 300000);
   } catch (e) {
     fatal = String((e && e.message) || e);
   } finally {
     try { edge.kill(); } catch (e) {}
-    server.close();
+    if (!TARGET) server.close();
   }
 
   if (fatal || !report) {
