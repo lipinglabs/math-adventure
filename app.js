@@ -786,7 +786,9 @@
     return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
 
-  /** 家长设置区：错题干统计 + 是否取消 5 秒计时压力。全英文界面，文案保持简短。 */
+  /** 家长区：星级规则说明 + 错题干统计 + 今日陪玩看板。
+      家长开关已全部删除，行为固定（见 wellbeing.js blankState 注释）：
+      核心关保留 60 秒宽松计时、不显示「试一试」关卡、9/12 限时挑战关闭。 */
   function settingsHTML() {
     var p = Progress.read();
     var count = 0, perLevel = 0;
@@ -795,20 +797,9 @@
       if (list.length) perLevel += 1;
       count += list.reduce(function (sum, item) { return sum + (item.n || 1); }, 0);
     });
-    var E = Engine.settings;
-    var T = E.timer;
-    var cb = function (id, on, label) {
-      return '<label class="setting-row">' +
-        '<input id="' + id + '" type="checkbox" ' + (on ? 'checked' : '') + ' />' +
-        '<span>' + label + '</span></label>';
-    };
-    return '<div class="field-label" style="margin-top:18px">Parent options</div>' +
-      cb('setting-no-timer', E.noTimer(), 'No countdown pressure (4-year-old baseline)') +
-      cb('setting-show-challenge', E.showChallenge(), 'Show optional "Try it" levels') +
+    return '<div class="field-label" style="margin-top:18px">Progress</div>' +
       '<p style="margin-top:2px;font-size:12px;color:var(--ink-soft)">' +
         'Silver = finished, unlocks the next level. Gold = every answer correct.</p>' +
-      cb('setting-challenge-9', T.challengeEnabled(9), 'Level 9 optional 15s challenge') +
-      cb('setting-challenge-12', T.challengeEnabled(12), 'Level 12 optional 12s challenge') +
       '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
         'Questions needing practice: ' + count + ' across ' + perLevel + ' levels</p>' +
       parentHTML();
@@ -899,22 +890,8 @@
       actions: actions
     });
 
-    // C2：限时窗口每题开始时求值 + EVT_SETTINGS_CHANGED 触发 timer.rebase()，不再需要重载页面。
-    var E = Engine.settings, T = E.timer;
-    var bindToggle = function (id, apply) {
-      var el = byId(id);
-      if (el) el.addEventListener('change', function () { apply(el.checked); });
-    };
-    bindToggle('setting-no-timer', function (on) {
-      E.set({ noTimer: on });
-      Engine.toast(on ? 'No countdown pressure' : 'Countdown pressure on');
-    });
-    bindToggle('setting-show-challenge', function (on) {
-      E.setShowChallenge(on);
-      renderMap();   // 立即反映 core-only / 试一试 显示变化
-    });
-    bindToggle('setting-challenge-9', function (on) { T.setChallenge(9, on); });
-    bindToggle('setting-challenge-12', function (on) { T.setChallenge(12, on); });
+    // 家长开关已删除：行为固定（60 秒宽松计时 / 不显示「试一试」/ 9、12 限时挑战关闭），
+    // 设置变动统一由 EVT_SETTINGS_CHANGED → timer.rebase() 处理，此处不再绑定任何勾选。
     // E1 陪玩钩子 1：讲给爸爸妈妈听 → 家长按「I heard you」成长树 +1 叶（不判对错、不录音、不强制）
     var leaf = byId('wb-parent-leaf');
     if (leaf) leaf.addEventListener('click', function () {

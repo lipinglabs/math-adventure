@@ -714,7 +714,7 @@
     var lastValue = null;       // 最近一次选项点击 data-value（near 判定用）
 
     function flagsOf(i) { return flags[i] || (flags[i] = { replayUsed: false, hintUsed: false, undoUsed: false }); }
-    function settings() { return W && W.settings ? W.settings() : { challengeBadge: false }; }
+    function settings() { return W && W.settings ? W.settings() : {}; }
 
     /** 第 i 题（0 基、按本关整体计数）属于第几组 */
     function groupIndexOf(at) {
@@ -1695,12 +1695,8 @@
     noTimer: function () { return !!readSettings().noTimer; },
     flashMs: flashMs,
     timer: timerApi,
-    // B4 金星可选徽章：默认 false、不是解锁条件、不显示差距
-    challengeBadge: function () { return !!readSettings().challengeBadge; },
-    setChallengeBadge: function (on) { return writeSettings({ challengeBadge: !!on }); },
-    // C4「试一试」标注，家长可关
+    // C4「试一试」标注：家长开关已删除，恒为 false（挑战关不作为入口显示）
     showChallenge: function () { return !!readSettings().showChallenge; },
-    setShowChallenge: function (on) { return writeSettings({ showChallenge: !!on }); },
     // A6 ParentGate 图形验证：仅防孩子误改设置
     parentGate: function (host, onPass) {
       if (global.Wellbeing && global.Wellbeing.parentGate) global.Wellbeing.parentGate(host, onPass);

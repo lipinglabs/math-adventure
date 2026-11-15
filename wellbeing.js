@@ -79,11 +79,10 @@
   function blankState() {
     return {
       settings: {
-        noTimer: false,            // C1：默认保留 60 秒宽松窗口；家长可整体关掉计时压力（→ 不装表）
-        challengeBadge: false,     // B4 金星可选徽章，默认 false、仅家长主动开
-        challengeTimers: { 9: false, 12: false }, // C1 L9/L12 可选挑战默认关
-        showChallenge: false,      // C4 「试一试」标注，家长可关
-        parentHook: true           // E2 家长陪玩钩子
+        // 家长开关已删除：以下全部为固定值，不再由 UI 修改（载入时由 pinFixedSettings 压回默认）
+        noTimer: false,            // 核心关保留 60 秒宽松计时；超时只重听、不判错
+        challengeTimers: { 9: false, 12: false }, // 9/12 限时挑战关闭
+        showChallenge: false       // 「试一试」挑战关不作为入口显示
       },
       usage: {
         growthPoints: 0,           // 等量成长点（答对/到点收尾都给，不惩罚）
@@ -112,6 +111,18 @@
     return target;
   }
 
+  /* 家长开关已删除 → 以下值固定，不再随存档变化，保证行为唯一：
+     核心关保留 60 秒宽松计时（超时只重听、不判错）、不显示「试一试」关卡、
+     9/12 限时挑战关闭、金星徽章废弃。旧存档里家长曾勾选过的值在此压回默认，
+     避免同一版本在不同设备上表现不一致。 */
+  function pinFixedSettings(s) {
+    var st = s.settings || (s.settings = {});
+    st.noTimer = false;
+    st.showChallenge = false;
+    st.challengeTimers = { 9: false, 12: false };
+    return s;
+  }
+
   function load() {
     if (_cache) return _cache;
     var raw = null;
@@ -120,8 +131,8 @@
     try { parsed = raw ? JSON.parse(raw) : null; } catch (e) { parsed = null; }
     var base = blankState();
     if (parsed && typeof parsed === 'object') shallowFill(base, parsed);
-    _cache = base;
-    return base;
+    _cache = pinFixedSettings(base);
+    return _cache;
   }
 
   function save() {
