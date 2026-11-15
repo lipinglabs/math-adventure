@@ -861,6 +861,8 @@
         }
       },
       setLastValue: function (v) { lastValue = v; },
+      // 只读：供验收脚本取本题的期望答案（near 判定用的同一份 hints）
+      hintAt: function (i) { return answerHints[i] == null ? null : answerHints[i]; },
 
       // B2 防误触：EVT_TAP → S_CONFIRM 0.4s 单点确认（预选高亮、大目标二次确认）
       tap: function (target) {
@@ -1815,7 +1817,19 @@
     bus: {
       emit: emit,
       EVT: EVT,
-      activeLevelId: function () { return activeLevelId; }
+      activeLevelId: function () { return activeLevelId; },
+      // 只读调试口：验收脚本据此判断「本题是否已推进 / 期望答案是什么」，不改变任何状态
+      sessionState: function () {
+        if (!lastSession) return null;
+        var i = lastSession.index;
+        return {
+          index: i,
+          finished: lastSession.finished,
+          wrongCount: lastSession.wrongCount,
+          correctCount: lastSession.correctCount,
+          hint: lastSession.hintAt ? lastSession.hintAt(i) : null
+        };
+      }
     },
     /* B8 C5 FlashReplayGuard：flash 期间不释放语音 key、「再听一次」常亮常驻；
        图标用「眼睛 + 小海螺」，禁用闪电/沙漏/秒表/倒计时红环。 */
