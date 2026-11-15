@@ -204,9 +204,19 @@
       pool: poolGet()
     });
     if (!check.insert) return { insert: false, reason: check.reason };
-    var refs = selectReviewRefs(poolGet(), check.reviewSize);
-    var resolved = refs.map(function (r) { return resolveRef(r, data); })
-      .filter(function (x) { return !!x; });
+    var raw = selectReviewRefs(poolGet(), check.reviewSize);
+    /* 解析不出来的一律丢掉（重做过的关卡旧题号会失效），
+       refs 也必须跟着过滤：调用方是按 refs.length 决定要不要插复习组的，
+       留着死 ref 会插进一组查不到原题的空白题。 */
+    var refs = [];
+    var resolved = [];
+    raw.forEach(function (r) {
+      var it = resolveRef(r, data);
+      if (!it) return;
+      refs.push(r);
+      resolved.push(it);
+    });
+    if (!refs.length) return { insert: false, reason: '池内原题已失效（关卡重做）', reviewSize: 0 };
     return {
       insert: true,
       label: LABEL,

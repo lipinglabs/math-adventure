@@ -273,7 +273,13 @@ async function playPhase(label, ms) {
         result: !!res,
         hd: (document.querySelector('#level-index')||{}).textContent || '',
         stuck: Array.from(document.querySelectorAll('.cd-layer .cd-token')).filter(function(el){
-          return el.getAnimations && el.getAnimations().some(function(a){ return a.playState === 'finished'; });
+          return el.getAnimations && el.getAnimations().some(function(a){
+            if (a.playState !== 'finished' || a.startTime == null || !a.effect) return false;
+            var t = a.effect.getComputedTiming();
+            var endAt = a.startTime + (t.activeDuration || t.duration || 0);
+            // 刚结束的那一帧不算：popIn 会在 finished 回调里立刻 cancel()
+            return (document.timeline.currentTime - endAt) > 250;
+          });
         }).length
       });
     })()`);
