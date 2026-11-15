@@ -99,6 +99,10 @@ const playOneRound = lv => `(async function(){
   console.log('\\n--- 第 1 局 ---');
   const r1 = await ev(playOneRound(LV));
   console.log(JSON.stringify(r1, null, 1));
+  try {
+    const shot = await cdp.send('Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(ROOT, 'tmp', 'lv' + LV + '-sandbox-result.png'), Buffer.from(shot.data, 'base64'));
+  } catch (e) {}
   await ev(`window.App.exitLevel()`); await sleep(1200);
 
   console.log('\\n--- 第 2 局 ---');

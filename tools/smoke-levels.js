@@ -86,7 +86,14 @@ const DRIVER = `(async function () {
     var rec = { id: id };
     try {
       await window.App.openLevel(id);
-      await wait(140);
+      /* 等关卡真挂上再退：以前固定 140ms 就退，读条还没完就 releaseLevel()，
+         幕 1 语音会在音频池释放后才排到，冒出一堆「voice not preloaded」。
+         真机上孩子不会 140ms 就按返回，这样退更像真实操作。 */
+      for (var t = 0; t < 40; t++) {
+        if (document.getElementById('loader').hidden &&
+            document.getElementById('stage').children.length > 0) break;
+        await wait(120);
+      }
       rec.enterOk = document.getElementById('screen-level').classList.contains('is-active');
       rec.mounted = document.getElementById('stage').children.length > 0;
       rec.title = document.getElementById('level-name').textContent;

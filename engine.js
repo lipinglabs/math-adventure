@@ -524,8 +524,11 @@
 
     /* 未预载的语音改走和关卡素材同一条 Cache Storage 管道。
        旧实现直接 new Audio(网络 URL)：既绕过离线缓存，又不写进 levelAudio，
-       40 个音频名额会被永久占满，最终表现为「读条失败 / 没声音」。 */
-    if (global.console && console.warn) {
+       40 个音频名额会被永久占满，最终表现为「读条失败 / 没声音」。
+
+       只在「有预载池但缺这一条」时告警：池子空了说明刚退关（releaseLevel），
+       这时候还在路上的语音被丢掉是正常的，不该报成问题。 */
+    if (global.console && console.warn && Object.keys(audioPool).length) {
       console.warn('[engine] voice not preloaded, falling back: ' + url);
     }
     return openAssetCache().then(function (cache) {

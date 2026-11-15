@@ -1612,1262 +1612,760 @@ window.MATH_DATA = {
     },
     28: {
       id: 28,
-      name: 'Magic Gloves',
+      name: 'Two Plates',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_28.webp',
-      // 第四阶段第一关：乘法启蒙（2 的乘法，一双手套 = 两个一）。
-      // tap   = 看手套阵列，听 "n times two" 点结果（4 题）
-      // build = 2 × n = ?，拖 n 双手套填阵列（3 题；多给一双，放不下就弹回）
-      // wrong = 三张算式找错（3 题；答对后只翻结果格）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv28/t1_a.mp3',
-          'lv28/t1_b.mp3',
-          'lv28/t2_a.mp3',
-          'lv28/t2_b.mp3',
-          'lv28/t2_c.mp3',
-
-          'lv28/a1_q.mp3',
-          'lv28/a2_q.mp3',
-          'lv28/a3_q.mp3',
-          'lv28/a4_q.mp3',
-
-          'lv28/b_q.mp3',
-          'lv28/c_q.mp3'
+          'lv28/s0a.mp3',
+          'lv28/s0b.mp3',
+          'lv28/s0c.mp3',
+          'lv28/s0d.mp3',
+          'lv28/s0e.mp3',
+          'lv28/s1.mp3',
+          'lv28/s2.mp3',
+          'lv28/s3.mp3',
+          'lv28/s4.mp3',
+          'lv28/s5.mp3',
+          'lv28/s6.mp3',
+          'lv28/s7.mp3',
+          'lv28/s8.mp3',
+          'lv28/out.mp3'
         ],
         images: ['assets/bg/bg_28.webp']
       },
-      questions: [
-        { type: 'tap', n: 4, options: [6, 8, 10], voice: ['a1_q'] },
-        { type: 'tap', n: 5, options: [8, 10, 12], voice: ['a2_q'] },
-        { type: 'tap', n: 6, options: [10, 12, 14], voice: ['a3_q'] },
-        { type: 'tap', n: 7, options: [12, 14, 16], voice: ['a4_q'] },
 
-        { type: 'build', n: 4, voice: ['b_q'] },
-        { type: 'build', n: 5, voice: ['b_q'] },
-        { type: 'build', n: 6, voice: ['b_q'] },
-
-        // wrong：三句里恰好一句 2 × n ≠ shown
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 2, b: 3, shown: 6 },
-          { a: 2, b: 5, shown: 10 },
-          { a: 2, b: 4, shown: 9 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 2, b: 6, shown: 12 },
-          { a: 2, b: 7, shown: 13 },
-          { a: 2, b: 8, shown: 16 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 2, b: 2, shown: 4 },
-          { a: 2, b: 9, shown: 19 },
-          { a: 2, b: 5, shown: 10 }
-        ] }
-      ]
     },
     29: {
       id: 29,
-      name: 'Candy Strings',
+      name: 'Which Tray',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_29.webp',
-      // 第四阶段第二关：5 的乘法（一串糖果就是五颗）。
-      // tap    = 看糖串，听 "n times five" 点结果（4 题）
-      // build  = 5 × n = ?，拖 n 串糖进框（3 题；多给一串，放不下就弹回）
-      // listen = 纯听算式，三键选结果（3 题，无实物图）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv29/t1_a.mp3',
-          'lv29/t1_b.mp3',
-          'lv29/t2_a.mp3',
-          'lv29/t2_b.mp3',
-
-          'lv29/a1_q.mp3',
-          'lv29/a2_q.mp3',
-          'lv29/a3_q.mp3',
-          'lv29/a4_q.mp3',
-
-          'lv29/b_q.mp3',
-          'lv29/c1_q.mp3',
-          'lv29/c2_q.mp3',
-          'lv29/c3_q.mp3'
+          'lv29/s0a.mp3',
+          'lv29/s0b.mp3',
+          'lv29/s0c.mp3',
+          'lv29/s0d.mp3',
+          'lv29/s1.mp3',
+          'lv29/s2.mp3',
+          'lv29/s3.mp3',
+          'lv29/s4.mp3',
+          'lv29/s5.mp3',
+          'lv29/s6.mp3',
+          'lv29/s7.mp3',
+          'lv29/s8.mp3',
+          'lv29/out.mp3'
         ],
         images: ['assets/bg/bg_29.webp']
       },
-      questions: [
-        { type: 'tap', n: 2, options: [8, 10, 12], voice: ['a1_q'] },
-        { type: 'tap', n: 4, options: [18, 20, 22], voice: ['a2_q'] },
-        { type: 'tap', n: 6, options: [28, 30, 32], voice: ['a3_q'] },
-        { type: 'tap', n: 7, options: [33, 35, 37], voice: ['a4_q'] },
 
-        { type: 'build', n: 3, voice: ['b_q'] },
-        { type: 'build', n: 4, voice: ['b_q'] },
-        { type: 'build', n: 6, voice: ['b_q'] },
-
-        { type: 'listen', a: 5, b: 5, options: [20, 25, 30], voice: ['c1_q'] },
-        { type: 'listen', a: 5, b: 8, options: [35, 40, 45], voice: ['c2_q'] },
-        { type: 'listen', a: 5, b: 9, options: [40, 45, 50], voice: ['c3_q'] }
-      ]
     },
     30: {
       id: 30,
-      name: 'Quick 2s & 5s',
+      name: 'Groups of Four',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_30.webp',
-      // 第四阶段第三关：脱离实物，只靠口诀（2 与 5 的乘法）。
-      // tap     = 纯数字点选（4 题）
-      // balloon = 听算式，三只气球里选结果（3 题）
-      // flash   = 五秒限时闪电（3 题）；题干播完才开走（§6.9）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv30/t1_a.mp3',
-          'lv30/t1_b.mp3',
-          'lv30/t1_c.mp3',
-          'lv30/t1_d.mp3',
-
-          'lv30/a1_q.mp3',
-          'lv30/a2_q.mp3',
-          'lv30/a3_q.mp3',
-          'lv30/a4_q.mp3',
-
-          'lv30/b1_q.mp3',
-          'lv30/b2_q.mp3',
-          'lv30/b3_q.mp3',
-
-          'lv30/c1_q.mp3',
-          'lv30/c2_q.mp3',
-          'lv30/c3_q.mp3'
+          'lv30/s0a.mp3',
+          'lv30/s0b.mp3',
+          'lv30/s0c.mp3',
+          'lv30/s0d.mp3',
+          'lv30/s0e.mp3',
+          'lv30/s1.mp3',
+          'lv30/s2.mp3',
+          'lv30/s3.mp3',
+          'lv30/s4.mp3',
+          'lv30/s5.mp3',
+          'lv30/s6.mp3',
+          'lv30/s7.mp3',
+          'lv30/s8.mp3',
+          'lv30/out.mp3'
         ],
         images: ['assets/bg/bg_30.webp']
       },
-      questions: [
-        { type: 'tap', a: 2, b: 7, options: [12, 14, 16], voice: ['a1_q'] },
-        { type: 'tap', a: 5, b: 6, options: [25, 30, 35], voice: ['a2_q'] },
-        { type: 'tap', a: 2, b: 8, options: [14, 16, 18], voice: ['a3_q'] },
-        { type: 'tap', a: 5, b: 3, options: [10, 15, 20], voice: ['a4_q'] },
 
-        { type: 'balloon', a: 2, b: 9, options: [16, 18, 20], voice: ['b1_q'] },
-        { type: 'balloon', a: 5, b: 8, options: [35, 40, 45], voice: ['b2_q'] },
-        { type: 'balloon', a: 2, b: 5, options: [8, 10, 12], voice: ['b3_q'] },
-
-        { type: 'flash', a: 5, b: 5, options: [20, 25, 30], voice: ['c1_q'] },
-        { type: 'flash', a: 2, b: 4, options: [6, 8, 10], voice: ['c2_q'] },
-        { type: 'flash', a: 5, b: 7, options: [30, 35, 40], voice: ['c3_q'] }
-      ]
     },
     31: {
       id: 31,
-      name: 'Wheels & Legs',
+      name: 'Read the Groups',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_31.webp',
-      // 第四阶段第四关：3 与 4 的乘法具象（三条腿 / 四个轮子）。
-      // tap   = 看实物听算式点结果（4 题；b = 每个单位几条腿/几个轮子）
-      // build = a × b = ?，拖 a 个实物进虚位（3 题）
-      // wrong = 三算式找错（3 题；答对后只翻结果格）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv31/t1_a.mp3',
-          'lv31/t1_b.mp3',
-          'lv31/t2_a.mp3',
-          'lv31/t2_b.mp3',
-          'lv31/t2_c.mp3',
-          'lv31/t2_d.mp3',
-
-          'lv31/a1_q.mp3',
-          'lv31/a2_q.mp3',
-          'lv31/a3_q.mp3',
-          'lv31/a4_q.mp3',
-
-          'lv31/b_q.mp3',
-          'lv31/c_q.mp3'
+          'lv31/s0a.mp3',
+          'lv31/s0b.mp3',
+          'lv31/s0c.mp3',
+          'lv31/s0d.mp3',
+          'lv31/s1.mp3',
+          'lv31/s2.mp3',
+          'lv31/s3.mp3',
+          'lv31/s4.mp3',
+          'lv31/s5.mp3',
+          'lv31/s6.mp3',
+          'lv31/s7.mp3',
+          'lv31/s8.mp3',
+          'lv31/out.mp3',
+          'common/num_03.mp3',
+          'common/num_06.mp3',
+          'common/num_09.mp3',
+          'common/num_12.mp3'
         ],
         images: ['assets/bg/bg_31.webp']
       },
-      questions: [
-        { type: 'tap', a: 4, b: 3, options: [10, 12, 14], voice: ['a1_q'] },
-        { type: 'tap', a: 3, b: 4, options: [10, 12, 14], voice: ['a2_q'] },
-        { type: 'tap', a: 5, b: 3, options: [13, 15, 17], voice: ['a3_q'] },
-        { type: 'tap', a: 4, b: 4, options: [14, 16, 18], voice: ['a4_q'] },
 
-        { type: 'build', a: 3, b: 4, voice: ['b_q'] },
-        { type: 'build', a: 4, b: 3, voice: ['b_q'] },
-        { type: 'build', a: 2, b: 4, voice: ['b_q'] },
-
-        // wrong：三句里恰好一句 a × b ≠ shown
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 3, b: 3, shown: 9 },
-          { a: 4, b: 2, shown: 8 },
-          { a: 3, b: 4, shown: 13 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 4, b: 4, shown: 16 },
-          { a: 3, b: 5, shown: 15 },
-          { a: 4, b: 3, shown: 14 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 3, b: 6, shown: 18 },
-          { a: 4, b: 5, shown: 21 },
-          { a: 3, b: 7, shown: 21 }
-        ] }
-      ]
     },
     32: {
       id: 32,
-      name: 'Chocolate Grid',
+      name: 'Count by Groups',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_32.webp',
-      // 第四阶段第五关：行列与交换律（同一批巧克力转个身）。
-      // pick  = 给 r 行 c 列阵列，选正确算式（4 题；只放一个顺序成立的选项）
-      // build = a × b = ?，拖 a 条「每行 b 块」的巧克力拼阵列（3 题）
-      // find  = 听算式，从三个阵列里挑（3 题；选项里不放交换后的等价阵列）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv32/t1_a.mp3',
-          'lv32/t1_b.mp3',
-          'lv32/t1_c.mp3',
-          'lv32/t1_d.mp3',
-
-          'lv32/a_q.mp3',
-          'lv32/b_q.mp3',
-          'lv32/c1_q.mp3',
-          'lv32/c2_q.mp3',
-          'lv32/c3_q.mp3'
+          'lv32/s0a.mp3',
+          'lv32/s0b.mp3',
+          'lv32/s0c.mp3',
+          'lv32/s0d.mp3',
+          'lv32/s0e.mp3',
+          'lv32/s1.mp3',
+          'lv32/s2.mp3',
+          'lv32/s3.mp3',
+          'lv32/s4.mp3',
+          'lv32/s5.mp3',
+          'lv32/s6.mp3',
+          'lv32/s7.mp3',
+          'lv32/s8.mp3',
+          'lv32/out.mp3',
+          'common/num_02.mp3',
+          'common/num_04.mp3',
+          'common/num_05.mp3',
+          'common/num_06.mp3',
+          'common/num_08.mp3',
+          'common/num_10.mp3',
+          'common/num_15.mp3',
+          'common/num_20.mp3'
         ],
         images: ['assets/bg/bg_32.webp']
       },
-      questions: [
-        { type: 'pick', r: 4, c: 3, options: [[4, 3], [3, 3], [4, 4]], voice: ['a_q'] },
-        { type: 'pick', r: 5, c: 2, options: [[5, 2], [5, 3], [4, 2]], voice: ['a_q'] },
-        { type: 'pick', r: 3, c: 6, options: [[3, 6], [3, 5], [4, 6]], voice: ['a_q'] },
-        { type: 'pick', r: 2, c: 7, options: [[2, 7], [2, 6], [3, 7]], voice: ['a_q'] },
 
-        { type: 'build', a: 3, b: 5, voice: ['b_q'] },
-        { type: 'build', a: 4, b: 3, voice: ['b_q'] },
-        { type: 'build', a: 5, b: 4, voice: ['b_q'] },
-
-        { type: 'find', a: 5, b: 4, arrays: [[5, 4], [4, 4], [5, 5]], voice: ['c1_q'] },
-        { type: 'find', a: 4, b: 6, arrays: [[4, 6], [5, 6], [4, 5]], voice: ['c2_q'] },
-        { type: 'find', a: 3, b: 7, arrays: [[3, 7], [4, 7], [3, 6]], voice: ['c3_q'] }
-      ]
     },
     33: {
       id: 33,
-      name: 'Spin the Wheel',
+      name: 'Counting Bundles',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_33.webp',
-      // 第四阶段第六关：转盘速算（3 与 4 的口诀，半抽象）。
-      // tap   = 纯数字点选（4 题）
-      // wheel = 看转盘 + 听算式点结果（3 题；a 是中心乘数，b 是指针停的数）
-      // flash = 五秒闪电（3 题）；题干播完才开走（§6.9）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv33/t1_a.mp3',
-          'lv33/t1_b.mp3',
-          'lv33/t1_c.mp3',
-          'lv33/t1_d.mp3',
-
-          'lv33/a1_q.mp3',
-          'lv33/a2_q.mp3',
-          'lv33/a3_q.mp3',
-          'lv33/a4_q.mp3',
-
-          'lv33/b1_q.mp3',
-          'lv33/b2_q.mp3',
-          'lv33/b3_q.mp3',
-
-          'lv33/c1_q.mp3',
-          'lv33/c2_q.mp3',
-          'lv33/c3_q.mp3'
+          'lv33/s0a.mp3',
+          'lv33/s0b.mp3',
+          'lv33/s0c.mp3',
+          'lv33/s0d.mp3',
+          'lv33/s1.mp3',
+          'lv33/s2.mp3',
+          'lv33/s3.mp3',
+          'lv33/s4.mp3',
+          'lv33/s5.mp3',
+          'lv33/s6.mp3',
+          'lv33/s7.mp3',
+          'lv33/s8.mp3',
+          'lv33/out.mp3',
+          'common/num_05.mp3',
+          'common/num_10.mp3',
+          'common/num_15.mp3',
+          'common/num_20.mp3',
+          'common/num_25.mp3',
+          'common/num_30.mp3',
+          'common/num_35.mp3',
+          'common/num_40.mp3',
+          'common/num_45.mp3',
+          'common/num_50.mp3',
+          'common/num_60.mp3',
+          'common/num_70.mp3',
+          'common/num_80.mp3',
+          'common/num_90.mp3',
+          'common/num_100.mp3'
         ],
         images: ['assets/bg/bg_33.webp']
       },
-      questions: [
-        { type: 'tap', a: 3, b: 7, options: [18, 21, 24], voice: ['a1_q'] },
-        { type: 'tap', a: 4, b: 6, options: [20, 24, 28], voice: ['a2_q'] },
-        { type: 'tap', a: 3, b: 9, options: [24, 27, 30], voice: ['a3_q'] },
-        { type: 'tap', a: 4, b: 8, options: [28, 32, 36], voice: ['a4_q'] },
 
-        { type: 'wheel', a: 3, b: 8, options: [18, 24, 30], voice: ['b1_q'] },
-        { type: 'wheel', a: 4, b: 7, options: [24, 28, 32], voice: ['b2_q'] },
-        { type: 'wheel', a: 3, b: 6, options: [15, 18, 21], voice: ['b3_q'] },
-
-        { type: 'flash', a: 4, b: 9, options: [32, 36, 40], voice: ['c1_q'] },
-        { type: 'flash', a: 3, b: 5, options: [12, 15, 18], voice: ['c2_q'] },
-        { type: 'flash', a: 4, b: 5, options: [16, 20, 24], voice: ['c3_q'] }
-      ]
     },
     34: {
       id: 34,
-      name: 'Nine Magic Fingers',
+      name: 'The Big Tray',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_34.webp',
-      // 第四阶段第七关：9 的乘法手指操（左手指 = 十位，右手指 = 个位）。
-      // read  = 看弯曲某根手指的图，听 "n times nine" 点结果（4 题）
-      // split = 拖两个数字填十位 / 个位（3 题；每个空只收自己那一位的数字）
-      // wrong = 三张 9 的算式找错（3 题；答对后只翻结果格）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv34/t1_a.mp3',
-          'lv34/t1_b.mp3',
-          'lv34/t1_c.mp3',
-          'lv34/t1_d.mp3',
-          'lv34/t1_e.mp3',
-
-          'lv34/a1_q.mp3',
-          'lv34/a2_q.mp3',
-          'lv34/a3_q.mp3',
-          'lv34/a4_q.mp3',
-
-          'lv34/b_q.mp3',
-          'lv34/c_q.mp3'
+          'lv34/s0a.mp3',
+          'lv34/s0b.mp3',
+          'lv34/s0c.mp3',
+          'lv34/s0d.mp3',
+          'lv34/s0e.mp3',
+          'lv34/s1.mp3',
+          'lv34/s2.mp3',
+          'lv34/s3.mp3',
+          'lv34/s4.mp3',
+          'lv34/s5.mp3',
+          'lv34/s6.mp3',
+          'lv34/s7.mp3',
+          'lv34/s8.mp3',
+          'lv34/out.mp3'
         ],
         images: ['assets/bg/bg_34.webp']
       },
-      questions: [
-        { type: 'read', n: 7, options: [54, 63, 72], voice: ['a1_q'] },
-        { type: 'read', n: 3, options: [18, 27, 36], voice: ['a2_q'] },
-        { type: 'read', n: 8, options: [63, 72, 81], voice: ['a3_q'] },
-        { type: 'read', n: 6, options: [45, 54, 63], voice: ['a4_q'] },
 
-        { type: 'split', a: 6, pool: [5, 4, 3, 7], voice: ['b_q'] },
-        { type: 'split', a: 5, pool: [4, 5, 6, 3], voice: ['b_q'] },
-        { type: 'split', a: 9, pool: [1, 8, 2, 9], voice: ['b_q'] },
-
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 9, b: 4, shown: 36 },
-          { a: 9, b: 5, shown: 45 },
-          { a: 9, b: 6, shown: 53 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 9, b: 3, shown: 27 },
-          { a: 9, b: 7, shown: 64 },
-          { a: 9, b: 8, shown: 72 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 9, b: 2, shown: 18 },
-          { a: 9, b: 9, shown: 81 },
-          { a: 9, b: 5, shown: 44 }
-        ] }
-      ]
     },
     35: {
       id: 35,
-      name: 'Flip the Blocks',
+      name: 'Count the Tray',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_35.webp',
-      // 第四阶段第八关：交换律（顺序不重要）。两种证明都要做（§5.22）：
-      //   ① 阵列旋转——同一批积木顺时针转 90°
-      //   ② 重新装盘——6 颗草莓不动，2 个盘子换成 3 个盘子
-      // pair  = 给阵列，从三组「算式对」里选出两式都成立的一组（4 题）
-      // fill  = a × b = [ ] × a，拖缺失的因数（3 题）
-      // equiv = 听算式，从三张里选出等价的那张（3 题）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv35/t1_a.mp3',
-          'lv35/t1_b.mp3',
-          'lv35/t1_c.mp3',
-          'lv35/t1_d.mp3',
-          'lv35/t1_e.mp3',
-
-          'lv35/a_q.mp3',
-          'lv35/b_q.mp3',
-          'lv35/c1_q.mp3',
-          'lv35/c2_q.mp3',
-          'lv35/c3_q.mp3'
+          'lv35/s0a.mp3',
+          'lv35/s0b.mp3',
+          'lv35/s0c.mp3',
+          'lv35/s0d.mp3',
+          'lv35/s0e.mp3',
+          'lv35/s1.mp3',
+          'lv35/s2.mp3',
+          'lv35/s3.mp3',
+          'lv35/s4.mp3',
+          'lv35/s5.mp3',
+          'lv35/s6.mp3',
+          'lv35/s7.mp3',
+          'lv35/s8.mp3',
+          'lv35/out.mp3',
+          'common/num_02.mp3',
+          'common/num_03.mp3',
+          'common/num_04.mp3',
+          'common/num_06.mp3'
         ],
         images: ['assets/bg/bg_35.webp']
       },
-      questions: [
-        { type: 'pair', r: 4, c: 5, voice: ['a_q'], options: [
-          [[4, 5], [5, 4]], [[4, 5], [5, 5]], [[4, 4], [5, 5]]
-        ] },
-        { type: 'pair', r: 3, c: 6, voice: ['a_q'], options: [
-          [[3, 6], [6, 3]], [[3, 6], [6, 6]], [[3, 3], [6, 6]]
-        ] },
-        { type: 'pair', r: 5, c: 4, voice: ['a_q'], options: [
-          [[5, 4], [4, 5]], [[5, 4], [4, 4]], [[5, 5], [4, 4]]
-        ] },
-        { type: 'pair', r: 2, c: 7, voice: ['a_q'], options: [
-          [[2, 7], [7, 2]], [[2, 7], [7, 7]], [[2, 2], [7, 7]]
-        ] },
 
-        { type: 'fill', a: 3, b: 8, pool: [8, 3, 7, 6], voice: ['b_q'] },
-        { type: 'fill', a: 5, b: 7, pool: [7, 5, 6, 4], voice: ['b_q'] },
-        { type: 'fill', a: 4, b: 9, pool: [9, 4, 3, 8], voice: ['b_q'] },
-
-        { type: 'equiv', a: 6, b: 4, voice: ['c1_q'], options: [
-          ['×', 4, 6], ['+', 6, 4], ['×', 4, 4]
-        ] },
-        { type: 'equiv', a: 7, b: 3, voice: ['c2_q'], options: [
-          ['×', 3, 7], ['+', 7, 3], ['×', 3, 3]
-        ] },
-        { type: 'equiv', a: 9, b: 2, voice: ['c3_q'], options: [
-          ['×', 2, 9], ['−', 9, 2], ['×', 2, 2]
-        ] }
-      ]
     },
     36: {
       id: 36,
-      name: 'Pattern Pop',
+      name: 'Turn the Tray',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_36.webp',
-      // 第四阶段第九关：找规律（跳着数 → 乘法）。
-      // step  = 数列里填缺一个数（4 题；start + d × i，miss 是缺的那一格）
-      // row   = 听算式，从三行跳数里挑出含该积的那行（3 题）
-      // flash = 五秒闪电（3 题）；题干播完才开走（§6.9）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv36/t1_a.mp3',
-          'lv36/t1_b.mp3',
-          'lv36/t1_c.mp3',
-          'lv36/t1_d.mp3',
-          'lv36/t1_e.mp3',
-
-          'lv36/a_q.mp3',
-          'lv36/b1_q.mp3',
-          'lv36/b2_q.mp3',
-          'lv36/b3_q.mp3',
-
-          'lv36/c1_q.mp3',
-          'lv36/c2_q.mp3',
-          'lv36/c3_q.mp3'
+          'lv36/s0a.mp3',
+          'lv36/s0b.mp3',
+          'lv36/s0c.mp3',
+          'lv36/s0d.mp3',
+          'lv36/s0e.mp3',
+          'lv36/s1.mp3',
+          'lv36/s2.mp3',
+          'lv36/s3.mp3',
+          'lv36/s4.mp3',
+          'lv36/s5.mp3',
+          'lv36/s6.mp3',
+          'lv36/s7.mp3',
+          'lv36/s7a.mp3',
+          'lv36/s8.mp3',
+          'lv36/out.mp3',
+          'common/num_03.mp3',
+          'common/num_04.mp3',
+          'common/num_06.mp3',
+          'common/num_08.mp3',
+          'common/num_09.mp3',
+          'common/num_12.mp3'
         ],
         images: ['assets/bg/bg_36.webp']
       },
-      questions: [
-        { type: 'step', start: 5, d: 5, miss: 3, options: [15, 20, 25], voice: ['a_q'] },
-        { type: 'step', start: 3, d: 3, miss: 4, options: [12, 15, 18], voice: ['a_q'] },
-        { type: 'step', start: 6, d: 6, miss: 2, options: [12, 18, 24], voice: ['a_q'] },
-        { type: 'step', start: 4, d: 4, miss: 1, options: [8, 12, 16], voice: ['a_q'] },
 
-        { type: 'row', a: 4, b: 7, answerIndex: 1, voice: ['b1_q'], rows: [
-          [4, 8, 12, 16, 20], [7, 14, 21, 28, 35], [3, 6, 9, 12, 15]
-        ] },
-        { type: 'row', a: 3, b: 8, answerIndex: 1, voice: ['b2_q'], rows: [
-          [3, 6, 9, 12, 15], [8, 16, 24, 32, 40], [5, 10, 15, 20, 25]
-        ] },
-        { type: 'row', a: 5, b: 6, answerIndex: 2, voice: ['b3_q'], rows: [
-          [5, 10, 15, 20, 25], [4, 8, 12, 16, 20], [6, 12, 18, 24, 30]
-        ] },
-
-        { type: 'flash', a: 8, b: 4, options: [28, 32, 36], voice: ['c1_q'] },
-        { type: 'flash', a: 7, b: 6, options: [36, 42, 48], voice: ['c2_q'] },
-        { type: 'flash', a: 9, b: 3, options: [24, 27, 30], voice: ['c3_q'] }
-      ]
     },
     37: {
       id: 37,
-      name: 'Multiplication Master',
+      name: 'One for Each',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_37.webp',
-      // 第四阶段第十关：表内乘法纯复习大考。
-      // tap     = 纯数字点选（4 题）
-      // balloon = 听算式，三只气球里选结果（3 题）
-      // wrong   = 三张表内乘法找错（3 题；答对后只翻结果格）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv37/t1_a.mp3',
-          'lv37/t1_b.mp3',
-          'lv37/t1_c.mp3',
-          'lv37/t1_d.mp3',
-          'lv37/t1_e.mp3',
-
-          'lv37/a1_q.mp3',
-          'lv37/a2_q.mp3',
-          'lv37/a3_q.mp3',
-          'lv37/a4_q.mp3',
-
-          'lv37/b1_q.mp3',
-          'lv37/b2_q.mp3',
-          'lv37/b3_q.mp3',
-
-          'lv37/c_q.mp3'
+          'lv37/s0a.mp3',
+          'lv37/s0b.mp3',
+          'lv37/s0c.mp3',
+          'lv37/s0d.mp3',
+          'lv37/s0e.mp3',
+          'lv37/s1.mp3',
+          'lv37/s2.mp3',
+          'lv37/s3.mp3',
+          'lv37/s4.mp3',
+          'lv37/s5.mp3',
+          'lv37/s6.mp3',
+          'lv37/s7.mp3',
+          'lv37/s8.mp3',
+          'lv37/out.mp3'
         ],
         images: ['assets/bg/bg_37.webp']
       },
-      questions: [
-        { type: 'tap', a: 4, b: 7, options: [24, 28, 32], voice: ['a1_q'] },
-        { type: 'tap', a: 3, b: 6, options: [15, 18, 21], voice: ['a2_q'] },
-        { type: 'tap', a: 5, b: 8, options: [35, 40, 45], voice: ['a3_q'] },
-        { type: 'tap', a: 9, b: 4, options: [32, 36, 40], voice: ['a4_q'] },
 
-        { type: 'balloon', a: 6, b: 3, options: [15, 18, 21], voice: ['b1_q'] },
-        { type: 'balloon', a: 5, b: 7, options: [30, 35, 40], voice: ['b2_q'] },
-        { type: 'balloon', a: 4, b: 8, options: [28, 32, 36], voice: ['b3_q'] },
-
-        // wrong：三句里恰好一句 a × b ≠ shown
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 7, b: 4, shown: 29 },
-          { a: 6, b: 5, shown: 30 },
-          { a: 8, b: 3, shown: 24 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 3, b: 9, shown: 27 },
-          { a: 5, b: 6, shown: 30 },
-          { a: 4, b: 7, shown: 29 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sums: [
-          { a: 9, b: 2, shown: 18 },
-          { a: 6, b: 6, shown: 36 },
-          { a: 5, b: 8, shown: 41 }
-        ] }
-      ]
     },
     38: {
       id: 38,
-      name: 'Add to Multiply',
+      name: 'All Shared',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_38.webp',
-      // 第四阶段第十一关：连加与乘法是同一件事的两种读法（§5.24）。
-      // say  = 听连加，从三个乘式里选（4 题；正确答案是「n 个 b」→ n × b）
-      // link = 三张连加卡 ↔ 三张乘法卡连线，全部连对才判对（3 题）
-      // wrong= 三组等式，找出连加与乘法对不上的那组（3 题）
-      // pairs 里每个元素是 [[连加的每一项], [乘法的两个因数]]
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv38/t1_a.mp3',
-          'lv38/t1_b.mp3',
-          'lv38/t1_c.mp3',
-          'lv38/t1_d.mp3',
-
-          'lv38/a1_q.mp3',
-          'lv38/a2_q.mp3',
-          'lv38/a3_q.mp3',
-          'lv38/a4_q.mp3',
-
-          'lv38/b_q.mp3',
-          'lv38/c_q.mp3'
+          'lv38/s0a.mp3',
+          'lv38/s0b.mp3',
+          'lv38/s0c.mp3',
+          'lv38/s0d.mp3',
+          'lv38/s0e.mp3',
+          'lv38/s1.mp3',
+          'lv38/s2.mp3',
+          'lv38/s3.mp3',
+          'lv38/s4.mp3',
+          'lv38/s5.mp3',
+          'lv38/s6.mp3',
+          'lv38/s7.mp3',
+          'lv38/s8.mp3',
+          'lv38/out.mp3',
+          'common/num_04.mp3',
+          'common/num_08.mp3',
+          'common/num_12.mp3'
         ],
         images: ['assets/bg/bg_38.webp']
       },
-      questions: [
-        { type: 'say', n: 3, b: 5, sum: [5, 5, 5], voice: ['a1_q'],
-          options: [[3, 5], [3, 4], [4, 5]] },
-        { type: 'say', n: 3, b: 4, sum: [4, 4, 4], voice: ['a2_q'],
-          options: [[3, 4], [4, 4], [3, 3]] },
-        { type: 'say', n: 5, b: 2, sum: [2, 2, 2, 2, 2], voice: ['a3_q'],
-          options: [[5, 2], [5, 5], [2, 4]] },
-        { type: 'say', n: 4, b: 3, sum: [3, 3, 3, 3], voice: ['a4_q'],
-          options: [[4, 3], [3, 3], [4, 4]] },
 
-        { type: 'link', voice: ['b_q'], pairs: [
-          [[4, 4, 4], [3, 4]], [[2, 2], [2, 2]], [[5, 5, 5, 5], [4, 5]]
-        ] },
-        { type: 'link', voice: ['b_q'], pairs: [
-          [[3, 3, 3], [3, 3]], [[5, 5], [2, 5]], [[2, 2, 2, 2], [4, 2]]
-        ] },
-        { type: 'link', voice: ['b_q'], pairs: [
-          [[4, 4], [2, 4]], [[3, 3, 3, 3], [4, 3]], [[5, 5, 5], [3, 5]]
-        ] },
-
-        // wrong：三组里恰好一组对不上（乘法的两个因数是 {连加项数, 每一项}）
-        { type: 'wrong', voice: ['c_q'], pairs: [
-          [[3, 3, 3], [3, 3]], [[2, 2, 2, 2], [2, 4]], [[5, 5], [5, 5]]
-        ] },
-        { type: 'wrong', voice: ['c_q'], pairs: [
-          [[4, 4, 4], [3, 4]], [[3, 3], [3, 3]], [[5, 5, 5], [3, 5]]
-        ] },
-        { type: 'wrong', voice: ['c_q'], pairs: [
-          [[2, 2, 2], [3, 2]], [[4, 4, 4, 4], [4, 4]], [[5, 5, 5, 5], [5, 5]]
-        ] }
-      ]
     },
     39: {
       id: 39,
-      name: 'Stage 4 Finale',
+      name: 'How Many Each',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_39.webp',
-      // 第四阶段结业：10 题混排大考 + 金星四阶结业仪式（§6.16）。
-      // tap   = 混合表内点选（4 题）
-      // pick  = 看阵列选算式（3 题；三个选项的积各不相同，避免两个都对）
-      // wrong = 混合算式挑错（3 题；加减乘混排，恰好一句错）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv39/t1_a.mp3',
-          'lv39/t1_b.mp3',
-          'lv39/t1_c.mp3',
-          'lv39/t1_d.mp3',
-
-          'lv39/a1_q.mp3',
-          'lv39/a2_q.mp3',
-          'lv39/a3_q.mp3',
-          'lv39/a4_q.mp3',
-
-          'lv39/b1_q.mp3',
-          'lv39/b2_q.mp3',
-          'lv39/b3_q.mp3',
-
-          'lv39/c_q.mp3',
-          'lv39/t_gold.mp3'
+          'lv39/s0a.mp3',
+          'lv39/s0b.mp3',
+          'lv39/s0c.mp3',
+          'lv39/s0d.mp3',
+          'lv39/s0e.mp3',
+          'lv39/s1.mp3',
+          'lv39/s2.mp3',
+          'lv39/s3.mp3',
+          'lv39/s4.mp3',
+          'lv39/s5.mp3',
+          'lv39/s6.mp3',
+          'lv39/s7.mp3',
+          'lv39/s8.mp3',
+          'lv39/out.mp3'
         ],
         images: ['assets/bg/bg_39.webp']
       },
-      questions: [
-        { type: 'tap', a: 7, b: 4, options: [24, 28, 32], voice: ['a1_q'] },
-        { type: 'tap', a: 6, b: 5, options: [25, 30, 35], voice: ['a2_q'] },
-        { type: 'tap', a: 8, b: 9, options: [63, 72, 81], voice: ['a3_q'] },
-        { type: 'tap', a: 9, b: 3, options: [24, 27, 30], voice: ['a4_q'] },
 
-        { type: 'pick', r: 3, c: 5, voice: ['b1_q'], options: [[3, 5, 15], [3, 4, 12], [4, 5, 20]] },
-        { type: 'pick', r: 4, c: 6, voice: ['b2_q'], options: [[4, 6, 24], [4, 5, 20], [5, 6, 30]] },
-        { type: 'pick', r: 5, c: 2, voice: ['b3_q'], options: [[5, 2, 10], [5, 3, 15], [2, 4, 8]] },
-
-        // wrong：三句加减乘混排，恰好一句不成立
-        { type: 'wrong', voice: ['c_q'], sentences: [
-          { sign: '×', a: 3, b: 5, shown: 15 },
-          { sign: '+', a: 6, b: 3, shown: 10 },
-          { sign: '×', a: 4, b: 6, shown: 24 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sentences: [
-          { sign: '+', a: 7, b: 2, shown: 9 },
-          { sign: '×', a: 6, b: 5, shown: 30 },
-          { sign: '×', a: 8, b: 3, shown: 25 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sentences: [
-          { sign: '×', a: 9, b: 3, shown: 27 },
-          { sign: '+', a: 5, b: 8, shown: 13 },
-          { sign: '×', a: 6, b: 7, shown: 41 }
-        ] }
-      ]
     },
 
     40: {
       id: 40,
-      name: 'Pizza Party',
+      name: 'Bags Today',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_40.webp',
-      // 第五阶段开局：平均分 / 除法启蒙。
-      // share = 看分配点每份数（4 题；选项不含题面数字，避免字面对数字）
-      // plate = 拖拽平均分（3 题；放满不判对，必须按提交键，§6.10）
-      // fair  = 找不公平的一组（3 题；恰好一组分不均匀）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv40/t1_a.mp3',
-          'lv40/t1_b.mp3',
-          'lv40/t1_c.mp3',
-          'lv40/t1_d.mp3',
-          'lv40/t1_e.mp3',
-
-          'lv40/a1_q.mp3',
-          'lv40/a2_q.mp3',
-          'lv40/a3_q.mp3',
-          'lv40/a4_q.mp3',
-
-          'lv40/b1_q.mp3',
-          'lv40/b2_q.mp3',
-          'lv40/b3_q.mp3',
-
-          'lv40/c_q.mp3'
+          'lv40/s0a.mp3',
+          'lv40/s0b.mp3',
+          'lv40/s0c.mp3',
+          'lv40/s0d.mp3',
+          'lv40/s0e.mp3',
+          'lv40/s1.mp3',
+          'lv40/s2.mp3',
+          'lv40/s3.mp3',
+          'lv40/s4.mp3',
+          'lv40/s5.mp3',
+          'lv40/s6.mp3',
+          'lv40/s7.mp3',
+          'lv40/s8.mp3',
+          'lv40/out.mp3'
         ],
         images: ['assets/bg/bg_40.webp']
       },
-      questions: [
-        { type: 'share', total: 6, parts: 2, options: [3, 4, 5], voice: ['a1_q'] },
-        { type: 'share', total: 8, parts: 4, options: [2, 3, 5], voice: ['a2_q'] },
-        { type: 'share', total: 9, parts: 3, options: [3, 2, 4], voice: ['a3_q'] },
-        { type: 'share', total: 10, parts: 5, options: [2, 3, 4], voice: ['a4_q'] },
 
-        { type: 'plate', total: 8, plates: 4, item: 'cookie', voice: ['b1_q'] },
-        { type: 'plate', total: 9, plates: 3, item: 'strawberry', voice: ['b2_q'] },
-        { type: 'plate', total: 10, plates: 5, item: 'candy', voice: ['b3_q'] },
-
-        // fair：三组里恰好一组分不均匀（错的那组结果也跟着错）
-        { type: 'fair', voice: ['c_q'], sets: [
-          { t: 6, g: 2, m: 3, deal: [3, 3] },
-          { t: 8, g: 4, m: 3, deal: [3, 2, 2, 1] },
-          { t: 10, g: 5, m: 2, deal: [2, 2, 2, 2, 2] }
-        ] },
-        { type: 'fair', voice: ['c_q'], sets: [
-          { t: 9, g: 3, m: 3, deal: [3, 3, 3] },
-          { t: 6, g: 3, m: 3, deal: [3, 2, 1] },
-          { t: 12, g: 4, m: 3, deal: [3, 3, 3, 3] }
-        ] },
-        { type: 'fair', voice: ['c_q'], sets: [
-          { t: 8, g: 2, m: 4, deal: [4, 4] },
-          { t: 10, g: 2, m: 6, deal: [6, 4] },
-          { t: 12, g: 2, m: 6, deal: [6, 6] }
-        ] }
-      ]
     },
 
     41: {
       id: 41,
-      name: 'Group Them Up',
+      name: 'One Is Left',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_41.webp',
-      // 包含除：把总数按「每组几个」打包，问能打几组。
-      // groups = 看分组点组数（4 题；答对后把每组圈出来）
-      // ring   = 拖拽画圈（3 题；套索或轻点选满每组，全部分完才亮提交键，§6.10）
-      // pick   = 听算式找场景（3 题；三张图的 (总数, 每组) 两两不同）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv41/t1_a.mp3',
-          'lv41/t1_b.mp3',
-          'lv41/t2_a.mp3',
-          'lv41/t2_q.mp3',
-          'lv41/t2_b.mp3',
-
-          'lv41/a1_q.mp3',
-          'lv41/a2_q.mp3',
-          'lv41/a3_q.mp3',
-          'lv41/a4_q.mp3',
-
-          'lv41/b1_q.mp3',
-          'lv41/b2_q.mp3',
-          'lv41/b3_q.mp3',
-
-          'lv41/c_q.mp3'
+          'lv41/s0a.mp3',
+          'lv41/s0b.mp3',
+          'lv41/s0c.mp3',
+          'lv41/s0d.mp3',
+          'lv41/s0e.mp3',
+          'lv41/s1.mp3',
+          'lv41/s2.mp3',
+          'lv41/s3.mp3',
+          'lv41/s4.mp3',
+          'lv41/s5.mp3',
+          'lv41/s6.mp3',
+          'lv41/s6b.mp3',
+          'lv41/s7.mp3',
+          'lv41/s8.mp3',
+          'lv41/out.mp3'
         ],
         images: ['assets/bg/bg_41.webp']
       },
-      questions: [
-        { type: 'groups', total: 9, per: 3, item: 'apple', options: [3, 2, 4], voice: ['a1_q'] },
-        { type: 'groups', total: 8, per: 2, item: 'apple', options: [4, 3, 5], voice: ['a2_q'] },
-        { type: 'groups', total: 12, per: 4, item: 'duck', options: [3, 2, 5], voice: ['a3_q'] },
-        { type: 'groups', total: 10, per: 5, item: 'candy', options: [2, 3, 4], voice: ['a4_q'] },
 
-        { type: 'ring', total: 10, per: 5, item: 'candy', voice: ['b1_q'] },
-        { type: 'ring', total: 9, per: 3, item: 'apple', voice: ['b2_q'] },
-        { type: 'ring', total: 8, per: 2, item: 'duck', voice: ['b3_q'] },
-
-        // pick：三张图的 (总数, 每组) 两两不同，商也尽量不同
-        { type: 'pick', t: 15, g: 5, voice: ['c_q'], options: [
-          { t: 15, g: 5 }, { t: 12, g: 4 }, { t: 10, g: 2 }
-        ] },
-        { type: 'pick', t: 12, g: 3, voice: ['c_q'], options: [
-          { t: 12, g: 3 }, { t: 8, g: 2 }, { t: 10, g: 5 }
-        ] },
-        { type: 'pick', t: 10, g: 2, voice: ['c_q'], options: [
-          { t: 10, g: 2 }, { t: 12, g: 4 }, { t: 9, g: 3 }
-        ] }
-      ]
     },
 
     42: {
       id: 42,
-      name: 'Take Away Again and Again',
+      name: 'Fill the Boxes',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_42.webp',
-      // 除法是减法的简便运算：拿几次就减几次。
-      // choice = 听连减选除法（4 题；三张算式卡，只有一张被减数/减数/次数全对）
-      // link   = 连减 ↔ 除法连线（3 题；三对全连对才判对，§5.10）
-      // wrong  = 三组等式找错（3 题；恰好一组除法结果错，答对后翻正）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv42/t1_a.mp3',
-          'lv42/t1_b.mp3',
-          'lv42/t1_c.mp3',
-          'lv42/t1_d.mp3',
-          'lv42/t1_e.mp3',
-
-          'lv42/a1_q.mp3',
-          'lv42/a2_q.mp3',
-          'lv42/a3_q.mp3',
-          'lv42/a4_q.mp3',
-
-          'lv42/b1_q.mp3',
-          'lv42/b2_q.mp3',
-          'lv42/b3_q.mp3',
-
-          'lv42/c_q.mp3'
+          'lv42/s0a.mp3',
+          'lv42/s0b.mp3',
+          'lv42/s0c.mp3',
+          'lv42/s0d.mp3',
+          'lv42/s0e.mp3',
+          'lv42/s1.mp3',
+          'lv42/s2.mp3',
+          'lv42/s3.mp3',
+          'lv42/s4.mp3',
+          'lv42/s5.mp3',
+          'lv42/s5a.mp3',
+          'lv42/s6.mp3',
+          'lv42/s7.mp3',
+          'lv42/s8.mp3',
+          'lv42/out.mp3'
         ],
         images: ['assets/bg/bg_42.webp']
       },
-      questions: [
-        { type: 'choice', a: 10, b: 2, n: 5, options: [[10, 2, 5], [8, 2, 4], [12, 2, 6]], voice: ['a1_q'] },
-        { type: 'choice', a: 12, b: 4, n: 3, options: [[12, 4, 3], [12, 3, 4], [8, 4, 2]], voice: ['a2_q'] },
-        { type: 'choice', a: 15, b: 5, n: 3, options: [[15, 5, 3], [15, 3, 5], [20, 5, 4]], voice: ['a3_q'] },
-        { type: 'choice', a: 8, b: 2, n: 4, options: [[8, 2, 4], [8, 4, 2], [6, 2, 3]], voice: ['a4_q'] },
 
-        { type: 'link', voice: ['b1_q'], pairs: [[15, 5, 3], [8, 4, 2], [10, 2, 5]] },
-        { type: 'link', voice: ['b2_q'], pairs: [[12, 3, 4], [9, 3, 3], [6, 2, 3]] },
-        { type: 'link', voice: ['b3_q'], pairs: [[20, 5, 4], [16, 4, 4], [12, 6, 2]] },
-
-        // wrong：三组里恰好一组「除法结果」错
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { a: 8, b: 4, n: 2, shown: 2 },
-          { a: 9, b: 3, n: 3, shown: 4 },
-          { a: 10, b: 2, n: 5, shown: 5 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { a: 12, b: 4, n: 3, shown: 3 },
-          { a: 6, b: 3, n: 2, shown: 3 },
-          { a: 15, b: 5, n: 3, shown: 3 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { a: 12, b: 3, n: 4, shown: 4 },
-          { a: 8, b: 2, n: 4, shown: 3 },
-          { a: 20, b: 5, n: 4, shown: 4 }
-        ] }
-      ]
     },
 
     43: {
       id: 43,
-      name: 'Split It Up',
+      name: 'Bigger Boxes',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_43.webp',
-      // 两位数乘一位数：把 12 拆成 10 和 2，分别乘再相加（分配律启蒙）。
-      // split      = 听拆解点结果（4 题；题面只显示算式，拆解在语音里）
-      // fill       = 拖拽三段填空（3 题；30 / 15 / 45 按顺序填，§6.15）
-      // wrongSplit = 找错误拆解（3 题；恰好一组个位拆错，答对后翻正）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv43/t1_a.mp3',
-          'lv43/t1_b.mp3',
-          'lv43/t1_c.mp3',
-          'lv43/t1_d.mp3',
-          'lv43/t1_e.mp3',
-
-          'lv43/a1_q.mp3',
-          'lv43/a2_q.mp3',
-          'lv43/a3_q.mp3',
-          'lv43/a4_q.mp3',
-
-          'lv43/b1_q.mp3',
-          'lv43/b2_q.mp3',
-          'lv43/b3_q.mp3',
-
-          'lv43/c_q.mp3'
+          'lv43/s0a.mp3',
+          'lv43/s0b.mp3',
+          'lv43/s0c.mp3',
+          'lv43/s0d.mp3',
+          'lv43/s0e.mp3',
+          'lv43/s1.mp3',
+          'lv43/s2.mp3',
+          'lv43/s3.mp3',
+          'lv43/s4.mp3',
+          'lv43/s4a.mp3',
+          'lv43/s5.mp3',
+          'lv43/s6.mp3',
+          'lv43/s7.mp3',
+          'lv43/s8.mp3',
+          'lv43/out.mp3'
         ],
         images: ['assets/bg/bg_43.webp']
       },
-      questions: [
-        { type: 'split', a: 14, b: 2, options: [28, 24, 32], voice: ['a1_q'] },
-        { type: 'split', a: 12, b: 4, options: [48, 44, 52], voice: ['a2_q'] },
-        { type: 'split', a: 13, b: 3, options: [39, 33, 42], voice: ['a3_q'] },
-        { type: 'split', a: 15, b: 4, options: [60, 54, 64], voice: ['a4_q'] },
 
-        { type: 'fill', a: 15, b: 3, pool: [30, 15, 45, 35, 20, 50], voice: ['b1_q'] },
-        { type: 'fill', a: 12, b: 4, pool: [40, 8, 48, 20, 44, 50], voice: ['b2_q'] },
-        { type: 'fill', a: 13, b: 5, pool: [50, 15, 65, 45, 30, 60], voice: ['b3_q'] },
-
-        // wrongSplit：恰好一组个位拆错（shown ≠ a − 10）
-        { type: 'wrongSplit', voice: ['c_q'], sets: [
-          { a: 14, b: 3, shown: 4 },
-          { a: 12, b: 4, shown: 1 },
-          { a: 13, b: 5, shown: 3 }
-        ] },
-        { type: 'wrongSplit', voice: ['c_q'], sets: [
-          { a: 16, b: 2, shown: 6 },
-          { a: 15, b: 4, shown: 5 },
-          { a: 11, b: 6, shown: 0 }
-        ] },
-        { type: 'wrongSplit', voice: ['c_q'], sets: [
-          { a: 18, b: 3, shown: 8 },
-          { a: 12, b: 2, shown: 3 },
-          { a: 17, b: 4, shown: 7 }
-        ] }
-      ]
     },
 
     44: {
       id: 44,
-      name: 'Bigger Arrays',
+      name: 'Plates or Boxes',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_44.webp',
-      // 两位数乘法的视觉验证：3×10 与 3×2 拼成 3×12，转 90° 后又读成 12×3。
-      // pick      = 看点阵选算式（4 题；只有一张的行×列与总数都对）
-      // fillArray = 拖条拼阵列（3 题；十位阵已给，拖 r 条零散条填满，§5.29）
-      // wrong     = 找错误结果（3 题；恰好一组总数错，答对后翻正）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv44/t1_a.mp3',
-          'lv44/t1_b.mp3',
-          'lv44/t1_c.mp3',
-          'lv44/t1_d.mp3',
-          'lv44/t1_e.mp3',
-
-          'lv44/a1_q.mp3',
-          'lv44/a2_q.mp3',
-          'lv44/a3_q.mp3',
-          'lv44/a4_q.mp3',
-
-          'lv44/b1_q.mp3',
-          'lv44/b2_q.mp3',
-          'lv44/b3_q.mp3',
-
-          'lv44/c_q.mp3'
+          'lv44/s0a.mp3',
+          'lv44/s0b.mp3',
+          'lv44/s0c.mp3',
+          'lv44/s0d.mp3',
+          'lv44/s0e.mp3',
+          'lv44/s1.mp3',
+          'lv44/s2.mp3',
+          'lv44/s3.mp3',
+          'lv44/s4.mp3',
+          'lv44/s5.mp3',
+          'lv44/s6.mp3',
+          'lv44/s7.mp3',
+          'lv44/s8.mp3',
+          'lv44/out.mp3'
         ],
         images: ['assets/bg/bg_44.webp']
       },
-      questions: [
-        { type: 'pick', r: 4, c: 13, options: [[4, 13, 52], [4, 10, 40], [13, 3, 39]], voice: ['a1_q'] },
-        { type: 'pick', r: 3, c: 12, options: [[3, 12, 36], [3, 10, 30], [12, 12, 144]], voice: ['a2_q'] },
-        { type: 'pick', r: 5, c: 14, options: [[5, 14, 70], [5, 10, 50], [14, 4, 56]], voice: ['a3_q'] },
-        { type: 'pick', r: 2, c: 15, options: [[2, 15, 30], [2, 10, 20], [15, 5, 75]], voice: ['a4_q'] },
 
-        { type: 'fillArray', r: 4, c: 12, voice: ['b1_q'] },
-        { type: 'fillArray', r: 3, c: 13, voice: ['b2_q'] },
-        { type: 'fillArray', r: 4, c: 13, voice: ['b3_q'] },
-
-        // wrong：恰好一组「总数」错
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { r: 3, c: 12, shown: 36 },
-          { r: 4, c: 11, shown: 45 },
-          { r: 2, c: 13, shown: 26 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { r: 5, c: 12, shown: 60 },
-          { r: 3, c: 14, shown: 43 },
-          { r: 4, c: 10, shown: 40 }
-        ] },
-        { type: 'wrong', voice: ['c_q'], sets: [
-          { r: 2, c: 16, shown: 32 },
-          { r: 4, c: 12, shown: 48 },
-          { r: 3, c: 13, shown: 40 }
-        ] }
-      ]
     },
 
     45: {
       id: 45,
-      name: 'Find the Missing Number',
+      name: 'Mixed Up',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_45.webp',
-      // 半抽象：拆成整十与个位，先求结果，再反过来求乘数。
-      // pick  = 点选结果（4 题；答对后补一行 10×b + u×b 的拆解提示）
-      // fill  = 拖拽填空（3 题；单空，数字池 4 个，放错弹回不记错）
-      // flash = 五秒闪电（3 题；语音播完才计时，§6.9）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv45/t1_a.mp3',
-          'lv45/t1_b.mp3',
-          'lv45/t1_c.mp3',
-          'lv45/t1_d.mp3',
-          'lv45/t1_e.mp3',
-
-          'lv45/a1_q.mp3',
-          'lv45/a2_q.mp3',
-          'lv45/a3_q.mp3',
-          'lv45/a4_q.mp3',
-
-          'lv45/b1_q.mp3',
-          'lv45/b2_q.mp3',
-          'lv45/b3_q.mp3',
-
-          'lv45/c1_q.mp3',
-          'lv45/c2_q.mp3',
-          'lv45/c3_q.mp3'
+          'lv45/s0a.mp3',
+          'lv45/s0b.mp3',
+          'lv45/s0c.mp3',
+          'lv45/s0d.mp3',
+          'lv45/s0e.mp3',
+          'lv45/s1.mp3',
+          'lv45/s2.mp3',
+          'lv45/s3.mp3',
+          'lv45/s4.mp3',
+          'lv45/s5.mp3',
+          'lv45/s6.mp3',
+          'lv45/s7.mp3',
+          'lv45/s8.mp3',
+          'lv45/out.mp3'
         ],
         images: ['assets/bg/bg_45.webp']
       },
-      questions: [
-        { type: 'pick', a: 16, b: 2, options: [32, 30, 36], voice: ['a1_q'] },
-        { type: 'pick', a: 14, b: 3, options: [42, 40, 46], voice: ['a2_q'] },
-        { type: 'pick', a: 12, b: 5, options: [60, 55, 65], voice: ['a3_q'] },
-        { type: 'pick', a: 18, b: 2, options: [36, 34, 40], voice: ['a4_q'] },
 
-        { type: 'fill', a: 11, b: 5, pool: [55, 50, 45, 60], voice: ['b1_q'] },
-        { type: 'fill', a: 13, b: 4, pool: [52, 48, 56, 42], voice: ['b2_q'] },
-        { type: 'fill', a: 15, b: 3, pool: [45, 40, 35, 50], voice: ['b3_q'] },
-
-        { type: 'flash', a: 13, b: 2, options: [26, 24, 28], voice: ['c1_q'] },
-        { type: 'flash', a: 17, b: 3, options: [51, 48, 54], voice: ['c2_q'] },
-        { type: 'flash', a: 19, b: 2, options: [38, 36, 40], voice: ['c3_q'] }
-      ]
     },
 
     46: {
       id: 46,
-      name: 'Share the Sticks',
+      name: 'Three Ways to Twelve',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_46.webp',
-      // 两位数除以一位数（无余数）：先分十位、再分个位。
-      // share = 看分配点结果（4 题；每人一堆小棒，问每人几根）
-      // give  = 拖拽分配（3 题；把成捆小棒分给每人，放完不判对，按提交才判，§6.10）
-      // fault = 找错误分配（3 题；恰好一组分不均匀）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv46/t1_a.mp3',
-          'lv46/t1_b.mp3',
-          'lv46/t1_c.mp3',
-          'lv46/t1_d.mp3',
-          'lv46/t1_e.mp3',
-
-          'lv46/a1_q.mp3',
-          'lv46/a2_q.mp3',
-          'lv46/a3_q.mp3',
-          'lv46/a4_q.mp3',
-
-          'lv46/b1_q.mp3',
-          'lv46/b2_q.mp3',
-          'lv46/b3_q.mp3',
-
-          'lv46/c_q.mp3'
+          'lv46/s0a.mp3',
+          'lv46/s0b.mp3',
+          'lv46/s0c.mp3',
+          'lv46/s0d.mp3',
+          'lv46/s0e.mp3',
+          'lv46/s1.mp3',
+          'lv46/s2.mp3',
+          'lv46/s3.mp3',
+          'lv46/s4.mp3',
+          'lv46/s5.mp3',
+          'lv46/s6.mp3',
+          'lv46/s6b.mp3',
+          'lv46/s7.mp3',
+          'lv46/s8.mp3',
+          'lv46/out.mp3',
+          'lv46/out2.mp3',
+          'common/num_03.mp3',
+          'common/num_04.mp3',
+          'common/num_06.mp3',
+          'common/num_08.mp3',
+          'common/num_09.mp3',
+          'common/num_12.mp3',
+          'common/num_16.mp3',
+          'common/num_20.mp3'
         ],
         images: ['assets/bg/bg_46.webp']
       },
-      questions: [
-        { type: 'share', total: 66, parts: 3, options: [22, 21, 24], voice: ['a1_q'] },
-        { type: 'share', total: 48, parts: 4, options: [12, 11, 14], voice: ['a2_q'] },
-        { type: 'share', total: 84, parts: 2, options: [42, 41, 44], voice: ['a3_q'] },
-        { type: 'share', total: 96, parts: 3, options: [32, 31, 34], voice: ['a4_q'] },
 
-        { type: 'give', total: 80, parts: 4, voice: ['b1_q'] },
-        { type: 'give', total: 90, parts: 3, voice: ['b2_q'] },
-        { type: 'give', total: 60, parts: 2, voice: ['b3_q'] },
-
-        // fault：三组里恰好一组分不均匀（deal 之和仍等于 total）
-        { type: 'fault', voice: ['c_q'], sets: [
-          { total: 48, kids: 4, deal: [11, 11, 13, 13] },
-          { total: 66, kids: 3, deal: [22, 22, 22] },
-          { total: 84, kids: 2, deal: [42, 42] }
-        ] },
-        { type: 'fault', voice: ['c_q'], sets: [
-          { total: 96, kids: 3, deal: [32, 32, 32] },
-          { total: 84, kids: 2, deal: [40, 44] },
-          { total: 72, kids: 4, deal: [18, 18, 18, 18] }
-        ] },
-        { type: 'fault', voice: ['c_q'], sets: [
-          { total: 60, kids: 2, deal: [30, 30] },
-          { total: 88, kids: 4, deal: [21, 21, 21, 25] },
-          { total: 96, kids: 3, deal: [32, 32, 32] }
-        ] }
-      ]
     },
 
     47: {
       id: 47,
-      name: 'Long Division Magic',
+      name: 'Back and Forth',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_47.webp',
-      // 长除法竖式：除数在左、被除数在括号内、商在上，两次减式按位对齐。
-      // take   = 看竖式点结果（4 题；商位先显示为 ?，答对才落下）
-      // fillq  = 拖拽补商（3 题；十位商已给，只补个位）
-      // faultv = 找错误竖式（3 题；恰好一组错在减式或落位）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv47/t1_a.mp3',
-          'lv47/t1_b.mp3',
-          'lv47/t1_c.mp3',
-          'lv47/t1_d.mp3',
-          'lv47/t1_e1.mp3',
-          'lv47/t1_e2.mp3',
-
-          'lv47/a1_q.mp3',
-          'lv47/a2_q.mp3',
-          'lv47/a3_q.mp3',
-          'lv47/a4_q.mp3',
-
-          'lv47/b1_q.mp3',
-          'lv47/b2_q.mp3',
-          'lv47/b3_q.mp3',
-
-          'lv47/c_q.mp3'
+          'lv47/s0a.mp3',
+          'lv47/s0b.mp3',
+          'lv47/s0c.mp3',
+          'lv47/s0d.mp3',
+          'lv47/s0e.mp3',
+          'lv47/s1.mp3',
+          'lv47/s2.mp3',
+          'lv47/s3.mp3',
+          'lv47/s4.mp3',
+          'lv47/s5.mp3',
+          'lv47/s6.mp3',
+          'lv47/s7.mp3',
+          'lv47/s8.mp3',
+          'lv47/s8b.mp3',
+          'lv47/out.mp3',
+          'lv47/out2.mp3'
         ],
         images: ['assets/bg/bg_47.webp']
       },
-      questions: [
-        { type: 'take', a: 69, b: 3, options: [23, 32, 21], voice: ['a1_q'] },
-        { type: 'take', a: 84, b: 4, options: [21, 12, 24], voice: ['a2_q'] },
-        { type: 'take', a: 96, b: 3, options: [32, 23, 36], voice: ['a3_q'] },
-        { type: 'take', a: 88, b: 4, options: [22, 24, 21], voice: ['a4_q'] },
 
-        { type: 'fillq', a: 84, b: 4, pool: [1, 2, 3, 4], voice: ['b1_q'] },
-        { type: 'fillq', a: 69, b: 3, pool: [2, 3, 4, 5], voice: ['b2_q'] },
-        { type: 'fillq', a: 96, b: 3, pool: [1, 2, 3, 4], voice: ['b3_q'] },
-
-        // faultv：恰好一组错（'sub' = 2×4 写错，'bring' = 落下的数字不对）
-        { type: 'faultv', voice: ['c_q'], sets: [
-          { a: 84, b: 4, err: 'sub' },
-          { a: 69, b: 3 },
-          { a: 96, b: 3 }
-        ] },
-        { type: 'faultv', voice: ['c_q'], sets: [
-          { a: 69, b: 3 },
-          { a: 84, b: 4, err: 'bring' },
-          { a: 96, b: 3 }
-        ] },
-        { type: 'faultv', voice: ['c_q'], sets: [
-          { a: 96, b: 3 },
-          { a: 69, b: 3 },
-          { a: 84, b: 4, err: 'sub' }
-        ] }
-      ]
     },
 
     48: {
       id: 48,
-      name: 'Ultimate Math Challenge',
+      name: 'Two Ways to Ask',
       status: 'ready',
       // 本关专属背景（48 张照片池，§5.17）：一关一张，写入即固定
       background: 'assets/bg/bg_48.webp',
-      // 全项目大结局：四则运算混合大考，金星触发终极奖杯仪式。
-      // addsub = 两位数加减（3 题）
-      // times  = 表内乘法（3 题）
-      // divide = 两位数除以一位数（2 题）
-      // mixfault = 三式挑错（2 题；恰好一式结果错）
+      // 乘除段重做（《乘除段 21 关按关策划案》§3）：题目与判定都在 cd-data.js / cd-kit.js，
+      // 本条目只保留外壳需要的名字、背景与预加载清单。
       assets: {
         audio: [
           'common/ready.mp3',
           'common/try_again.mp3',
           'common/gold.mp3',
           'common/silver.mp3',
-
-          'lv48/t1_a.mp3',
-          'lv48/t1_b.mp3',
-          'lv48/t_gold.mp3',
-
-          'lv48/a1_q.mp3',
-          'lv48/a2_q.mp3',
-          'lv48/a3_q.mp3',
-
-          'lv48/m1_q.mp3',
-          'lv48/m2_q.mp3',
-          'lv48/m3_q.mp3',
-
-          'lv48/d1_q.mp3',
-          'lv48/d2_q.mp3',
-
-          'lv48/c1_q.mp3',
-          'lv48/c2_q.mp3'
+          'lv48/s0a.mp3',
+          'lv48/s0b.mp3',
+          'lv48/s0c.mp3',
+          'lv48/s0d.mp3',
+          'lv48/s0e.mp3',
+          'lv48/s1.mp3',
+          'lv48/s2.mp3',
+          'lv48/s3.mp3',
+          'lv48/s4.mp3',
+          'lv48/s5.mp3',
+          'lv48/s6.mp3',
+          'lv48/s6b.mp3',
+          'lv48/s7.mp3',
+          'lv48/s8.mp3',
+          'lv48/out.mp3',
+          'lv48/out2.mp3'
         ],
         images: ['assets/bg/bg_48.webp']
       },
-      questions: [
-        { type: 'addsub', a: 47, b: 38, op: '+', options: [85, 83, 86], voice: ['a1_q'] },
-        { type: 'addsub', a: 92, b: 57, op: '-', options: [35, 34, 45], voice: ['a2_q'] },
-        { type: 'addsub', a: 68, b: 27, op: '+', options: [95, 94, 96], voice: ['a3_q'] },
 
-        { type: 'times', a: 7, b: 8, op: 'x', options: [56, 54, 58], voice: ['m1_q'] },
-        { type: 'times', a: 6, b: 9, op: 'x', options: [54, 52, 56], voice: ['m2_q'] },
-        { type: 'times', a: 8, b: 4, op: 'x', options: [32, 28, 36], voice: ['m3_q'] },
-
-        { type: 'divide', a: 84, b: 4, op: '/', options: [21, 24, 12], voice: ['d1_q'] },
-        { type: 'divide', a: 96, b: 3, op: '/', options: [32, 31, 33], voice: ['d2_q'] },
-
-        // mixfault：三式里恰好一式结果错
-        { type: 'mixfault', voice: ['c1_q'], sets: [
-          { a: 45, b: 28, op: '+', res: 73 },
-          { a: 6, b: 7, op: 'x', res: 42 },
-          { a: 72, b: 8, op: '/', res: 8 }
-        ] },
-        { type: 'mixfault', voice: ['c2_q'], sets: [
-          { a: 63, b: 27, op: '-', res: 35 },
-          { a: 9, b: 6, op: 'x', res: 54 },
-          { a: 56, b: 7, op: '/', res: 8 }
-        ] }
-      ]
     }
   }
 };

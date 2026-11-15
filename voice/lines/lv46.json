@@ -1,7 +1,7 @@
 {
   "level": "lv46",
-  "status": "draft",
-  "note": "Share the Sticks: forty-eight sticks shared with four friends, tens first then ones. Quiz: read the shared piles and pick how many each / drag bundles to share them out / find the group that is not fair.",
+  "status": "ready",
+  "note": "乘除段 L46 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,82 +10,116 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's share forty-eight sticks with four friends. First, share the tens!",
-      "mood": "teach"
+      "text": "Three plates. Four on each.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Each friend gets one ten.",
-      "mood": "teach"
+      "text": "Now share them out again.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Now, share the ones.",
-      "mood": "teach"
+      "text": "Make three groups of four.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Each friend gets two ones.",
-      "mood": "teach"
+      "text": "Now share with three friends. Three rounds.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_e",
+      "key": "s0e",
       "lang": "en",
-      "text": "One ten and two ones make twelve. Forty-eight divided by four equals twelve!",
-      "mood": "praise"
+      "text": "Four in each. Same as before!",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Sixty-six divided by three.",
-      "mood": "ask"
+      "text": "Make four groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Forty-eight divided by four.",
-      "mood": "ask"
+      "text": "Make three rows of four.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Eighty-four divided by two.",
-      "mood": "ask"
+      "text": "Count this way. Now that way.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Ninety-six divided by three.",
-      "mood": "ask"
+      "text": "Tap and count.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Eighty sticks, four friends. Give every friend the same.",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Ninety sticks, three friends. Give every friend the same.",
-      "mood": "ask"
+      "text": "Three groups of three. Then share them.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s6b",
       "lang": "en",
-      "text": "Sixty sticks, two friends. Give every friend the same.",
-      "mood": "ask"
+      "text": "Tip them all into the middle.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Which group is not fair?",
-      "mood": "ask"
+      "text": "Which row counts to fifty?",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Twelve buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Made it, shared it. Same buns!",
+      "mood": "praise",
+      "rate": -15
+    },
+    {
+      "key": "out2",
+      "lang": "en",
+      "text": "Look.",
+      "mood": "teach",
+      "rate": -15
     }
   ]
 }

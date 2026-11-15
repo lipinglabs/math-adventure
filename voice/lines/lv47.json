@@ -1,7 +1,7 @@
 {
   "level": "lv47",
-  "status": "draft",
-  "note": "Long Division Magic: forty-eight inside, four outside, one digit at a time with two aligned subtractions. Quiz: read the finished layout and pick the quotient / finish a half-written quotient / find the long division that has a mistake.",
+  "status": "ready",
+  "note": "乘除段 L47 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,88 +10,116 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's write long division. Forty-eight inside, four outside.",
-      "mood": "teach"
+      "text": "Four plates. Three on each.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Four divided by four is one. Write one on top.",
-      "mood": "teach"
+      "text": "Now stack them back.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "One times four is four. Four minus four is zero.",
-      "mood": "teach"
+      "text": "Share twelve with four friends. Three each.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Bring down the eight. Eight divided by four is two.",
-      "mood": "teach"
+      "text": "Now make groups of three.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_e1",
+      "key": "s0e",
       "lang": "en",
-      "text": "Two times four is eight. Eight minus eight is zero.",
-      "mood": "teach"
+      "text": "Four groups of three. Twelve again!",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "t1_e2",
+      "key": "s1",
       "lang": "en",
-      "text": "Forty-eight divided by four is twelve!",
-      "mood": "praise"
+      "text": "Twenty buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Sixty-nine divided by three.",
-      "mood": "ask"
+      "text": "Twenty buns. Five plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Eighty-four divided by four.",
-      "mood": "ask"
+      "text": "Sixteen buns. Four in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Ninety-six divided by three.",
-      "mood": "ask"
+      "text": "Twenty buns. Five in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Eighty-eight divided by four.",
-      "mood": "ask"
+      "text": "Thirteen buns. Four plates. What about this one?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Eighty-four divided by four. Finish the quotient.",
-      "mood": "ask"
+      "text": "Twelve for four friends. How many each?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Sixty-nine divided by three. Finish the quotient.",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Ninety-six divided by three. Finish the quotient.",
-      "mood": "ask"
+      "text": "Share twelve with four friends. Then stack them.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s8b",
       "lang": "en",
-      "text": "Which long division has a mistake?",
-      "mood": "ask"
+      "text": "Gather them back to the middle.",
+      "mood": "teach",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Back and forth. Always twelve!",
+      "mood": "praise",
+      "rate": -15
+    },
+    {
+      "key": "out2",
+      "lang": "en",
+      "text": "Look.",
+      "mood": "teach",
+      "rate": -15
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "level": "lv30",
-  "status": "draft",
-  "note": "Quick recall for the two and five tables with no pictures: two times six counted up in twos, five times four counted up in fives, then both facts on screen. Quiz: plain number tap / balloons / five second timed flash.",
+  "status": "ready",
+  "note": "乘除段 L30 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,88 +10,102 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Do you remember? Two times six.",
-      "mood": "ask"
+      "text": "Three friends! Four buns each.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Two, four, six, eight, ten, twelve!",
-      "mood": "count"
+      "text": "Bo, can you make it?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Five times four.",
-      "mood": "ask"
+      "text": "Tap here. One group of four.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Five, ten, fifteen, twenty!",
-      "mood": "count"
+      "text": "One more. Two groups of four.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s0e",
       "lang": "en",
-      "text": "Two times seven.",
-      "mood": "ask"
+      "text": "Again! Three groups of four. All same.",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Five times six.",
-      "mood": "ask"
+      "text": "Make two groups of two.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Two times eight.",
-      "mood": "ask"
+      "text": "Make two groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Five times three.",
-      "mood": "ask"
+      "text": "Which one is two groups of three?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Two times nine.",
-      "mood": "ask"
+      "text": "Make three groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Five times eight.",
-      "mood": "ask"
+      "text": "What is under the cloth? How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Two times five.",
-      "mood": "ask"
+      "text": "Make four groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Five times five.",
-      "mood": "ask"
+      "text": "Make four groups of five.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Two times four.",
-      "mood": "ask"
+      "text": "Make four groups of four.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c3_q",
+      "key": "out",
       "lang": "en",
-      "text": "Five times seven.",
-      "mood": "ask"
+      "text": "Three groups of four. Nice and tidy!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "level": "lv39",
-  "status": "draft",
-  "note": "Stage 4 finale: the arrays, the patterns and the times tables come back, then the trophy rises. Quiz: mixed times tables / read the array and pick the sentence / find the wrong sentence. Gold star plays the stage four trophy ceremony.",
+  "status": "ready",
+  "note": "乘除段 L39 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,82 +10,102 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "You have learned the magic of multiplication! Arrays, patterns, and times tables.",
-      "mood": "praise"
+      "text": "Bo covers one plate.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Let's see if you can beat the final challenge",
-      "mood": "ask"
+      "text": "How many in each plate?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "and win the Stage Four trophy!",
-      "mood": "praise"
+      "text": "Lift the cloth. Count one plate.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Ready? Let's go!",
-      "mood": "praise"
+      "text": "One, two.",
+      "mood": "teach",
+      "rate": -20
     },
     {
-      "key": "a1_q",
+      "key": "s0e",
       "lang": "en",
-      "text": "Seven times four.",
-      "mood": "ask"
+      "text": "So: two in each plate.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Six times five.",
-      "mood": "ask"
+      "text": "Eight buns. Two plates. Give one to each.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Eight times nine.",
-      "mood": "ask"
+      "text": "Nine buns. Three plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Nine times three.",
-      "mood": "ask"
+      "text": "Twelve buns. Three plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Three rows of five.",
-      "mood": "ask"
+      "text": "Twelve for four friends. How many each?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Four rows of six.",
-      "mood": "ask"
+      "text": "Fifteen for three friends. How many each?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Five rows of two.",
-      "mood": "ask"
+      "text": "Six buns. Two plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Find the wrong number sentence.",
-      "mood": "ask"
+      "text": "Ten buns. Two plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t_gold",
+      "key": "s8",
       "lang": "en",
-      "text": "Stage Four is complete! Here is your trophy!",
-      "mood": "praise"
+      "text": "Twelve buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Three in each. You found it!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

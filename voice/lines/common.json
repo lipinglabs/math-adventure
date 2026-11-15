@@ -1,7 +1,7 @@
 {
   "level": "common",
   "status": "ready",
-  "note": "Cross-level voice lines. English only (PROJECT_MATH_RULES 2.3).",
+  "note": "Cross-level voice lines + number fragments for group counting (T2/T5). English only.",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -9,9 +9,281 @@
     "en": "en_female_allison_uranus_bigtts"
   },
   "lines": [
-    { "key": "ready", "lang": "en", "text": "Are you ready? Let's play!", "mood": "ask" },
-    { "key": "try_again", "lang": "en", "text": "Try again, you can do it!", "mood": "encourage" },
-    { "key": "gold", "lang": "en", "text": "Perfect! Gold star for you!", "mood": "praise" },
-    { "key": "silver", "lang": "en", "text": "Good job! Try again for a gold star!", "mood": "encourage" }
+    {
+      "key": "ready",
+      "lang": "en",
+      "text": "Are you ready? Let's play!",
+      "mood": "ask"
+    },
+    {
+      "key": "try_again",
+      "lang": "en",
+      "text": "Try again, you can do it!",
+      "mood": "encourage"
+    },
+    {
+      "key": "gold",
+      "lang": "en",
+      "text": "Perfect! Gold star for you!",
+      "mood": "praise"
+    },
+    {
+      "key": "silver",
+      "lang": "en",
+      "text": "Good job! Try again for a gold star!",
+      "mood": "encourage"
+    },
+    {
+      "key": "num_02",
+      "lang": "en",
+      "text": "Two.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_03",
+      "lang": "en",
+      "text": "Three.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_04",
+      "lang": "en",
+      "text": "Four.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_05",
+      "lang": "en",
+      "text": "Five.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_06",
+      "lang": "en",
+      "text": "Six.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_07",
+      "lang": "en",
+      "text": "Seven.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_08",
+      "lang": "en",
+      "text": "Eight.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_09",
+      "lang": "en",
+      "text": "Nine.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_10",
+      "lang": "en",
+      "text": "Ten.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_11",
+      "lang": "en",
+      "text": "Eleven.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_12",
+      "lang": "en",
+      "text": "Twelve.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_13",
+      "lang": "en",
+      "text": "Thirteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_14",
+      "lang": "en",
+      "text": "Fourteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_15",
+      "lang": "en",
+      "text": "Fifteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_16",
+      "lang": "en",
+      "text": "Sixteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_17",
+      "lang": "en",
+      "text": "Seventeen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_18",
+      "lang": "en",
+      "text": "Eighteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_19",
+      "lang": "en",
+      "text": "Nineteen.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_20",
+      "lang": "en",
+      "text": "Twenty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_21",
+      "lang": "en",
+      "text": "Twenty-one.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_24",
+      "lang": "en",
+      "text": "Twenty-four.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_25",
+      "lang": "en",
+      "text": "Twenty-five.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_27",
+      "lang": "en",
+      "text": "Twenty-seven.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_28",
+      "lang": "en",
+      "text": "Twenty-eight.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_30",
+      "lang": "en",
+      "text": "Thirty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_32",
+      "lang": "en",
+      "text": "Thirty-two.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_35",
+      "lang": "en",
+      "text": "Thirty-five.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_36",
+      "lang": "en",
+      "text": "Thirty-six.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_40",
+      "lang": "en",
+      "text": "Forty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_45",
+      "lang": "en",
+      "text": "Forty-five.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_50",
+      "lang": "en",
+      "text": "Fifty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_60",
+      "lang": "en",
+      "text": "Sixty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_70",
+      "lang": "en",
+      "text": "Seventy.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_80",
+      "lang": "en",
+      "text": "Eighty.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_90",
+      "lang": "en",
+      "text": "Ninety.",
+      "mood": "count",
+      "rate": -20
+    },
+    {
+      "key": "num_100",
+      "lang": "en",
+      "text": "One hundred.",
+      "mood": "count",
+      "rate": -20
+    }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "level": "lv33",
-  "status": "draft",
-  "note": "Stage 4: the spinning wheel for the three and four times table. The wheel shows times three, the pointer lands on four, then five times four is counted up, then the centre flips to times four. Quiz: plain number tap / read the pointer and pick the product / five second timed flash.",
+  "status": "ready",
+  "note": "乘除段 L33 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,88 +10,95 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's spin! The pointer lands on four. Four times three equals twelve.",
-      "mood": "teach"
+      "text": "The bundles go on and on!",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Five times four. Five, ten, fifteen, twenty!",
-      "mood": "count"
+      "text": "How far can we count?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Now the wheel shows four.",
-      "mood": "teach"
+      "text": "Five, ten, fifteen.",
+      "mood": "teach",
+      "rate": -20
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Spin and say it fast!",
-      "mood": "praise"
+      "text": "Keep going! Five at a time.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Three times seven.",
-      "mood": "ask"
+      "text": "Count by fives.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Four times six.",
-      "mood": "ask"
+      "text": "Make three groups of five.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Three times nine.",
-      "mood": "ask"
+      "text": "Make two groups of five.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Four times eight.",
-      "mood": "ask"
+      "text": "Count by fives. All the way.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Three times eight.",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Four times seven.",
-      "mood": "ask"
+      "text": "Count by tens. All the way.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Three times six.",
-      "mood": "ask"
+      "text": "Which row counts to fifty?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Four times nine.",
-      "mood": "ask"
+      "text": "Make four groups of five.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "out",
       "lang": "en",
-      "text": "Three times five.",
-      "mood": "ask"
-    },
-    {
-      "key": "c3_q",
-      "lang": "en",
-      "text": "Four times five.",
-      "mood": "ask"
+      "text": "Five at a time. All the way to fifty!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

@@ -5,7 +5,7 @@
      里现有的 levels 数据、题目对象与语音 key；480 题一题不删。
    ★ 纯函数不依赖 DOM，可被 tmp/ 下的静态校验脚本用 vm 直接加载调用。
 
-   4 岁起步：只渲染 core 轨（L1…L15→L17→L18→L25→L26→coreComplete），
+   4 岁起步：只渲染 core 轨（L1…L18 → L25/L26 → 乘除段 L28…L48 → coreComplete），
    challenge 轨完成不写 unlocked/stars/completedLevels、答错不进复习池，
    只记 challengePlayed[]（家长看板用）。不做 3–4 岁档、不做三档选择。
    ============================================================ */
@@ -34,14 +34,18 @@
   /* ---------------- C3/C4 双轨指针表 ----------------
      P1 L25/L26 前移到 L21 后；P2 L22/23/24/27 串成 challenge 连续上升组；
      P3 L17/L18 提入 core 尾（4 岁档纳入）；P4 L16/19/20/21 后移 challenge 前段；
-     P5 L34 移到 L39 后标 optionalPreview；P6 L43→L44 间插 L31/L32 阵列题；
-     P7 L47/L48 留 challenge 末端。全部只改指针，不改 L 编号 / 题目对象 / 语音 key。 */
+     P5/P6/P7 的旧安排（L34 preview、L43→L44 插 31/32、L47/48 留 challenge）
+     已被 P8 整体覆盖：乘除段重做后 L28–L48 是主课程。全部只改指针，不改 L 编号。 */
 
-  var CORE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 25, 26];
-  var CHALLENGE = [16, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34,
-    35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48];
-  var OPTIONAL_PREVIEW = [34];
-  var PREVIEW_BETWEEN = { 43: [31, 32] };   // L43→L44 间插 preview 过渡题组
+  /* P8（2026-11-15）乘除段重做：L28–L48 按《21 关按关策划案》整段重建，
+     它现在是 4 岁档的正课（M1–M5 + D1–D5 + 三个综合收口），
+     不再属于「家长开试一试才看得到」的挑战轨——否则整套新关卡在地图上不可见。
+     challenge 只剩加减段的 8 个可选关：16 / 19–24 / 27。 */
+  var CORE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 25, 26,
+    28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48];
+  var CHALLENGE = [16, 19, 20, 21, 22, 23, 24, 27];
+  var OPTIONAL_PREVIEW = [];
+  var PREVIEW_BETWEEN = {};   // 旧「L43→L44 间插预览题组」随乘除段重做一并作废
 
   // P1–P7 说明（供报告与静态校验核对「只改指针不删题」）
   var PATCHES = [
@@ -49,9 +53,9 @@
     { id: 'P2', note: 'L22/23/24/27 串成 challenge 连续上升组', levels: [22, 23, 24, 27] },
     { id: 'P3', note: 'L17/L18 提入 core 尾（4 岁档纳入）', levels: [17, 18] },
     { id: 'P4', note: 'L16/19/20/21 后移 challenge 前段', levels: [16, 19, 20, 21] },
-    { id: 'P5', note: 'L34 移到 L39 后标 optionalPreview', levels: [34] },
-    { id: 'P6', note: 'L43→L44 间插 L31/L32 阵列 preview 题组', levels: [31, 32] },
-    { id: 'P7', note: 'L47/L48 留 challenge 末端', levels: [47, 48] }
+    { id: 'P5', note: '（作废）L34 标 optionalPreview —— 乘除段重做后 L28–L48 全部进 core', levels: [34] },
+    { id: 'P6', note: '（作废）L43→L44 间插 L31/L32 preview —— 现在 31/32 就在主序列里', levels: [31, 32] },
+    { id: 'P7', note: '（作废）L47/L48 留 challenge 末端 —— 现在是 core 的第 47/48 关', levels: [47, 48] }
   ];
 
   var routeMap = {

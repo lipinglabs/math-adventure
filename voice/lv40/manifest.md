@@ -1,21 +1,22 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv40`
-- 条目：**13**
+- 条目：**14**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Let's share the pizza with three friends! | 28845 B |
-| `t1_b` | en | One for you, one for you, and one for me. | 34029 B |
-| `t1_c` | en | Three plates with one slice each makes three slices. | 36525 B |
-| `t1_d` | en | Three times one equals three. | 25005 B |
-| `t1_e` | en | So, three divided by three is one. | 30573 B |
-| `a1_q` | en | Six divided by two. | 17325 B |
-| `a2_q` | en | Eight divided by four. | 19053 B |
-| `a3_q` | en | Nine divided by three. | 19053 B |
-| `a4_q` | en | Ten divided by five. | 19245 B |
-| `b1_q` | en | Eight cookies. Four plates. Make them equal. | 30573 B |
-| `b2_q` | en | Nine strawberries. Three plates. Make them equal. | 36525 B |
-| `b3_q` | en | Ten candies. Five plates. Make them equal. | 30381 B |
-| `c_q` | en | Which one is not fair? | 17517 B |
+| `s0a` | en | New day! Bags this time. | 28845 B |
+| `s0b` | en | Same buns. Same friends. | 21357 B |
+| `s0c` | en | Eight buns. Two plates. Four in each. | 32685 B |
+| `s0d` | en | Now bags. Same eight buns. | 26925 B |
+| `s0e` | en | Four in each bag. Same as before! | 26733 B |
+| `s1` | en | Six blocks. Two boxes. Give one to each. | 32493 B |
+| `s2` | en | Eight blocks. Two boxes. | 22893 B |
+| `s3` | en | Eight blocks. Four boxes. | 21165 B |
+| `s4` | en | Make three boxes of four. | 22701 B |
+| `s5` | en | Ten for two boxes. How many each? | 28653 B |
+| `s6` | en | Make four boxes of three. | 17517 B |
+| `s7` | en | Twelve blocks. Four boxes. | 28845 B |
+| `s8` | en | Make four boxes of five. | 22893 B |
+| `out` | en | New bags, same answer! | 22701 B |

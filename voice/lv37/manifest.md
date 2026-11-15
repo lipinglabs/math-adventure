@@ -1,21 +1,22 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv37`
-- 条目：**13**
+- 条目：**14**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Let's review our times tables! | 25005 B |
-| `t1_b` | en | Two times five is ten. | 22893 B |
-| `t1_c` | en | Three times four is twelve. | 22893 B |
-| `t1_d` | en | Four times six is twenty-four. | 22893 B |
-| `t1_e` | en | You know so many times tables. Let's see how fast you are! | 36525 B |
-| `a1_q` | en | Four times seven. | 15405 B |
-| `a2_q` | en | Three times six. | 17325 B |
-| `a3_q` | en | Five times eight. | 17517 B |
-| `a4_q` | en | Nine times four. | 19053 B |
-| `b1_q` | en | Six times three. | 13677 B |
-| `b2_q` | en | Five times seven. | 15405 B |
-| `b3_q` | en | Four times eight. | 15405 B |
-| `c_q` | en | Find the wrong number sentence. | 21357 B |
+| `s0a` | en | Four buns. Two friends. | 22893 B |
+| `s0b` | en | Everyone gets the same! | 19245 B |
+| `s0c` | en | One to each plate. That is one round. | 38061 B |
+| `s0d` | en | Another round. One to each. | 22893 B |
+| `s0e` | en | All gone! Three in each plate. | 25005 B |
+| `s1` | en | Four buns. Two plates. Give one to each. | 36525 B |
+| `s2` | en | Eight buns. Two plates. | 22893 B |
+| `s3` | en | Twelve buns. Three plates. | 22701 B |
+| `s4` | en | Twelve buns. Four plates. | 22893 B |
+| `s5` | en | How many in each plate? | 15405 B |
+| `s6` | en | Six buns. Two plates. | 22893 B |
+| `s7` | en | Twelve for four friends. How many each? | 25005 B |
+| `s8` | en | Fifteen buns. Three plates. | 21165 B |
+| `out` | en | Round and round. All the same! | 25005 B |

@@ -1,7 +1,7 @@
 {
   "level": "lv31",
-  "status": "draft",
-  "note": "Stage 4: three and four times table with real objects. Three tripods with three legs each, then two cars with four wheels each, then both facts side by side, then the chant. Quiz: tap the product from legs or wheels / drag the vehicles into the slots / find the wrong sentence.",
+  "status": "ready",
+  "note": "乘除段 L31 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,76 +10,95 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Look! Three tripods. Each has three legs.",
-      "mood": "teach"
+      "text": "Chirp peeks at the trays.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Three, six, nine legs!",
-      "mood": "count"
+      "text": "Which one is three groups of four?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t2_a",
+      "key": "s0c",
       "lang": "en",
-      "text": "Two cars. Each has four wheels.",
-      "mood": "teach"
+      "text": "Count the groups. One, two, three.",
+      "mood": "teach",
+      "rate": -20
     },
     {
-      "key": "t2_b",
+      "key": "s0d",
       "lang": "en",
-      "text": "Four plus four equals eight. Two times four equals eight!",
-      "mood": "teach"
+      "text": "Four in each group. This one.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t2_c",
+      "key": "s1",
       "lang": "en",
-      "text": "Three times three is nine. Two times four is eight.",
-      "mood": "teach"
+      "text": "Which one is two groups of two?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t2_d",
+      "key": "s2",
       "lang": "en",
-      "text": "Three and four. Let's keep going!",
-      "mood": "praise"
+      "text": "Tap and count.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Four times three.",
-      "mood": "ask"
+      "text": "Make three groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Three times four.",
-      "mood": "ask"
+      "text": "Make four groups of two.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Five times three.",
-      "mood": "ask"
+      "text": "How many in each group?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Four times four.",
-      "mood": "ask"
+      "text": "Make four groups of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Drag the vehicles to build it.",
-      "mood": "teach"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Find the wrong number sentence.",
-      "mood": "ask"
+      "text": "Tap the groups and count.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Four groups of three. You found it!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

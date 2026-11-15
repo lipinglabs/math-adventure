@@ -1,22 +1,21 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv33`
-- 条目：**14**
+- 条目：**13**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Let's spin! The pointer lands on four. Four times three equals twelve. | 59181 B |
-| `t1_b` | en | Five times four. Five, ten, fifteen, twenty! | 43821 B |
-| `t1_c` | en | Now the wheel shows four. | 19245 B |
-| `t1_d` | en | Spin and say it fast! | 21357 B |
-| `a1_q` | en | Three times seven. | 17517 B |
-| `a2_q` | en | Four times six. | 17517 B |
-| `a3_q` | en | Three times nine. | 17517 B |
-| `a4_q` | en | Four times eight. | 17517 B |
-| `b1_q` | en | Three times eight. | 19245 B |
-| `b2_q` | en | Four times seven. | 17325 B |
-| `b3_q` | en | Three times six. | 17517 B |
-| `c1_q` | en | Four times nine. | 21165 B |
-| `c2_q` | en | Three times five. | 15213 B |
-| `c3_q` | en | Four times five. | 15405 B |
+| `s0a` | en | The bundles go on and on! | 23085 B |
+| `s0b` | en | How far can we count? | 17517 B |
+| `s0c` | en | Five, ten, fifteen. | 28077 B |
+| `s0d` | en | Keep going! Five at a time. | 21357 B |
+| `s1` | en | Count by fives. | 15405 B |
+| `s2` | en | Make three groups of five. | 21357 B |
+| `s3` | en | Make two groups of five. | 17517 B |
+| `s4` | en | Count by fives. All the way. | 22893 B |
+| `s5` | en | How many altogether? | 15405 B |
+| `s6` | en | Count by tens. All the way. | 22893 B |
+| `s7` | en | Which row counts to fifty? | 21357 B |
+| `s8` | en | Make four groups of five. | 19053 B |
+| `out` | en | Five at a time. All the way to fifty! | 26733 B |

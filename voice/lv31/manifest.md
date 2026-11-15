@@ -1,20 +1,21 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv31`
-- 条目：**12**
+- 条目：**13**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Look! Three tripods. Each has three legs. | 36333 B |
-| `t1_b` | en | Three, six, nine legs! | 28845 B |
-| `t2_a` | en | Two cars. Each has four wheels. | 28845 B |
-| `t2_b` | en | Four plus four equals eight. Two times four equals eight! | 45549 B |
-| `t2_c` | en | Three times three is nine. Two times four is eight. | 41709 B |
-| `t2_d` | en | Three and four. Let's keep going! | 22893 B |
-| `a1_q` | en | Four times three. | 17517 B |
-| `a2_q` | en | Three times four. | 13677 B |
-| `a3_q` | en | Five times three. | 15405 B |
-| `a4_q` | en | Four times four. | 15405 B |
-| `b_q` | en | Drag the vehicles to build it. | 19053 B |
-| `c_q` | en | Find the wrong number sentence. | 21165 B |
+| `s0a` | en | Chirp peeks at the trays. | 21165 B |
+| `s0b` | en | Which one is three groups of four? | 28845 B |
+| `s0c` | en | Count the groups. One, two, three. | 40173 B |
+| `s0d` | en | Four in each group. This one. | 28653 B |
+| `s1` | en | Which one is two groups of two? | 28845 B |
+| `s2` | en | Tap and count. | 17517 B |
+| `s3` | en | Make three groups of three. | 17517 B |
+| `s4` | en | Make four groups of two. | 19053 B |
+| `s5` | en | How many in each group? | 15405 B |
+| `s6` | en | Make four groups of three. | 19245 B |
+| `s7` | en | How many altogether? | 17517 B |
+| `s8` | en | Tap the groups and count. | 17517 B |
+| `out` | en | Four groups of three. You found it! | 25197 B |

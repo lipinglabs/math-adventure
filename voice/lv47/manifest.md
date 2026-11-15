@@ -1,22 +1,24 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv47`
-- 条目：**14**
+- 条目：**16**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Let's write long division. Forty-eight inside, four outside. | 49389 B |
-| `t1_b` | en | Four divided by four is one. Write one on top. | 38061 B |
-| `t1_c` | en | One times four is four. Four minus four is zero. | 45549 B |
-| `t1_d` | en | Bring down the eight. Eight divided by four is two. | 44013 B |
-| `t1_e1` | en | Two times four is eight. Eight minus eight is zero. | 34413 B |
-| `t1_e2` | en | Forty-eight divided by four is twelve! | 26733 B |
-| `a1_q` | en | Sixty-nine divided by three. | 22893 B |
-| `a2_q` | en | Eighty-four divided by four. | 22893 B |
-| `a3_q` | en | Ninety-six divided by three. | 25005 B |
-| `a4_q` | en | Eighty-eight divided by four. | 21165 B |
-| `b1_q` | en | Eighty-four divided by four. Finish the quotient. | 30381 B |
-| `b2_q` | en | Sixty-nine divided by three. Finish the quotient. | 36333 B |
-| `b3_q` | en | Ninety-six divided by three. Finish the quotient. | 30573 B |
-| `c_q` | en | Which long division has a mistake? | 25005 B |
+| `s0a` | en | Four plates. Three on each. | 25005 B |
+| `s0b` | en | Now stack them back. | 19245 B |
+| `s0c` | en | Share twelve with four friends. Three each. | 34221 B |
+| `s0d` | en | Now make groups of three. | 19053 B |
+| `s0e` | en | Four groups of three. Twelve again! | 25005 B |
+| `s1` | en | Twenty buns. Four plates. | 25005 B |
+| `s2` | en | Twenty buns. Five plates. | 24813 B |
+| `s3` | en | Sixteen buns. Four in each box. | 30381 B |
+| `s4` | en | Twenty buns. Five in each box. | 30573 B |
+| `s5` | en | Thirteen buns. Four plates. What about this one? | 36333 B |
+| `s6` | en | Twelve for four friends. How many each? | 26733 B |
+| `s7` | en | How many altogether? | 17325 B |
+| `s8` | en | Share twelve with four friends. Then stack them. | 30381 B |
+| `s8b` | en | Gather them back to the middle. | 19245 B |
+| `out` | en | Back and forth. Always twelve! | 22893 B |
+| `out2` | en | Look. | 10029 B |

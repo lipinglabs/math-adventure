@@ -1,7 +1,7 @@
 {
   "level": "lv35",
-  "status": "draft",
-  "note": "Stage 4: the order does not matter. Three rows of four blocks turn a quarter turn into four rows of three, then two plates of three strawberries become three plates of two. Quiz: pick the pair of sentences that both work / drag the missing factor / listen and pick the matching sentence.",
+  "status": "ready",
+  "note": "乘除段 L35 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,64 +10,102 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Here are three rows and four columns. That is three times four. Twelve blocks!",
-      "mood": "teach"
+      "text": "The tray is full!",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Now we have four rows and three columns. Four times three is also twelve!",
-      "mood": "teach"
+      "text": "How many buns altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Three times four equals four times three.",
-      "mood": "teach"
+      "text": "Count the rows. Four, eight, twelve.",
+      "mood": "teach",
+      "rate": -20
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Two times three is six. Three times two is also six.",
-      "mood": "teach"
+      "text": "Now this way. Three, six, nine, twelve.",
+      "mood": "teach",
+      "rate": -20
     },
     {
-      "key": "t1_e",
+      "key": "s0e",
       "lang": "en",
-      "text": "The order doesn't matter!",
-      "mood": "praise"
+      "text": "Same! Twelve altogether.",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "a_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Which pair is the same?",
-      "mood": "ask"
+      "text": "Count this way.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Drag the number that makes it match.",
-      "mood": "teach"
+      "text": "Count this way too.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Six times four.",
-      "mood": "ask"
+      "text": "Make three rows of four.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Seven times three.",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c3_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Nine times two.",
-      "mood": "ask"
+      "text": "Make four rows of three.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s6",
+      "lang": "en",
+      "text": "Make three rows of three.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s7",
+      "lang": "en",
+      "text": "Make four rows of four.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Make four rows of five.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Twelve buns, two ways. Same!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

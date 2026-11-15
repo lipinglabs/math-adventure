@@ -31,6 +31,13 @@ var SHELL = [
   './sandbox.js',
   './level-kit.js',
   './app.js',
+  // 乘除段（L28–L48）的题型原语：进关前就得在，断网也要能画出来
+  './cd-art.js',
+  './cd-kit.js',
+  './cd-type-give.js',
+  './cd-type-build.js',
+  './cd-type-judge.js',
+  './cd-data.js',
   './icons/favicon-32.png',
   './icons/icon-192.png',
   './icons/icon-512.png',

@@ -17,6 +17,10 @@
   var currentLevel = null;
   var currentModule = null;
   var entering = false;
+  /* 进关序号：加载期间按返回键时，exitLevel 会 +1，等加载完的 then 发现
+     序号变了就放弃挂载 —— 否则关卡会在已经回到地图之后才挂上去，
+     开场语音对着已经释放的音频池播，出现「voice not preloaded」。 */
+  var enterSeq = 0;
   var lastVoiceKey = null;      // 全局重播按钮：最近一次播放的语音 key
   var modulePromises = {};      // id -> Promise，关卡模块的按需加载缓存
 
@@ -693,12 +697,21 @@
     }
 
     currentModule = mod.mount(stage, buildContext(level));
+
+    // 乘除段：一关的槽数由引擎定（首玩 6 / 重玩 8 / 综合关恒 8），
+    // 不能沿用 level.questions 的旧长度，否则进度点与实际槽数对不上。
+    var spec = typeof mod.current === 'function' ? mod.current() : null;
+    if (spec && spec.__activeCount && spec.__activeCount !== total) {
+      renderDots(spec.__activeCount);
+      setStep(0);
+    }
   }
 
   function enterLevel(id, skipSession) {
     if (entering) return;
     var level = DATA.levels[id];
     if (!level) return;
+    var mySeq = ++enterSeq;
 
     var W = global.Wellbeing;
     // A1/A2/B7：每次进关记一「局」并开始双口径计时；attemptCount 语义 = 进入该关次数。
@@ -742,6 +755,7 @@
       Engine.loadLevel(level, options)
     ]).then(function (results) {
       entering = false;
+      if (mySeq !== enterSeq) return;          // 加载期间已经退关：不挂载
       if (!results[1].ok) {
         Engine.toast('Could not load the sounds. Try again?');
         return;
@@ -763,6 +777,9 @@
   }
 
   function exitLevel() {
+    // 作废任何一个还在路上的「进关」：加载完也不许再挂上去
+    enterSeq += 1;
+    entering = false;
     // A2：离开关卡即停双口径计时（切后台/回地图不再累加屏幕占用）
     if (global.Wellbeing && Wellbeing.stopClock) Wellbeing.stopClock();
     unmountCurrent();

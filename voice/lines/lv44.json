@@ -1,7 +1,7 @@
 {
   "level": "lv44",
-  "status": "draft",
-  "note": "Bigger Arrays: a three by ten array and a three by two array slide together into three rows of twelve, then the same array turns ninety degrees to show twelve rows of three. Quiz: read the array and pick the sentence / drag the loose strips to complete the array / find the result that does not match.",
+  "status": "ready",
+  "note": "乘除段 L44 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,82 +10,102 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's look at this big array.",
-      "mood": "teach"
+      "text": "Twelve buns. Three friends and some boxes.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Three rows of ten, and three rows of two.",
-      "mood": "teach"
+      "text": "Plates or boxes?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Three times twelve is thirty-six!",
-      "mood": "praise"
+      "text": "Twelve for three friends. Plates!",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Three rows of twelve is the same as twelve rows of three.",
-      "mood": "teach"
+      "text": "One to each. Four in each plate.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_e",
+      "key": "s0e",
       "lang": "en",
-      "text": "Both have thirty-six dots!",
-      "mood": "praise"
+      "text": "Now boxes of four. Three boxes. Same buns!",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Four rows of thirteen.",
-      "mood": "ask"
+      "text": "Twelve buns. Three plates. Give one to each.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Three rows of twelve.",
-      "mood": "ask"
+      "text": "Twelve buns. Four in each. How many boxes?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Five rows of fourteen.",
-      "mood": "ask"
+      "text": "Twelve buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Two rows of fifteen.",
-      "mood": "ask"
+      "text": "Twelve buns. Three in each. How many boxes?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Twelve times four. Fill the four rows of two.",
-      "mood": "ask"
+      "text": "How many boxes? Four in each.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Thirteen times three. Fill the three rows of three.",
-      "mood": "ask"
+      "text": "Ten buns. Two in each. How many bags?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Thirteen times four. Fill the four rows of three.",
-      "mood": "ask"
+      "text": "How many in each plate?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Which result does not match?",
-      "mood": "ask"
+      "text": "Eight buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Plates or boxes? Same. Two ways.",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

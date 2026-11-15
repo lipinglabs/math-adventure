@@ -160,6 +160,15 @@
 <!-- 4 岁起步新模块：数据表 / 护眼 / 视觉反馈 / 间隔复现，均须先于 engine.js 加载 -->
 <script src="asset-manifest.js"></script>
 <script src="levels_data.js"></script>
+
+<!-- 乘除段（L28–L48）共用题型引擎：21 关只提供槽数据，原语只有一份实现。
+     顺序不可换：素材库 → 内核 → 三个题型族 → 关卡数据。 -->
+<script src="cd-art.js"></script>
+<script src="cd-kit.js"></script>
+<script src="cd-type-give.js"></script>
+<script src="cd-type-build.js"></script>
+<script src="cd-type-judge.js"></script>
+<script src="cd-data.js"></script>
 <!-- 语音包索引：每关 mp3 的打包偏移表，让进关只发 1 次语音请求（tools/pack-voice.js 生成） -->
 <script src="voice/packs/index.js"></script>
 <script src="route-map.js"></script>

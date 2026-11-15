@@ -1,7 +1,7 @@
 {
   "level": "lv32",
-  "status": "draft",
-  "note": "Stage 4: rows and columns with a chocolate grid. Three rows of four counted across, then counted down the columns, then the plate turns a quarter turn and the same twelve chocolates read as four rows of three. Quiz: pick the sentence for a grid / drag chocolate strips to build a grid / listen and pick the matching grid.",
+  "status": "ready",
+  "note": "乘除段 L32 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,58 +10,102 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's look at this chocolate. Three rows and four columns.",
-      "mood": "teach"
+      "text": "So many buns! One by one is slow.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Four, eight, twelve. Three rows of four.",
-      "mood": "count"
+      "text": "Let us count by groups.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Three, six, nine, twelve. Four columns of three.",
-      "mood": "count"
+      "text": "One group. Five.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Three times four is twelve. Four times three is also twelve!",
-      "mood": "praise"
+      "text": "Two groups. Ten.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a_q",
+      "key": "s0e",
       "lang": "en",
-      "text": "Which number sentence?",
-      "mood": "ask"
+      "text": "Three, fifteen. Four, twenty.",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "b_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Build the grid. Drag the chocolate rows.",
-      "mood": "teach"
+      "text": "Tap and count.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Five times four.",
-      "mood": "ask"
+      "text": "Make three groups of two.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Four times six.",
-      "mood": "ask"
+      "text": "Tap them group by group.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c3_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Three times seven.",
-      "mood": "ask"
+      "text": "Make three groups of five.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s5",
+      "lang": "en",
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s6",
+      "lang": "en",
+      "text": "Make two groups of five.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s7",
+      "lang": "en",
+      "text": "Tap and count first. Then altogether.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Count the groups. Four of them.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Five, ten, fifteen, twenty. So fast!",
+      "mood": "praise",
+      "rate": -20
     }
   ]
 }

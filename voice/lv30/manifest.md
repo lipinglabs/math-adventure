@@ -6,17 +6,17 @@
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Do you remember? Two times six. | 25197 B |
-| `t1_b` | en | Two, four, six, eight, ten, twelve! | 39981 B |
-| `t1_c` | en | Five times four. | 15405 B |
-| `t1_d` | en | Five, ten, fifteen, twenty! | 28845 B |
-| `a1_q` | en | Two times seven. | 15405 B |
-| `a2_q` | en | Five times six. | 17517 B |
-| `a3_q` | en | Two times eight. | 13677 B |
-| `a4_q` | en | Five times three. | 15405 B |
-| `b1_q` | en | Two times nine. | 15405 B |
-| `b2_q` | en | Five times eight. | 15405 B |
-| `b3_q` | en | Two times five. | 15405 B |
-| `c1_q` | en | Five times five. | 13677 B |
-| `c2_q` | en | Two times four. | 15405 B |
-| `c3_q` | en | Five times seven. | 17325 B |
+| `s0a` | en | Three friends! Four buns each. | 26541 B |
+| `s0b` | en | Bo, can you make it? | 17517 B |
+| `s0c` | en | Tap here. One group of four. | 28653 B |
+| `s0d` | en | One more. Two groups of four. | 25197 B |
+| `s0e` | en | Again! Three groups of four. All same. | 30573 B |
+| `s1` | en | Make two groups of two. | 17517 B |
+| `s2` | en | Make two groups of three. | 21165 B |
+| `s3` | en | Which one is two groups of three? | 25005 B |
+| `s4` | en | Make three groups of three. | 25005 B |
+| `s5` | en | What is under the cloth? How many altogether? | 30381 B |
+| `s6` | en | Make four groups of three. | 21357 B |
+| `s7` | en | Make four groups of five. | 19245 B |
+| `s8` | en | Make four groups of four. | 22893 B |
+| `out` | en | Three groups of four. Nice and tidy! | 28845 B |

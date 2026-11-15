@@ -1,7 +1,7 @@
 {
   "level": "lv42",
-  "status": "draft",
-  "note": "Take Away Again and Again: twelve candies, four taken away three times, which is the same as twelve divided by four. Quiz: hear a repeated subtraction and pick the division / link repeated subtraction to division / find the pair that does not match.",
+  "status": "ready",
+  "note": "乘除段 L42 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,82 +10,109 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Let's take away four candies at a time.",
-      "mood": "teach"
+      "text": "Two bags today.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "We took away three times.",
-      "mood": "teach"
+      "text": "Two in each bag.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Twelve divided by four is three.",
-      "mood": "teach"
+      "text": "Count two. One bag.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Taking away four, three times, is the same as twelve divided by four.",
-      "mood": "praise"
+      "text": "Two more. Two bags.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s0e",
       "lang": "en",
-      "text": "Ten minus two, minus two, minus two, minus two, minus two, equals zero.",
-      "mood": "count"
+      "text": "Three bags. All full!",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "t1_e",
+      "key": "s1",
       "lang": "en",
-      "text": "Both of them make three!",
-      "mood": "praise"
+      "text": "Six buns. Put two in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Twelve minus four, minus four, minus four, equals zero.",
-      "mood": "count"
+      "text": "Eight buns. Put two in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Fifteen minus five, minus five, minus five, equals zero.",
-      "mood": "count"
+      "text": "Ten buns. Put two in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Eight minus two, minus two, minus two, minus two, equals zero.",
-      "mood": "count"
+      "text": "Six buns. Put three in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Match the taking away with the division.",
-      "mood": "ask"
+      "text": "Twelve buns. Three in each. Four boxes?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s5a",
       "lang": "en",
-      "text": "Match them up.",
-      "mood": "ask"
+      "text": "Watch. Twelve in four boxes.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Find the matching division.",
-      "mood": "ask"
+      "text": "Nine buns. Put three in each box.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Which one does not match?",
-      "mood": "ask"
+      "text": "Twelve buns. Put three in each box.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Fifteen buns. Put three in each box.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Five boxes of two. All full!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

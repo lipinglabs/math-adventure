@@ -1,21 +1,24 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv46`
-- 条目：**13**
+- 条目：**16**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Let's share forty-eight sticks with four friends. First, share the tens! | 51309 B |
-| `t1_b` | en | Each friend gets one ten. | 25005 B |
-| `t1_c` | en | Now, share the ones. | 17517 B |
-| `t1_d` | en | Each friend gets two ones. | 26733 B |
-| `t1_e` | en | One ten and two ones make twelve. Forty-eight divided by four equals twelve! | 60525 B |
-| `a1_q` | en | Sixty-six divided by three. | 22893 B |
-| `a2_q` | en | Forty-eight divided by four. | 21357 B |
-| `a3_q` | en | Eighty-four divided by two. | 23085 B |
-| `a4_q` | en | Ninety-six divided by three. | 25005 B |
-| `b1_q` | en | Eighty sticks, four friends. Give every friend the same. | 40173 B |
-| `b2_q` | en | Ninety sticks, three friends. Give every friend the same. | 44013 B |
-| `b3_q` | en | Sixty sticks, two friends. Give every friend the same. | 41901 B |
-| `c_q` | en | Which group is not fair? | 19245 B |
+| `s0a` | en | Three plates. Four on each. | 34221 B |
+| `s0b` | en | Now share them out again. | 21357 B |
+| `s0c` | en | Make three groups of four. | 22893 B |
+| `s0d` | en | Now share with three friends. Three rounds. | 32685 B |
+| `s0e` | en | Four in each. Same as before! | 19245 B |
+| `s1` | en | Make four groups of three. | 19053 B |
+| `s2` | en | Make three rows of four. | 24813 B |
+| `s3` | en | Count this way. Now that way. | 25005 B |
+| `s4` | en | Tap and count. | 15405 B |
+| `s5` | en | How many altogether? | 17517 B |
+| `s6` | en | Three groups of three. Then share them. | 29037 B |
+| `s6b` | en | Tip them all into the middle. | 22893 B |
+| `s7` | en | Which row counts to fifty? | 21165 B |
+| `s8` | en | Twelve buns. Four plates. | 25005 B |
+| `out` | en | Made it, shared it. Same buns! | 30381 B |
+| `out2` | en | Look. | 7725 B |

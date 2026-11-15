@@ -1,21 +1,23 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv43`
-- 条目：**13**
+- 条目：**15**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Look! We have three groups of twelve. | 34221 B |
-| `t1_b` | en | Let's count the tens and ones separately. | 30381 B |
-| `t1_c` | en | Twelve times three is the same as ten times three, plus two times three. | 43821 B |
-| `t1_d` | en | Thirty plus six equals thirty-six. | 26733 B |
-| `t1_e` | en | Twelve times three equals thirty-six! | 28845 B |
-| `a1_q` | en | Fourteen times two. Ten times two, plus four times two. | 43821 B |
-| `a2_q` | en | Twelve times four. Ten times four, plus two times four. | 36525 B |
-| `a3_q` | en | Thirteen times three. Ten times three, plus three times three. | 38061 B |
-| `a4_q` | en | Fifteen times four. Ten times four, plus five times four. | 40173 B |
-| `b1_q` | en | Fifteen times three. Ten times three, then five times three. | 38061 B |
-| `b2_q` | en | Twelve times four. Ten times four, then two times four. | 41901 B |
-| `b3_q` | en | Thirteen times five. Ten times five, then three times five. | 44013 B |
-| `c_q` | en | Which one is split wrong? | 17325 B |
+| `s0a` | en | Today, five in each box. | 26733 B |
+| `s0b` | en | How many boxes? | 15405 B |
+| `s0c` | en | Put five in a box. | 21165 B |
+| `s0d` | en | One box. Five. | 21357 B |
+| `s0e` | en | Two. Three. All done! | 22893 B |
+| `s1` | en | Eight buns. Put four in each box. | 26733 B |
+| `s2` | en | Twelve buns. Put four in each box. | 28845 B |
+| `s3` | en | Sixteen buns. Put four in each box. | 34221 B |
+| `s4` | en | Twenty buns. Four in each. Five boxes? | 41709 B |
+| `s4a` | en | Watch. Twenty in five boxes. | 28845 B |
+| `s5` | en | Ten buns. Put five in each box. | 28845 B |
+| `s6` | en | Fifteen buns. Put five in each box. | 30573 B |
+| `s7` | en | Twenty buns. Put four in each box. | 32685 B |
+| `s8` | en | Twenty buns. Put five in each box. | 30573 B |
+| `out` | en | Three boxes of five. All done! | 25005 B |

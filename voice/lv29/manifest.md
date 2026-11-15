@@ -1,20 +1,21 @@
 # 语音清单（自动生成，勿手改）
 
 - 关卡：`lv29`
-- 条目：**12**
+- 条目：**13**
 - 语速：-15（约 0.85 倍）
 
 | key | 语种 | 文本 | 文件 |
 | --- | --- | --- | --- |
-| `t1_a` | en | Look at the candy strings! Each string has five candies. | 41901 B |
-| `t1_b` | en | Let's count! Five, ten, fifteen! | 36333 B |
-| `t2_a` | en | Three strings of five. | 21357 B |
-| `t2_b` | en | Three times five equals fifteen! | 25197 B |
-| `a1_q` | en | Two times five. | 17517 B |
-| `a2_q` | en | Four times five. | 17325 B |
-| `a3_q` | en | Six times five. | 17517 B |
-| `a4_q` | en | Seven times five. | 17517 B |
-| `b_q` | en | Four strings of five make twenty. Drag the strings. | 40173 B |
-| `c1_q` | en | Five times five. | 19053 B |
-| `c2_q` | en | Five times eight. | 17517 B |
-| `c3_q` | en | Five times nine. | 13677 B |
+| `s0a` | en | Three trays are ready. | 19053 B |
+| `s0b` | en | Which one is the same on each? | 21357 B |
+| `s0c` | en | Four. Four. Same! | 34221 B |
+| `s0d` | en | Here: five and three. Not same. | 34413 B |
+| `s1` | en | Which one is two groups of two? | 22893 B |
+| `s2` | en | Which one is three groups of three? | 25197 B |
+| `s3` | en | Six buns. Three plates. | 22893 B |
+| `s4` | en | Ten buns. Two plates. | 23085 B |
+| `s5` | en | Same on each plate? | 15405 B |
+| `s6` | en | Eight buns. Four plates. | 21165 B |
+| `s7` | en | Twelve buns. Four plates. | 22893 B |
+| `s8` | en | Make three boxes of three. | 19245 B |
+| `out` | en | You found the same one. Nice! | 25197 B |

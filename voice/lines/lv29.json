@@ -1,7 +1,7 @@
 {
   "level": "lv29",
-  "status": "draft",
-  "note": "Multiplication by five: three strings of five candies, count in fives to fifteen, then three times five. Quiz: tap the product from candy strings / drag the right number of strings for a target / listen and pick the answer with no picture.",
+  "status": "ready",
+  "note": "乘除段 L29 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,76 +10,95 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Look at the candy strings! Each string has five candies.",
-      "mood": "teach"
+      "text": "Three trays are ready.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Let's count! Five, ten, fifteen!",
-      "mood": "count"
+      "text": "Which one is the same on each?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "t2_a",
+      "key": "s0c",
       "lang": "en",
-      "text": "Three strings of five.",
-      "mood": "teach"
+      "text": "Four. Four. Same!",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t2_b",
+      "key": "s0d",
       "lang": "en",
-      "text": "Three times five equals fifteen!",
-      "mood": "praise"
+      "text": "Here: five and three. Not same.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Two times five.",
-      "mood": "ask"
+      "text": "Which one is two groups of two?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Four times five.",
-      "mood": "ask"
+      "text": "Which one is three groups of three?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Six times five.",
-      "mood": "ask"
+      "text": "Six buns. Three plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Seven times five.",
-      "mood": "ask"
+      "text": "Ten buns. Two plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Four strings of five make twenty. Drag the strings.",
-      "mood": "teach"
+      "text": "Same on each plate?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Five times five.",
-      "mood": "ask"
+      "text": "Eight buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Five times eight.",
-      "mood": "ask"
+      "text": "Twelve buns. Four plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c3_q",
+      "key": "s8",
       "lang": "en",
-      "text": "Five times nine.",
-      "mood": "ask"
+      "text": "Make three boxes of three.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "You found the same one. Nice!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

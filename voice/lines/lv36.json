@@ -1,7 +1,7 @@
 {
   "level": "lv36",
-  "status": "draft",
-  "note": "Stage 4: patterns and skip counting. Three six nine twelve, then fifteen, then skip counting by four up to twenty. Quiz: fill the missing step / listen and pick the row that contains the product / five second timed flash.",
+  "status": "ready",
+  "note": "乘除段 L36 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,76 +10,109 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "Look at the pattern. Three, six, nine, twelve. What's next?",
-      "mood": "ask"
+      "text": "Turn the tray. More buns now?",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "It goes up by three. Twelve plus three is fifteen.",
-      "mood": "teach"
+      "text": "Let us look.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_c",
+      "key": "s0c",
       "lang": "en",
-      "text": "Three times five is fifteen!",
-      "mood": "praise"
+      "text": "Three rows of four. Twelve.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_d",
+      "key": "s0d",
       "lang": "en",
-      "text": "Let's skip count by four. Four, eight, twelve, sixteen, twenty!",
-      "mood": "count"
+      "text": "Turn it. Four rows of three.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_e",
+      "key": "s0e",
       "lang": "en",
-      "text": "Patterns help us multiply!",
-      "mood": "praise"
+      "text": "Still twelve! Same buns.",
+      "mood": "praise",
+      "rate": -15
     },
     {
-      "key": "a_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Find the missing number.",
-      "mood": "ask"
+      "text": "Count this way. Now that way.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Four times seven.",
-      "mood": "ask"
+      "text": "Make three rows of four.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Three times eight.",
-      "mood": "ask"
+      "text": "Make four rows of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Five times six.",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Eight times four.",
-      "mood": "ask"
+      "text": "Make four rows of two.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c2_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Seven times six.",
-      "mood": "ask"
+      "text": "Make three rows of three.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c3_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Nine times three.",
-      "mood": "ask"
+      "text": "Can you make twelve in four rows?",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s7a",
+      "lang": "en",
+      "text": "Watch. Twelve in four rows.",
+      "mood": "teach",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Make five rows of two.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "Turn it any way. Still twelve!",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }

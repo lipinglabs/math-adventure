@@ -1,7 +1,7 @@
 {
   "level": "lv41",
-  "status": "draft",
-  "note": "Group Them Up: twelve ducks make groups of four, then the division sign arrives and asks how many groups. Quiz: hear a division and pick how many groups / draw a ring around each group of b / hear a division and pick the matching group picture.",
+  "status": "ready",
+  "note": "乘除段 L41 · 由 tools/cd-lines.js 生成，勿手改",
   "rate": -15,
   "pitch": 0,
   "sampleRate": 24000,
@@ -10,82 +10,109 @@
   },
   "lines": [
     {
-      "key": "t1_a",
+      "key": "s0a",
       "lang": "en",
-      "text": "We have twelve ducks. Let's make groups of four!",
-      "mood": "teach"
+      "text": "Four jars. Three plates.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t1_b",
+      "key": "s0b",
       "lang": "en",
-      "text": "Twelve ducks in groups of four. We have three groups.",
-      "mood": "teach"
+      "text": "One for each friend.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t2_a",
+      "key": "s0c",
       "lang": "en",
-      "text": "Twelve divided by four equals three.",
-      "mood": "teach"
+      "text": "One jar for each friend.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t2_q",
+      "key": "s0d",
       "lang": "en",
-      "text": "How many groups?",
-      "mood": "ask"
+      "text": "One more jar. No plate left.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "t2_b",
+      "key": "s0e",
       "lang": "en",
-      "text": "Three groups!",
-      "mood": "praise"
+      "text": "One is left.",
+      "mood": "teach",
+      "rate": -15
     },
     {
-      "key": "a1_q",
+      "key": "s1",
       "lang": "en",
-      "text": "Nine divided by three.",
-      "mood": "ask"
+      "text": "Five jars. Two plates. Give one to each.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a2_q",
+      "key": "s2",
       "lang": "en",
-      "text": "Eight divided by two.",
-      "mood": "ask"
+      "text": "Seven jars. Two plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a3_q",
+      "key": "s3",
       "lang": "en",
-      "text": "Twelve divided by four.",
-      "mood": "ask"
+      "text": "Nine jars. Two plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "a4_q",
+      "key": "s4",
       "lang": "en",
-      "text": "Ten divided by five.",
-      "mood": "ask"
+      "text": "Seven jars. Three plates.",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b1_q",
+      "key": "s5",
       "lang": "en",
-      "text": "Ten candies. Make groups of five.",
-      "mood": "ask"
+      "text": "How many in each plate?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b2_q",
+      "key": "s6",
       "lang": "en",
-      "text": "Nine apples. Make groups of three.",
-      "mood": "ask"
+      "text": "Ten jars. Three plates. What about this one?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "b3_q",
+      "key": "s6b",
       "lang": "en",
-      "text": "Eight ducks. Make groups of two.",
-      "mood": "ask"
+      "text": "This one has no plate. Where does it go?",
+      "mood": "ask",
+      "rate": -15
     },
     {
-      "key": "c_q",
+      "key": "s7",
       "lang": "en",
-      "text": "Which picture shows the same groups?",
-      "mood": "ask"
+      "text": "How many altogether?",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "s8",
+      "lang": "en",
+      "text": "Thirteen jars. Four plates.",
+      "mood": "ask",
+      "rate": -15
+    },
+    {
+      "key": "out",
+      "lang": "en",
+      "text": "One for each. One is left.",
+      "mood": "praise",
+      "rate": -15
     }
   ]
 }
