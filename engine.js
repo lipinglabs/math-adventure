@@ -705,21 +705,30 @@
     var plannedRefs = [];       // 本组题的全局引用（不改题目对象）
     var answerHints = [];       // 每题数值答案（near 判定用）
     var solvedRefs = [];        // 本关已做对的题引用
-    var groupsDone = [];
-    var groupResults = {};
+    // 分组进度必须从游标继承：persist() 每答一题都会整份回写，
+    // 若以空数组起手，会把上一局记录的分组结果抹掉（金星永远判不出来）。
+    var cursor0 = (W && W.store && levelId) ? (W.store.getCursor(levelId) || {}) : {};
+    var groupsDone = (cursor0.groupsDone || []).slice();
+    var groupResults = cursor0.groupResults || {};
+    var levelGroupIndex = null; // 由 planQueue 决定：本局对应第几个分组
     var lastValue = null;       // 最近一次选项点击 data-value（near 判定用）
 
     function flagsOf(i) { return flags[i] || (flags[i] = { replayUsed: false, hintUsed: false, undoUsed: false }); }
     function settings() { return W && W.settings ? W.settings() : { challengeBadge: false }; }
 
-    function currentGroupId() {
+    /** 第 i 题（0 基、按本关整体计数）属于第几组 */
+    function groupIndexOf(at) {
+      var i = (at == null ? index : at);
       var acc = 0;
       for (var g = 0; g < groupSizes.length; g += 1) {
         acc += groupSizes[g];
-        if (index < acc) return g;
+        if (i < acc) return g;
       }
       return groupSizes.length - 1;
     }
+
+    // persist 语义：下一题所在组（断点续做用）
+    function currentGroupId() { return groupIndexOf(index); }
 
     // C5 逐题写盘：每次答题后把 levelCursor 写进独立本地分区（不进 Gist）
     function persist() {
@@ -753,28 +762,46 @@
     }
 
     function finishResult() {
-      // B4：银星 = 完成即得；金星降为可选徽章（默认 false、不是解锁条件、不显示差距）
-      var s = settings();
-      var badge = !!(s.challengeBadge && cleanCount >= total && firstPass);
+      // 星级规则：银星 = 完成即得、可解锁下一关；金星 = 整关全对（首答且无错）。
+      // 10 题按 6+4 分两局，只有两局都全对才判金星，避免「第一局全对就发金、第二局错了仍是金」。
+      var groupClean = (cleanCount >= total && firstPass);
+      var allCorrect = groupClean;
       sessionFlags.groupComplete = true;
       if (W && W.store && levelId) {
-        var c = W.store.getCursor(levelId) || {};
-        var gd = (c.groupsDone || []).slice();
-        var g = currentGroupId();
+        // 分组下标用 planQueue 给出的值：本局 index 是组内计数，不能反推全局组号
+        var g = (levelGroupIndex == null ? 0 : levelGroupIndex);
+        var gd = groupsDone.slice();
         if (gd.indexOf(g) < 0) gd.push(g);
-        c.currentGroupId = Math.min(g + 1, groupSizes.length - 1);
-        c.groupsDone = gd;
-        c.solved = solvedRefs.slice();
-        W.store.setCursor(levelId, c);
+        var gr = groupResults || {};
+        gr[g] = groupClean;
+        groupsDone = gd.slice();
+        groupResults = gr;
+        W.store.setCursor(levelId, {
+          nextQIndex: index,
+          currentGroupId: Math.min(g + 1, groupSizes.length - 1),
+          groupsDone: gd,
+          groupResults: gr,
+          solved: solvedRefs.slice(),
+          total: total
+        });
         sessionFlags.lastGroupOnly = (gd.length >= groupSizes.length); // 关卡级正式结算
+        allCorrect = sessionFlags.lastGroupOnly && groupSizes.every(function (_, i) {
+          return gr[i] === true;
+        });
+      } else {
+        // 无本地 store 时退回「本局全对即整关全对」，保证单局仍可判金星
+        sessionFlags.lastGroupOnly = true;
       }
+      var star = allCorrect ? 'gold' : 'silver';
       emit(EVT.LEVEL_COMPLETE, {
-        levelId: levelId, track: sessionFlags.track, star: 'silver', badge: badge,
+        levelId: levelId, track: sessionFlags.track, star: star,
+        badge: allCorrect, clean: groupClean,
         cleanCount: cleanCount, correctCount: correctCount, wrongCount: wrong.length,
         lastGroupOnly: sessionFlags.lastGroupOnly
       });
       return {
-        done: true, advance: false, retry: false, star: 'silver', badge: badge,
+        done: true, advance: false, retry: false, star: star,
+        badge: allCorrect, clean: groupClean,
         wrongCount: wrong.length, cleanCount: cleanCount, correctCount: correctCount,
         track: sessionFlags.track, lastGroupOnly: sessionFlags.lastGroupOnly
       };
@@ -792,6 +819,18 @@
       get track() { return sessionFlags.track; },
 
       setTotal: function (n) { total = Math.max(1, Math.floor(n) || 1); return total; },
+      // 由 planQueue 回填：本局是第几个分组（结算判金星用，组内 index 无法反推）
+      setGroupIndex: function (i) {
+        levelGroupIndex = Math.max(0, Math.min(Number(i) || 0, groupSizes.length - 1));
+        return levelGroupIndex;
+      },
+      // 整关做完后重玩：清掉本关分组进度，开启新一轮
+      resetGroupProgress: function () {
+        groupsDone = [];
+        groupResults = {};
+        levelGroupIndex = 0;
+        return true;
+      },
       setQueue: function (q, hints, solved, refs) {
         queue = q || null;
         answerHints = hints || [];
@@ -1045,6 +1084,21 @@
       nextQIndex: cursor.nextQIndex || 0
     });
 
+    // 整关 10 题全部做完后再进来：planQueue 会给出空队列（全被 solved 过滤掉）。
+    // 此时清游标、开新一轮，避免出现「进关后一道题都没有」的死界面。
+    var freshRound = false;
+    if (!res.queue.length && solved.length) {
+      freshRound = true;
+      if (W.store.clearCursor) W.store.clearCursor(levelId);
+      gIdx = 0;
+      res = R.planQueue(levelId, orderedRefs, {
+        solved: [], pending: [], groupIndex: 0,
+        groupSizes: groupSizes, reviewRefs: reviewRefs,
+        groupsDone: [], groupResults: {}, nextQIndex: 0
+      });
+      solved = [];
+    }
+
     function refToQuestion(ref) {
       var p = String(ref).split(':');
       var lid = Number(p[0]), qi = Number(p[1]);
@@ -1068,12 +1122,14 @@
     W.store.patch(function (s) { s.pendingQuestions = finalPending; });
     W.store.setCursor(levelId, {
       nextQIndex: 0, currentGroupId: gIdx,
-      groupsDone: (cursor.groupsDone || []).slice(),
-      groupResults: cursor.groupResults || {},
+      groupsDone: freshRound ? [] : (cursor.groupsDone || []).slice(),
+      groupResults: freshRound ? {} : (cursor.groupResults || {}),
       solved: solved.slice(), total: queue.length, planned: res.queue.slice()
     });
 
     lastSession.setQueue(queue, hints, solved, res.queue.slice());
+    lastSession.setGroupIndex(gIdx);         // 本局分组号：结算判金星用
+    if (freshRound) lastSession.resetGroupProgress();
     lastSession.setTotal(queue.length);   // 关卡模块按本组题数结算，不越界
 
     if (global.Feedback) {
@@ -1082,8 +1138,25 @@
     return queue;
   }
 
+  /** 是否「本关自己的题目数组」——用引用身份判定，而不是靠字段猜。
+      关卡里的句子 / 算式卡片数组（{a,b,shown}）也带 a、b 字段，
+      若被 looksLikeQuestionList 误认成题目列表，会走呈现规划并把
+      lastSession 的队列与总数覆盖掉，表现为「题面空白、只剩语音」。 */
+  function isOwnQuestionList(list, levelId) {
+    var D = global.MATH_DATA;
+    var src = D && D.levels && levelId && D.levels[levelId] && D.levels[levelId].questions;
+    if (!src || !src.length || !list || list.length !== src.length) return false;
+    for (var i = 0; i < list.length; i += 1) {
+      if (src.indexOf(list[i]) < 0) return false;
+    }
+    return true;
+  }
+
   function quizShuffle(list) {
-    if (looksLikeQuestionList(list)) return planQuestionQueue(list);
+    // 只有「本关题目数组本身」才交给呈现规划；其余（选项、句子、卡片、数值）一律纯洗牌
+    if (looksLikeQuestionList(list) && isOwnQuestionList(list, activeLevelId)) {
+      return planQuestionQueue(list);
+    }
     return shuffleList(list);
   }
 

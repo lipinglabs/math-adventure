@@ -4,17 +4,17 @@
    存档结构（v1）：
      {
        version: 1,
-       unlockedLevel: 3,          // 最高已解锁关卡序号（只在金星时前进）
+       unlockedLevel: 3,          // 最高已解锁关卡序号（完成即前进）
        stars: { "1": "gold" },    // 每关历史最高星，none < silver < gold
-       cleared: [1, 2],           // 已通关（银星也算通关，但不解锁下一关）
+       cleared: [1, 2],           // 已通关（完成即记）
        updatedAt: 1730000000000
      }
 
    规则（4 岁起步 · 专家团意见清单 B1/B4/B7/C4）：
      · 完成即解锁（EVT_LEVEL_COMPLETE）——删除原「第一遍全对才解锁」整条规则，
        与对错/星级/提示/重听/撤销全无关；解锁链只在 core 轨串联
-     · 银星 = 完成即得；金星降为可选徽章（settings.challengeBadge 默认 false、
-       不是解锁条件、不显示差距）
+     · 银星 = 完成即得，可解锁下一关；金星 = 整关全对（首答且无错），
+       由 Engine 判定后随 star 传入，不再受家长开关约束
      · challenge 轨完成不写 unlocked/stars/completedLevels，只记 challengePlayed[]
      · 错题写入收窄（只记非误触撤销、非超时的真答错）+ wrongTag
      · attemptCount 语义 =「进入该关次数」，不再因答错增加
@@ -139,8 +139,9 @@ window.Progress = (function () {
   }
 
   /** B1/B4/C4 记录一次通关：完成即解锁（删除「第一遍全对才解锁」）。
-      银星 = 完成即得；金星仅当家长主动开启可选徽章且整关 clean 时追加（收集徽章），
-      不是解锁条件、不显示差距。challenge 轨只记 challengePlayed[] 到独立分区。 */
+      银星 = 完成即得、可解锁下一关；金星 = 整关全对（首答且无错），
+      由 Engine 判定后通过 opts.gold / star 传入，不受家长开关约束。
+      challenge 轨只记 challengePlayed[] 到独立分区。 */
   function record(levelId, star, opts) {
     var id = Math.floor(Number(levelId));
     if (!id) return read();
@@ -155,11 +156,9 @@ window.Progress = (function () {
     }
 
     var next = normalize(read());
-    var badge = false;
-    if (window.Engine && window.Engine.settings && window.Engine.settings.challengeBadge()) {
-      badge = !!opts.badge;
-    }
-    var finalStar = badge ? 'gold' : 'silver';   // 银星 = 完成即得
+    // opts.gold 由结算层显式给出（整关全对）；opts.badge 兼容旧调用
+    var gold = !!(opts.gold || opts.badge || star === 'gold');
+    var finalStar = gold ? 'gold' : 'silver';   // 银星 = 完成即得
     if (RANK[finalStar] > RANK[next.stars[String(id)] || 'none']) {
       next.stars[String(id)] = finalStar;
     }

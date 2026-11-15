@@ -548,10 +548,10 @@
       anim: Engine.anim,
       step: setStep,
       complete: function (star) {
-        // B1 完成即解锁、B4 银星完成即得（金星降为可选徽章）；
+        // B1 完成即解锁；银星 = 完成即得、可解锁下一关，金星 = 整关全对（由 Engine 判定后随 star 传入）。
         // C4 challenge 轨完成不写 unlocked/stars/completedLevels，由 Progress.record 按 routeMap 判定。
         Progress.record(level.id, star, {
-          badge: star === 'gold',
+          gold: star === 'gold',
           track: isCoreLevel(level.id) ? 'core' : 'challenge'
         });
         Cloud.schedulePush();
@@ -805,7 +805,8 @@
     return '<div class="field-label" style="margin-top:18px">Parent options</div>' +
       cb('setting-no-timer', E.noTimer(), 'No countdown pressure (4-year-old baseline)') +
       cb('setting-show-challenge', E.showChallenge(), 'Show optional "Try it" levels') +
-      cb('setting-challenge-badge', E.challengeBadge(), 'Optional gold-star badge') +
+      '<p style="margin-top:2px;font-size:12px;color:var(--ink-soft)">' +
+        'Silver = finished, unlocks the next level. Gold = every answer correct.</p>' +
       cb('setting-challenge-9', T.challengeEnabled(9), 'Level 9 optional 15s challenge') +
       cb('setting-challenge-12', T.challengeEnabled(12), 'Level 12 optional 12s challenge') +
       '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
@@ -912,7 +913,6 @@
       E.setShowChallenge(on);
       renderMap();   // 立即反映 core-only / 试一试 显示变化
     });
-    bindToggle('setting-challenge-badge', function (on) { E.setChallengeBadge(on); });
     bindToggle('setting-challenge-9', function (on) { T.setChallenge(9, on); });
     bindToggle('setting-challenge-12', function (on) { T.setChallenge(12, on); });
     // E1 陪玩钩子 1：讲给爸爸妈妈听 → 家长按「I heard you」成长树 +1 叶（不判对错、不录音、不强制）
