@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/* verify-star.js — 星级规则端到端验证
- * 段一：直接驱动 Engine.session，验证 6+4 分组下的金星/银星判定（不依赖渲染时序）
- * 段二：真实界面跑第 9 关两局，验证最终落盘星级 + 「找错句」题面可见
+/* verify-star.js — 星级规则端到端验证（一关一局 · 全对即金）
+ * 段一：引擎会话直驱，验证整关全对/有错/断点续做的判定
+ * 段二：真实界面跑第 9 关一次到底，验证最终落盘金星
  * 用法: node tools/verify-star.js [url]
  */
 'use strict';
@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const BASE = process.argv[2] || 'http://127.0.0.1:8777/index.html';
+const BASE = process.argv[2] || 'http://127.0.0.1:8799/index.html';
 const ROOT = path.resolve(__dirname, '..');
 const PROFILE = path.join(ROOT, 'tmp', '.star-' + Date.now());
 const PORT = 9577;
@@ -84,67 +84,83 @@ function conn(u) {
   /* ---------- 段一：引擎会话直驱 ---------- */
   const unit = await ev(`(function(){
     localStorage.clear();
-    var W = window.Wellbeing, R = window.RouteMap;
-    var out = { cases: [], coreLevel: null, nonCoreLevel: null };
+    var W = window.Wellbeing;
+    var out = { cases: [] };
+    var L = 3;
 
-    // 找一个 core 关、一个 challenge 关（challenge 不记星）
-    for (var id = 1; id <= 48; id++) {
-      if (out.coreLevel == null && R.isCore(id)) out.coreLevel = id;
-      if (out.nonCoreLevel == null && !R.isCore(id)) out.nonCoreLevel = id;
+    function refs(lv, from, to) {
+      var a = []; for (var i = from; i < to; i++) a.push(lv + ':' + i); return a;
     }
-
-    function runGroup(levelId, groupIndex, total, wrongAt) {
-      if (W.store.clearCursor && groupIndex === 0) W.store.clearCursor(levelId);
-      var s = Engine.session({ total: total, levelId: levelId });
-      s.setGroupIndex(groupIndex);
+    function reset(roundClean) {
+      if (W.store.clearCursor) W.store.clearCursor(L);
+      W.store.setCursor(L, { nextQIndex: 0, currentGroupId: 0, groupsDone: [], groupResults: {},
+        solved: [], total: 0, roundClean: roundClean !== false, roundTotal: 10 });
+    }
+    // 跑一段：solved0 = 之前已做对的题；wrongAt = 本段第几题答错
+    function run(total, solved0, startAt, wrongAt) {
+      var s = Engine.session({ total: total, levelId: L });
+      var localRefs = refs(L, startAt, startAt + total);
+      s.setRoundTotal(10);
+      s.setQueue(null, [], solved0, localRefs);
       s.setTotal(total);
       var last = null;
       for (var i = 0; i < total; i++) {
-        if (wrongAt === i) { last = s.answer(false); last = s.answer(true); }
+        if (i === wrongAt) { last = s.answer(false); last = s.answer(true); }
         else { last = s.answer(true); }
       }
       return last;
     }
 
-    var L = out.coreLevel || 9;
+    // A 一关一局 10 题全对 → 金
+    reset(true);
+    var a = run(10, [], 0, -1);
+    out.cases.push({ name: 'A 整关全对', star: a && a.star, lastGroup: a && a.lastGroupOnly, expect: 'gold' });
+    var cA = W.store.getCursor(L) || {};
+    out.cases.push({ name: 'A 收尾后游标已清空', star: ((cA.solved||[]).length === 0 && cA.roundClean !== false) ? 'gold' : 'silver', expect: 'gold' });
 
-    // A1 第 9 关第一局（6 题）全对 → 银（未到收尾局）
-    var a1 = runGroup(L, 0, 6, -1);
-    out.cases.push({ name: 'A1 首局全对', star: a1 && a1.star, last: a1 && a1.lastGroupOnly, expect: 'silver' });
-    // A2 第二局（4 题）全对 → 金（两局都全对）
-    var a2 = runGroup(L, 1, 4, -1);
-    out.cases.push({ name: 'A2 次局全对', star: a2 && a2.star, last: a2 && a2.lastGroupOnly, expect: 'gold' });
+    // B 第 3 题错一次 → 银
+    reset(true);
+    var b = run(10, [], 0, 3);
+    out.cases.push({ name: 'B 中途答错一次', star: b && b.star, expect: 'silver' });
 
-    // B 另一关：首题答错，两局其余全对 → 银
-    var L2 = (L + 1 <= 48 ? L + 1 : 1);
-    if (!R.isCore(L2)) L2 = L;
-    var b1 = runGroup(L2, 0, 6, 0);
-    out.cases.push({ name: 'B1 首题答错', star: b1 && b1.star, expect: 'silver' });
-    var b2 = runGroup(L2, 1, 4, -1);
-    out.cases.push({ name: 'B2 次局全对但首局有错', star: b2 && b2.star, expect: 'silver' });
+    // C 断点续做：先做 6 题全对退出，再进做 4 题全对 → 金
+    reset(true);
+    W.store.setCursor(L, { solved: refs(L, 0, 6), roundClean: true, roundTotal: 10, currentGroupId: 0 });
+    var c = run(4, refs(L, 0, 6), 6, -1);
+    out.cases.push({ name: 'C 断点续做全对', star: c && c.star, expect: 'gold' });
 
-    // Progress.record 映射
+    // D 断点续做但第一段有错 → 银
+    reset(true);
+    W.store.setCursor(L, { solved: refs(L, 0, 6), roundClean: false, roundTotal: 10, currentGroupId: 0 });
+    var d = run(4, refs(L, 0, 6), 6, -1);
+    out.cases.push({ name: 'D 续做但前段有错', star: d && d.star, expect: 'silver' });
+
+    // E 答错后重来一轮全对 → 金（新一轮不受上一轮影响）
+    reset(true);
+    var e1 = run(10, [], 0, 2);
+    var e2 = run(10, [], 0, -1);
+    out.cases.push({ name: 'E 上一轮有错、本轮全对', star: e2 && e2.star, first: e1 && e1.star, expect: 'gold' });
+
+    // F Progress 落星
+    reset(true);
     Progress.record(L, 'gold', { gold: true });
     out.recordGold = Progress.starOf(L);
-    var L3 = (L + 2 <= 48 ? L + 2 : 2);
-    Progress.record(L3, 'silver', { gold: false });
-    out.recordSilver = Progress.starOf(L3);
-
-    out.levelMistakes = Progress.read().levelMistakes ? 'present' : 'n/a';
+    Progress.record(L, 'silver', { gold: false });
+    out.recordKeep = Progress.starOf(L);
     return out;
   })()`);
-  console.log('\n=== 段一：星判规则 ===');
-  if (unit.__err) { console.log('ERR', unit.__err); }
+
+  console.log('\n=== 段一：星判规则（一关一局）===');
+  if (unit.__err) console.log('ERR', unit.__err);
   else {
-    console.log('core 关:', unit.coreLevel, ' 非 core 关:', unit.nonCoreLevel);
     (unit.cases || []).forEach(c => {
       console.log('  ' + (c.star === c.expect ? '✅' : '❌') + ' ' + c.name +
-        ' → ' + c.star + ' (期望 ' + c.expect + ')' + (c.last === undefined ? '' : ' lastGroup=' + c.last));
+        ' → ' + c.star + ' (期望 ' + c.expect + ')' + (c.first ? ' 首轮=' + c.first : ''));
     });
-    console.log('  record(gold) →', unit.recordGold, ' record(silver) →', unit.recordSilver);
+    console.log('  record(gold) →', unit.recordGold, ' 再 record(silver) →', unit.recordKeep);
   }
 
-  /* ---------- 段二：真实界面第 9 关 ---------- */
+  /* ---------- 段二：真实界面第 9 关（一次到底）---------- */
   await ev(`localStorage.clear(); 'ok'`);
   await cdp.send('Page.navigate', { url: BASE + '?quick=1&cb=' + Date.now() });
   await sleep(4000);
@@ -152,7 +168,7 @@ function conn(u) {
   await ev(`window.Wellbeing && (window.Wellbeing.__skipRest = true); 'ok'`);
 
   const playLv9 = `(async function(){
-    var out = { renders: 0, answered: 0, wrongSeen: 0, wrongCards: [] };
+    var out = { renders: 0, answered: 0, wrongSeen: 0 };
     function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
     function result(){ return document.querySelector('.result'); }
     function controls(){ return document.querySelectorAll('.l9-key, .l9-card'); }
@@ -162,7 +178,7 @@ function conn(u) {
     if (!mod) { out.err = 'LEVELS[9] missing after openLevel'; return out; }
     var lastRender = mod.render ? mod.render() : -1;
 
-    for (var n = 0; n < 12; n++) {
+    for (var n = 0; n < 14; n++) {
       for (var w = 0; w < 240; w++) {
         if (result()) break;
         var now = mod.render ? mod.render() : 0;
@@ -181,13 +197,6 @@ function conn(u) {
 
       if (cards.length) {
         out.wrongSeen += 1;
-        var board = document.querySelector('.l9-sents');
-        var rect = board ? board.getBoundingClientRect() : null;
-        out.wrongCards.push({ n: cards.length, w: rect ? Math.round(rect.width) : 0, h: rect ? Math.round(rect.height) : 0,
-          visible: cards.every(function (c) {
-            var r = c.getBoundingClientRect();
-            return r.width > 40 && r.height > 20 && getComputedStyle(c).opacity !== '0';
-          }) });
         var bad = cards.filter(function (c) {
           var p1 = String(c.dataset.key || '').split('+');
           if (p1.length !== 2) return false;
@@ -203,25 +212,26 @@ function conn(u) {
       }
       await wait(900);
     }
+    var starEl = document.querySelector('.result-star--gold, .result-star--silver');
+    out.resultStar = starEl ? (starEl.className.indexOf('--gold') >= 0 ? 'gold' : 'silver') : '';
     out.star = window.Progress.starOf(9);
     out.result = !!result();
     return out;
   })()`;
 
-  console.log('\n=== 段二：第 9 关真实界面，两局全对 ===');
+  console.log('\n=== 段二：第 9 关真实界面，一次到底全对 ===');
   const r1 = await ev(playLv9);
-  console.log('第一局:', JSON.stringify(r1));
-  await ev(`window.App.exitLevel()`);
-  await sleep(1500);
-  const r2 = await ev(playLv9);
-  console.log('第二局:', JSON.stringify(r2));
-  const starUI = await ev(`window.Progress.starOf(9)`);
-  console.log('第 9 关最终星:', starUI, starUI === 'gold' ? '✅ 金星' : '❌ 期望 gold');
+  console.log(JSON.stringify(r1));
+  console.log('结果页星:', r1 && r1.resultStar, r1 && r1.resultStar === 'gold' ? '✅' : '❌');
+  console.log('落盘星:', r1 && r1.star, r1 && r1.star === 'gold' ? '✅' : '❌');
 
   const shot = await cdp.send('Page.captureScreenshot', { format: 'png' });
   fs.writeFileSync(path.join(ROOT, 'tmp', 'lv09-final.png'), Buffer.from(shot.data, 'base64'));
 
   console.log('\n页面异常:', exc.length, [...new Set(exc)].slice(0, 5));
+  const bad = (unit.cases || []).filter(c => c.star !== c.expect).length +
+    ((r1 && r1.resultStar === 'gold' && r1.star === 'gold') ? 0 : 1);
+  console.log(bad === 0 ? '\nSTAR_PASS' : '\nSTAR_FAIL(' + bad + ')');
   cdp.close();
-  process.exit(0);
+  process.exit(bad === 0 ? 0 : 1);
 })().catch(e => { console.error('FATAL', e.message); process.exit(1); });

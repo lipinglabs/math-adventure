@@ -683,8 +683,8 @@
     var total = opts.total || 10;
     var levelId = opts.levelId || activeLevelId || 0;
     var W = global.Wellbeing;
-    var CAP = (W && W.CAP) || { MAX_DWELL: 3, CONFIRM_MS: 400, GROUP_SPLIT: [6, 4] };
-    var groupSizes = opts.groupSizes || CAP.GROUP_SPLIT || [6, 4];
+    var CAP = (W && W.CAP) || { MAX_DWELL: 3, CONFIRM_MS: 400, GROUP_SPLIT: [10] };
+    var groupSizes = opts.groupSizes || CAP.GROUP_SPLIT || [10];
     var maxDwell = opts.maxDwell || CAP.MAX_DWELL || 3;
     var confirmMs = CAP.CONFIRM_MS || 400;
     var isChallenge = !!(global.RouteMap && levelId && !global.RouteMap.isCore(levelId));
@@ -711,6 +711,10 @@
     var groupsDone = (cursor0.groupsDone || []).slice();
     var groupResults = cursor0.groupResults || {};
     var levelGroupIndex = null; // 由 planQueue 决定：本局对应第几个分组
+    // 整关一轮的「干净」标记：本轮内出现过任何一次真答错 / 展示答案，就再也拿不到金星。
+    // 必须随游标持久化，否则「做一半退出、回来做完」会把之前的错题洗白。
+    var roundClean = cursor0.roundClean !== false;
+    var roundTotal = 10;        // 本关总题数，由 planQueue 回填
     var lastValue = null;       // 最近一次选项点击 data-value（near 判定用）
 
     function flagsOf(i) { return flags[i] || (flags[i] = { replayUsed: false, hintUsed: false, undoUsed: false }); }
@@ -739,7 +743,9 @@
         groupsDone: groupsDone.slice(),
         groupResults: groupResults,
         solved: solvedRefs.slice(),
-        total: total
+        total: total,
+        roundClean: roundClean,
+        roundTotal: roundTotal
       });
     }
 
@@ -762,48 +768,56 @@
     }
 
     function finishResult() {
-      // 星级规则：银星 = 完成即得、可解锁下一关；金星 = 整关全对（首答且无错）。
-      // 10 题按 6+4 分两局，只有两局都全对才判金星，避免「第一局全对就发金、第二局错了仍是金」。
+      // 星级规则（一关一局 · 4 岁起步）：
+      //   银星 = 完成即得、可解锁下一关；
+      //   金星 = 本轮整关全部答对（首答、无「展示答案」、无因错降级）。
+      // 一关 10 题在一次进入里连续做完（疲劳由 Wellbeing 按时间插休息画面），
+      // 只在整关收尾结算一次——否则会出现「前 6 题全对却发银星」，与「全对必须给金」矛盾。
       var groupClean = (cleanCount >= total && firstPass);
-      var allCorrect = groupClean;
+      var roundEnd = (solvedRefs.length >= roundTotal);
+      var star = (roundEnd && roundClean && groupClean) ? 'gold' : 'silver';
       sessionFlags.groupComplete = true;
+
       if (W && W.store && levelId) {
-        // 分组下标用 planQueue 给出的值：本局 index 是组内计数，不能反推全局组号
+        // 分组字段保留写盘（兼容旧存档与复习池），但星级只按「本轮是否干净」判
         var g = (levelGroupIndex == null ? 0 : levelGroupIndex);
         var gd = groupsDone.slice();
         if (gd.indexOf(g) < 0) gd.push(g);
         var gr = groupResults || {};
-        gr[g] = groupClean;
+        gr[g] = (roundClean && groupClean);
         groupsDone = gd.slice();
         groupResults = gr;
-        W.store.setCursor(levelId, {
-          nextQIndex: index,
-          currentGroupId: Math.min(g + 1, groupSizes.length - 1),
-          groupsDone: gd,
-          groupResults: gr,
-          solved: solvedRefs.slice(),
-          total: total
-        });
-        sessionFlags.lastGroupOnly = (gd.length >= groupSizes.length); // 关卡级正式结算
-        allCorrect = sessionFlags.lastGroupOnly && groupSizes.every(function (_, i) {
-          return gr[i] === true;
-        });
-      } else {
-        // 无本地 store 时退回「本局全对即整关全对」，保证单局仍可判金星
-        sessionFlags.lastGroupOnly = true;
+
+        if (roundEnd) {
+          // 整关收尾：清空本轮记录，下次进来是全新一轮（重玩不复用上次的已做对）
+          W.store.setCursor(levelId, {
+            nextQIndex: 0, currentGroupId: 0,
+            groupsDone: [], groupResults: {},
+            solved: [], total: 0, roundClean: true, roundTotal: roundTotal, planned: []
+          });
+          groupsDone = [];
+          groupResults = {};
+        } else {
+          W.store.setCursor(levelId, {
+            nextQIndex: index, currentGroupId: g,
+            groupsDone: gd, groupResults: gr,
+            solved: solvedRefs.slice(), total: total,
+            roundClean: roundClean, roundTotal: roundTotal
+          });
+        }
       }
-      var star = allCorrect ? 'gold' : 'silver';
+
       emit(EVT.LEVEL_COMPLETE, {
         levelId: levelId, track: sessionFlags.track, star: star,
-        badge: allCorrect, clean: groupClean,
+        badge: star === 'gold', clean: groupClean,
         cleanCount: cleanCount, correctCount: correctCount, wrongCount: wrong.length,
-        lastGroupOnly: sessionFlags.lastGroupOnly
+        lastGroupOnly: roundEnd
       });
       return {
         done: true, advance: false, retry: false, star: star,
-        badge: allCorrect, clean: groupClean,
+        badge: star === 'gold', clean: groupClean,
         wrongCount: wrong.length, cleanCount: cleanCount, correctCount: correctCount,
-        track: sessionFlags.track, lastGroupOnly: sessionFlags.lastGroupOnly
+        track: sessionFlags.track, lastGroupOnly: roundEnd
       };
     }
 
@@ -823,6 +837,11 @@
       setGroupIndex: function (i) {
         levelGroupIndex = Math.max(0, Math.min(Number(i) || 0, groupSizes.length - 1));
         return levelGroupIndex;
+      },
+      // 由 planQueue 回填：本关总题数（10），结算时判断「整关是否做完」
+      setRoundTotal: function (n) {
+        roundTotal = Math.max(1, Math.floor(Number(n)) || 10);
+        return roundTotal;
       },
       // 整关做完后重玩：清掉本关分组进度，开启新一轮
       resetGroupProgress: function () {
@@ -941,6 +960,8 @@
 
         // B7 真答错（非误触撤销、非超时）；challenge 轨答错不进复习池（C4）
         firstPass = false;
+        roundClean = false;      // 本轮一旦有真答错，金星不再可得（随游标持久化）
+        persist();
         attempts[i] = (attempts[i] || 0) + 1;
         var n = attempts[i];
         if (wrong.indexOf(i) < 0) wrong.push(i);
@@ -1051,8 +1072,10 @@
 
     var cursor = W.store.getCursor(levelId) || {};
     var solved = (cursor.solved || []).slice();
-    var gIdx = Math.min(Number(cursor.currentGroupId) || 0, 1);
-    var groupSizes = [6, 4];   // 4 岁起步：10 题切 6+4 两局
+    // 一关一局：整关 10 题在一次进入里连续做完（疲劳由 Wellbeing 按时间插休息画面），
+    // 只在整关收尾结算一次，才能保证「全对 = 金星」。
+    var groupSizes = [Math.max(1, n)];
+    var gIdx = 0;
 
     var globalPending = W.store.pendingAll();
     var localPending = globalPending.filter(function (r) {
@@ -1124,11 +1147,14 @@
       nextQIndex: 0, currentGroupId: gIdx,
       groupsDone: freshRound ? [] : (cursor.groupsDone || []).slice(),
       groupResults: freshRound ? {} : (cursor.groupResults || {}),
-      solved: solved.slice(), total: queue.length, planned: res.queue.slice()
+      solved: solved.slice(), total: queue.length, planned: res.queue.slice(),
+      roundClean: freshRound ? true : (cursor.roundClean !== false),
+      roundTotal: n
     });
 
     lastSession.setQueue(queue, hints, solved, res.queue.slice());
     lastSession.setGroupIndex(gIdx);         // 本局分组号：结算判金星用
+    lastSession.setRoundTotal(n);            // 整关总题数：判断是否整关收尾
     if (freshRound) lastSession.resetGroupProgress();
     lastSession.setTotal(queue.length);   // 关卡模块按本组题数结算，不越界
 

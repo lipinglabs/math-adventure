@@ -50,8 +50,8 @@
     DAILY_CAP_MAX: 1800,
     REST_SCENE_SEC: 20,
     REST_GAP_MS: 180000,
-    GROUP_SIZE: 6,
-    GROUP_SPLIT: [6, 4],
+    GROUP_SIZE: 10,
+    GROUP_SPLIT: [10],      // 一关一局：整关 10 题连续做完，只在收尾结算一次（金星 = 整关全对）
     CONFIRM_MS: 400,
     MAX_DWELL: 3,
     PASS_COMPLETED: 8,     // 达标线（内部软统计，不 gate 任何反馈）

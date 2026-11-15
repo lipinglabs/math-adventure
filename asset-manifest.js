@@ -1,7 +1,7 @@
 /* 自动生成，请勿手改。改动任何 mp3 / webp 后运行 node tools/gen-asset-manifest.js */
 window.ASSET_MANIFEST = {
   rev: "5315d024",
-  codeRev: "95a4a32aa4",
+  codeRev: "1ccffd130e",
   files: {
     "assets/bg/bg_01.webp": "6354f4f83111",
     "assets/bg/bg_02.webp": "08c1a087fe26",

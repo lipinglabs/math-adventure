@@ -125,7 +125,13 @@ window.Progress = (function () {
 
   function save(p) {
     var next = normalize(p);
-    if (sandbox) return next;       // 沙盒绝不写存档
+    if (sandbox) {
+      // 沙盒：只在内存里推进（否则测试时星星永远是 none，根本验不出星级规则），
+      // 绝不写 localStorage、绝不上云；退出沙盒时整份丢弃。
+      sandboxBase = next;
+      emit();
+      return next;
+    }
     next.updatedAt = Date.now();
     cache = next;
     writeStorage(next);
