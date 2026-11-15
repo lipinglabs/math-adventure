@@ -232,24 +232,6 @@ svg { display: block; }
 }
 .icon-btn--replay:disabled:active { transform: none; }
 
-/* 家长设置行（Settings & cloud save 面板） */
-.setting-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--ink);
-  cursor: pointer;
-}
-.setting-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-  accent-color: var(--mint-deep, #3f8f6d);
-}
-
 /* 地图画布：分阶段，一屏一页，所有页排在一条横向轨道上 */
 .map-wrap {
   position: relative;

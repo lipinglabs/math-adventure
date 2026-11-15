@@ -797,7 +797,8 @@
       if (list.length) perLevel += 1;
       count += list.reduce(function (sum, item) { return sum + (item.n || 1); }, 0);
     });
-    return '<div class="field-label" style="margin-top:18px">Progress</div>' +
+    return '<div class="field-label" style="margin-top:16px;padding-top:14px;' +
+        'border-top:1px dashed rgba(185,169,155,.45)">Progress</div>' +
       '<p style="margin-top:2px;font-size:12px;color:var(--ink-soft)">' +
         'Silver = finished, unlocks the next level. Gold = every answer correct.</p>' +
       '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
