@@ -318,14 +318,23 @@
     var queue = [];
     var displaced = [];
     if (reviewRefs && reviewRefs.length) {
-      // C7 整组替换：外来 core 原题进 queue，等量本关新题压回 pending
+      /* C7 整组替换：复习原题只「顶掉」等量的本关新题，
+         本组长度仍等于 groupSize（否则整组只剩 3–4 题就结算，
+         孩子刚热身就领星，进度点也和实际题数对不上）。
+         同关复现（复习题本来就是本关的题）不占名额：直接提到本组最前面。 */
       var size = Math.min(reviewRefs.length, groupSize);
-      queue = reviewRefs.slice(0, size);
-      var pool = remaining.concat(pending);        // 按原序
-      displaced = pool.slice(0, queue.length);
-      var dispSet = {};
-      displaced.forEach(function (r) { dispSet[r] = 1; });
-      pending = pending.filter(function (r) { return !dispSet[r]; }).concat(displaced);
+      var rev = reviewRefs.slice(0, size);
+      var foreignRev = rev.filter(function (r) { return allRefs.indexOf(r) < 0; });
+      // 复习题本身要从候选里排掉，避免同一题出现两次
+      var pool = remaining.concat(pending).filter(function (r) { return rev.indexOf(r) < 0; });
+      displaced = pool.slice(0, Math.min(foreignRev.length, pool.length));
+      var fill = pool.slice(displaced.length,
+        displaced.length + Math.max(0, groupSize - rev.length));
+      var usedSet = {};
+      displaced.forEach(function (r) { usedSet[r] = 1; });
+      fill.forEach(function (r) { usedSet[r] = 1; });
+      queue = rev.concat(fill);
+      pending = pending.filter(function (r) { return !usedSet[r]; }).concat(displaced);
     } else {
       // 正常出题：pending 优先，再从 remaining 补足，不超过 groupSize
       var fromPending = pending.slice(0, groupSize);

@@ -77,7 +77,38 @@
     return { levelId: Number(parts[0]), qIndex: Number(parts[1]) };
   }
 
-  function selectReviewRefs(pool, size) {
+  /* 题目「形状签名」：一关的渲染器只认得自己那几种形状。
+     跨关原题若形状不同（例如 L8 的 drag 题混进 L9 的 tap/flash 题），
+     关卡仍按自己的题型去画，q.a / q.b 取到 undefined，
+     屏幕上就是 "undefined + undefined"、答案算成 NaN —— 孩子怎么点都不对。
+     所以外来题必须在进队之前按形状筛一遍。 */
+  function signatureOf(q) {
+    if (!q || typeof q !== 'object') return '';
+    var parts = [q.type || 'plain'];
+    if (q.a != null && q.b != null) parts.push('ab');
+    if (q.sentences) parts.push('sentences');
+    if (q.eqs) parts.push('eqs');
+    if (q.options) {
+      var o = q.options[0];
+      parts.push('opt:' + (o && typeof o === 'object' ? 'obj' : 'num'));
+    }
+    if (q.cards) parts.push('cards');
+    if (q.combos) parts.push('combos');
+    if (q.sums) parts.push('sums');
+    if (q.groups) parts.push('groups');
+    if (q.lists) parts.push('lists');
+    if (q.routes) parts.push('routes');
+    if (q.numbers) parts.push('numbers');
+    if (q.nums) parts.push('nums');
+    if (q.ones != null) parts.push('ones');
+    if (q.add != null) parts.push('add');
+    if (q.object) parts.push('object');
+    if (q.animal) parts.push('animal');
+    if (q.target != null) parts.push('target');
+    return parts.join('|');
+  }
+
+  function selectReviewRefs(pool, size, accept) {
     pool = pool || {};
     var rows = Object.keys(pool).map(function (ref) {
       var p = parseRef(ref);
@@ -89,7 +120,9 @@
         lastWrongAt: Number(pool[ref] && pool[ref].lastWrongAt) || 0
       };
     }).filter(function (r) {
-      return r.count >= 1 && isCoreReplayLevel(r.levelId);
+      if (!(r.count >= 1 && isCoreReplayLevel(r.levelId))) return false;
+      // 形状不兼容的原题直接跳过（不占名额，后面的候选可以顶上来）
+      return typeof accept === 'function' ? !!accept(r.ref) : true;
     });
 
     rows.sort(function (a, b) {
@@ -204,7 +237,22 @@
       pool: poolGet()
     });
     if (!check.insert) return { insert: false, reason: check.reason };
-    var raw = selectReviewRefs(poolGet(), check.reviewSize);
+    /* 本关能画哪些形状：调用方（engine）按本关题目算好传进来。
+       没传就不筛（保持旧行为），传了就必须筛 —— 外来题型本关画不出来。
+       另外只取「本关自己的旧题」：形状一样也不够，运算语义还会串
+       （L9 的 11+7=18 到了 L11 会被画成 11−7=18）。 */
+    var sigs = opts && opts.signatures;
+    var selfId = opts && opts.levelId != null ? Number(opts.levelId) : null;
+    var accept = null;
+    if (sigs || selfId != null) {
+      accept = function (ref) {
+        if (selfId != null && parseRef(ref).levelId !== selfId) return false;
+        if (!sigs) return true;
+        var it = resolveRef(ref, data);
+        return !!it && !!sigs[signatureOf(it.question)];
+      };
+    }
+    var raw = selectReviewRefs(poolGet(), check.reviewSize, accept);
     /* 解析不出来的一律丢掉（重做过的关卡旧题号会失效），
        refs 也必须跟着过滤：调用方是按 refs.length 决定要不要插复习组的，
        留着死 ref 会插进一组查不到原题的空白题。 */
@@ -216,7 +264,7 @@
       refs.push(r);
       resolved.push(it);
     });
-    if (!refs.length) return { insert: false, reason: '池内原题已失效（关卡重做）', reviewSize: 0 };
+    if (!refs.length) return { insert: false, reason: '池内没有本关画得出来的原题', reviewSize: 0 };
     return {
       insert: true,
       label: LABEL,
@@ -242,6 +290,7 @@
     isCoreReplayLevel: isCoreReplayLevel,
     shouldInsertReview: shouldInsertReview,
     parseRef: parseRef,
+    signatureOf: signatureOf,
     selectReviewRefs: selectReviewRefs,
     resolveRef: resolveRef,
     addWrong: addWrong,

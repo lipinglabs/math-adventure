@@ -171,7 +171,7 @@
 
     var numA = el('div', 'l9-num');
     var digitsA = [];
-    var aStr = String(cfg.a);
+    var aStr = cfg.a == null ? '?' : String(cfg.a);
     if (cfg.single) {
       // 题目里「14」就是一整块，不再拆成 1 和 4
       var whole = digit(aStr, aStr.length > 1 ? 'l9-digit--tens' : 'l9-digit--ones');
@@ -190,7 +190,7 @@
     row.appendChild(el('span', 'l9-op', '+'));
 
     var numB = el('div', 'l9-num');
-    var bDigit = digit(String(cfg.b), 'l9-digit--add');
+    var bDigit = digit(cfg.b == null ? '?' : String(cfg.b), 'l9-digit--add');
     numB.appendChild(bDigit);
     row.appendChild(numB);
 
@@ -415,6 +415,20 @@
     story.appendChild(replay);
   }
 
+  /** 题目能不能画：各题型的必需字段。
+      复习池里的外来原题（别的关的 drag / pick / count）本关画不出来，
+      硬画就会在屏幕上印出 "undefined + undefined" 且答案算成 NaN。 */
+  function canRender(q) {
+    if (!q || typeof q !== 'object') return false;
+    if (q.type === 'wrong') return !!(q.sentences && q.sentences.length);
+    if (q.type === 'tap' || q.type === 'flash') {
+      return q.a != null && q.b != null &&
+        isFinite(Number(q.a)) && isFinite(Number(q.b)) &&
+        !!(q.options && q.options.length);
+    }
+    return false;
+  }
+
   function askQuestion(root) {
     if (!alive) return;
     Engine.audio.stop();
@@ -422,6 +436,14 @@
 
     var q = queue[session.index];
     if (!q) return;
+
+    // 画不出来的题直接跳过：不判错、不卡关，也不在屏幕上留半截怪题
+    if (!canRender(q)) {
+      var skipped = session.answer(true);
+      if (skipped.done) later(function () { finish(skipped.star); }, 120);
+      else later(function () { askQuestion(root); }, 120);
+      return;
+    }
 
     root.innerHTML = '';
     renderId += 1;

@@ -523,6 +523,36 @@ svg { display: block; }
   padding: 10px 18px calc(18px + var(--safe-bottom));
 }
 
+/* 进关占位：素材还在路上时给三个呼吸点，避免「只有顶栏的白屏」 */
+.stage-wait {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+}
+
+.stage-wait i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--peach, #f3a78f);
+  opacity: 0.25;
+  animation: stage-wait-breathe 1.15s ease-in-out infinite;
+}
+
+.stage-wait i:nth-child(2) { animation-delay: 0.16s; }
+.stage-wait i:nth-child(3) { animation-delay: 0.32s; }
+
+@keyframes stage-wait-breathe {
+  0%, 100% { opacity: 0.22; transform: scale(0.86); }
+  45% { opacity: 0.9; transform: scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-wait i { animation: none; opacity: 0.55; }
+}
+
 /* 关卡占位卡（第一关内容落地前） */
 .wip {
   width: 100%;

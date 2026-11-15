@@ -677,6 +677,25 @@
     }, 640);
   }
 
+  /* 点进关卡的第一帧就把「这一关自己的画面」立起来：
+     照片背景、标题、进度点。素材还在路上时，孩子看到的是这一关的场景，
+     而不是一张只有顶栏的空白页（旧版要等 loadLevel 全部就绪才 showScreen）。 */
+  function primeLevelScreen(level) {
+    var stage = byId('stage');
+    if (!stage) return;
+    showScreen('level');
+    byId('level-index').textContent = 'Level ' + level.id;
+    byId('level-name').textContent = level.name;
+    /* 背景图已经在缓存里（blob）才先挂上：还没缓存时挂原图会白下一张，
+       等 loadLevel 把素材收好、mountLevel 再上。 */
+    var bgUrl = level.background && Engine.assets && Engine.assets.imageUrl
+      ? Engine.assets.imageUrl(level.background) : '';
+    if (bgUrl && bgUrl.indexOf('blob:') === 0) applyLevelBackground(level);
+    renderDots(Math.min((level.questions && level.questions.length) || 10, 10));
+    setStep(0);
+    stage.innerHTML = '<div class="stage-wait" aria-hidden="true"><i></i><i></i><i></i></div>';
+  }
+
   function mountLevel(level) {
     var stage = byId('stage');
     stage.innerHTML = '';
@@ -738,6 +757,7 @@
     }
 
     entering = true;
+    primeLevelScreen(level);
     var demo = demoMode();
     var options = {};
 
@@ -757,6 +777,7 @@
       entering = false;
       if (mySeq !== enterSeq) return;          // 加载期间已经退关：不挂载
       if (!results[1].ok) {
+        showScreen('map');                     // 素材没就绪：退回地图，不留一张空关卡页
         Engine.toast('Could not load the sounds. Try again?');
         return;
       }

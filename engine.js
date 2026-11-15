@@ -1094,12 +1094,22 @@
     var reviewRefs = null;
     var isCore = R.isCore(levelId);
     var coreLevelsDone = 0;
+    var sigOf = (Rev && typeof Rev.signatureOf === 'function') ? Rev.signatureOf : null;
+    /* 本关渲染器认得哪些「题目形状」：只有形状一致的原题才能进来。
+       否则 L8 的 drag 题会落到 L9 的 flash 分支，屏幕上出现 undefined，
+       答案算成 NaN，孩子怎么点都不对（卡死）。 */
+    var shapes = null;
+    if (sigOf) {
+      shapes = {};
+      list.forEach(function (q) { if (q) shapes[sigOf(q)] = 1; });
+    }
     if (global.Progress && typeof global.Progress.read === 'function') {
       (global.Progress.read().cleared || []).forEach(function (id) { if (R.isCore(id)) coreLevelsDone += 1; });
     }
     if (isCore && Rev) {
       var grp = Rev.buildReviewGroup(coreLevelsDone, D, {
-        groupSize: groupSizes[gIdx], isFinale: (levelId === 26), isCoreComplete: false
+        groupSize: groupSizes[gIdx], isFinale: (levelId === 26), isCoreComplete: false,
+        signatures: shapes, levelId: levelId
       });
       if (grp && grp.insert && grp.refs.length) reviewRefs = grp.refs.slice(0, groupSizes[gIdx]);
     }
@@ -1127,13 +1137,44 @@
       solved = [];
     }
 
+    function srcQuestionOf(ref) {
+      var p = String(ref).split(':');
+      var lid = Number(p[0]), qi = Number(p[1]);
+      if (lid === levelId) return list[qi];
+      var srcLv = D.levels[lid];
+      return srcLv && srcLv.questions && srcLv.questions[qi];
+    }
+
+    function renderableBy(ref) {
+      var q = srcQuestionOf(ref);
+      if (!q) return false;
+      if (!shapes || !sigOf) return true;
+      return !!shapes[sigOf(q)];
+    }
+
+    /* 队列里若还有本关画不出来的外来 ref（旧游标 / 旧池留下的），
+       换成本关自己的题：长度不变、每题都画得出来，不会再出现 undefined。 */
+    var queueRefs = res.queue.slice();
+    if (shapes) {
+      var usedRef = {};
+      queueRefs.forEach(function (r) { usedRef[r] = 1; });
+      var spare = [];
+      list.forEach(function (q, i) {
+        var r = String(levelId) + ':' + i;
+        if (!usedRef[r] && solved.indexOf(r) < 0) spare.push(r);
+      });
+      queueRefs = queueRefs.map(function (ref) {
+        if (renderableBy(ref)) return ref;
+        return spare.length ? spare.shift() : ref;
+      });
+    }
+
     function refToQuestion(ref) {
       var p = String(ref).split(':');
       var lid = Number(p[0]), qi = Number(p[1]);
       if (lid === levelId) return list[qi];
       // 跨关「再玩一次」原题：浅拷贝、voice 指向源关既有 key 的相对路径（零新增 key）
-      var srcLv = D.levels[lid];
-      var srcQ = srcLv && srcLv.questions && srcLv.questions[qi];
+      var srcQ = srcQuestionOf(ref);
       if (!srcQ) return list[0];
       var copy = {};
       Object.keys(srcQ).forEach(function (k) { copy[k] = srcQ[k]; });
@@ -1142,7 +1183,7 @@
       return copy;
     }
 
-    var queue = res.queue.map(refToQuestion).filter(function (q) { return !!q; });
+    var queue = queueRefs.map(refToQuestion).filter(function (q) { return !!q; });
     var hints = queue.map(numericAnswerOf);
 
     // 写盘：全局 pending（含 C7 被替换的新题）+ 本关 levelCursor（逐题写盘基准）
@@ -1152,12 +1193,12 @@
       nextQIndex: 0, currentGroupId: gIdx,
       groupsDone: freshRound ? [] : (cursor.groupsDone || []).slice(),
       groupResults: freshRound ? {} : (cursor.groupResults || {}),
-      solved: solved.slice(), total: queue.length, planned: res.queue.slice(),
+      solved: solved.slice(), total: queue.length, planned: queueRefs.slice(),
       roundClean: freshRound ? true : (cursor.roundClean !== false),
       roundTotal: n
     });
 
-    lastSession.setQueue(queue, hints, solved, res.queue.slice());
+    lastSession.setQueue(queue, hints, solved, queueRefs.slice());
     lastSession.setGroupIndex(gIdx);         // 本局分组号：结算判金星用
     lastSession.setRoundTotal(n);            // 整关总题数：判断是否整关收尾
     if (freshRound) lastSession.resetGroupProgress();

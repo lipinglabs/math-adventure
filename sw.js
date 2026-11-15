@@ -12,7 +12,7 @@
    孩子设备下一次联网就会自动取到新代码；素材则按内容 hash 精确失效。
    ============================================================ */
 
-var CACHE = 'math-adventure-shell-v3';   // v3：背景图改可选 + 提超时/重试 + 阶段图 cache-first
+var CACHE = 'math-adventure-shell-v4';   // v4：换版清掉 v3 外壳（复习题/进关占位两处修复要整体生效）
 
 var SHELL = [
   './',
