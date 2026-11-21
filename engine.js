@@ -32,7 +32,11 @@
      两个统一入口驱动，因此把 B/C 组的机制集中在本文件接线，不改 48 个关卡文件。 */
   var activeLevelId = 0;     // loadLevel 时记录，供呈现规划识别当前关
   var lastSession = null;    // 最近一次 createSession，供呈现规划 setTotal 修正题量
-  var sessionFlags = { groupComplete: false, lastGroupOnly: false, track: 'core', isChallenge: false };
+  var sessionFlags = {
+    groupComplete: false, lastGroupOnly: false, track: 'core', isChallenge: false,
+    // 断点续做时，本局队列前面已经完成了多少题（进度点从这里继续点亮）
+    resumeOffset: 0
+  };
 
   // 事件名来自 wellbeing.js（先加载）；这里做兜底，保证单独加载 engine.js 也不报错
   var EVT = global.EVT || {
@@ -825,7 +829,9 @@
     }
 
     var api = {
-      total: total,
+      // 必须是 getter：setTotal 会在规划队列时改题量，写成普通属性会留下旧快照，
+      // 关卡与验收脚本读到的 total 会与实际队列不一致。
+      get total() { return total; },
       levelId: levelId,
       get index() { return index; },
       get firstPass() { return firstPass; },
@@ -1198,6 +1204,10 @@
       roundTotal: n
     });
 
+    // 续做偏移：本轮开始前已经完成的题数。进度点据此从 2/10 接着点亮，
+    // 而不是把剩下的 8 题当成「整关 8 题」——否则孩子会在 8/10 处被提前结算。
+    sessionFlags.resumeOffset = freshRound ? 0 : solved.length;
+
     lastSession.setQueue(queue, hints, solved, queueRefs.slice());
     lastSession.setGroupIndex(gIdx);         // 本局分组号：结算判金星用
     lastSession.setRoundTotal(n);            // 整关总题数：判断是否整关收尾
@@ -1565,6 +1575,9 @@
     activeLevelId = (level && level.id) ? Number(level.id) : 0;
     sessionFlags.groupComplete = false;
     sessionFlags.lastGroupOnly = false;
+    // 每关重置续做偏移：乘除段有 22 关不走 quiz.shuffle/planQueue，
+    // 否则会继承上一关的偏移，进度点从一半开始亮。
+    sessionFlags.resumeOffset = 0;
     var tasks = buildTasks(level, options);
     var done = 0;
     var failed = [];

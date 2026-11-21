@@ -144,6 +144,21 @@ window.Progress = (function () {
     return cache;
   }
 
+  /** 解锁链只落在「数据里真正存在的下一关」上。
+      旧实现写的是 id + 1：一旦指针表里有空档（例如 15 之后没有 16），
+      unlockedLevel 会停在一个不存在的关卡上，后面所有关卡永远打不开。
+      这里按 MATH_DATA.levels 的实际键取下一个，找不到就停在最后一关。 */
+  function nextLevelId(id) {
+    var levels = (window.MATH_DATA && window.MATH_DATA.levels) || null;
+    if (!levels) return id + 1;
+    var next = null;
+    Object.keys(levels).forEach(function (key) {
+      var n = Math.floor(Number(key));
+      if (n > id && (next === null || n < next)) next = n;
+    });
+    return next === null ? id : next;
+  }
+
   /** B1/B4/C4 记录一次通关：完成即解锁（删除「第一遍全对才解锁」）。
       银星 = 完成即得、可解锁下一关；金星 = 整关全对（首答且无错），
       由 Engine 判定后通过 opts.gold / star 传入，不受家长开关约束。
@@ -170,8 +185,9 @@ window.Progress = (function () {
     }
     if (next.cleared.indexOf(id) < 0) next.cleared.push(id);
 
-    // B1：完成即解锁，与对错/星级/提示/重听/撤销全无关；只在 core 轨串联
-    next.unlockedLevel = Math.max(next.unlockedLevel, id + 1);
+    // B1：完成即解锁，与对错/星级/提示/重听/撤销全无关；只在 core 轨串联。
+    // 推进到「下一关实际存在的关卡」，跳过关卡表里的任何空档。
+    next.unlockedLevel = Math.max(next.unlockedLevel, nextLevelId(id));
     // 等量成长点（完成/收尾都给、不惩罚），落独立分区，不进 payload
     if (window.Wellbeing) window.Wellbeing.addGrowthPoints(1);
     return save(next);
@@ -180,7 +196,9 @@ window.Progress = (function () {
   function isUnlocked(levelId) {
     var p = read();
     var id = Number(levelId);
-    return id <= p.unlockedLevel || !!p.stars[String(id)];
+    // 已通关的关卡一定可重玩：旧存档如果只写了 cleared 没写星，也不会被锁住。
+    return id <= p.unlockedLevel || !!p.stars[String(id)] ||
+      p.cleared.indexOf(id) >= 0;
   }
 
   function starOf(levelId) {

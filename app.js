@@ -318,8 +318,12 @@
   function focusIndex() {
     var ids = Object.keys(DATA.levels).map(Number).sort(function (a, b) { return a - b; });
     var target = ids.length ? ids[ids.length - 1] : 1;
+    // 焦点 = 第一个「还没通关」的关，而不是「还没拿金星」的关。
+    // 旧写法会让刚拿了银星的 L15 继续占着焦点，打完也不翻到下一阶（L16 就被藏在下一页）。
+    var cleared = {};
+    (Progress.read().cleared || []).forEach(function (id) { cleared[id] = 1; });
     for (var i = 0; i < ids.length; i += 1) {
-      if (Progress.starOf(ids[i]) !== 'gold') { target = ids[i]; break; }
+      if (!cleared[ids[i]]) { target = ids[i]; break; }
     }
     for (var p = 0; p < view.pages.length; p += 1) {
       for (var k = 0; k < view.pages[p].items.length; k += 1) {
@@ -530,8 +534,10 @@
   function setStep(n) {
     var dots = byId('level-dots');
     if (!dots) return;
+    var count = dots.children.length;
+    var at = Math.max(0, Math.min(count, Math.floor(Number(n) || 0)));
     Array.prototype.forEach.call(dots.children, function (dot, i) {
-      dot.className = i < n ? 'is-done' : (i === n ? 'is-now' : '');
+      dot.className = i < at ? 'is-done' : (i === at ? 'is-now' : '');
     });
   }
 
@@ -550,7 +556,13 @@
       },
       sfx: Engine.sfx,
       anim: Engine.anim,
-      step: setStep,
+      // 进度点按「整关」而不是「本局剩余」点亮：断点续做时，Engine 给出
+      // 本轮开始前已完成的题数，这里统一加上偏移。读取时机必须在调用瞬间，
+      // 因为重玩（ctx.restart）不会重跑 loadLevel，偏移由关卡内的 planQueue 刷新。
+      step: function (n) {
+        var offset = (Engine.flags && Engine.flags.resumeOffset) || 0;
+        setStep((Number(n) || 0) + offset);
+      },
       complete: function (star) {
         // B1 完成即解锁；银星 = 完成即得、可解锁下一关，金星 = 整关全对（由 Engine 判定后随 star 传入）。
         // C4 challenge 轨完成不写 unlocked/stars/completedLevels，由 Progress.record 按 routeMap 判定。
