@@ -19577,3 +19577,35 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   z-index: 55;
   background: transparent;
 }
+
+/* 家长面板：从第 N 关重新锁死 */
+.relock-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 10px;
+}
+
+.relock-row select.field {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 50px;
+  padding: 0 12px;
+}
+
+.relock-btn {
+  flex: 0 0 auto;
+  min-height: 50px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 16px;
+  background: #F3E3C8;
+  color: #6B4E31;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 2px 0 #E3CDAA;
+  cursor: pointer;
+}
+
+.relock-btn:active { transform: translateY(1px); }

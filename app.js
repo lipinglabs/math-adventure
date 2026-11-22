@@ -853,7 +853,33 @@
         'Silver = finished, unlocks the next level. Gold = every answer correct.</p>' +
       '<p style="margin-top:10px;font-size:12px;color:var(--ink-soft)">' +
         'Questions needing practice: ' + count + ' across ' + perLevel + ' levels</p>' +
+      relockHTML(p) +
       parentHTML();
+  }
+
+  /** 家长「从第 N 关重新锁死」的入口：只列到当前已解锁的最后一关，
+      默认选中该关（最不具破坏性的默认值），真正的动作还要过一层确认弹层。 */
+  function relockHTML(p) {
+    var maxLevel = 1;
+    Object.keys(DATA.levels).forEach(function (key) {
+      var n = Math.floor(Number(key));
+      if (n > maxLevel) maxLevel = n;
+    });
+    var top = Math.max(1, Math.min(maxLevel, p.unlockedLevel));
+    var opts = '';
+    for (var i = 1; i <= top; i += 1) {
+      var lv = DATA.levels[i];
+      opts += '<option value="' + i + '"' + (i === top ? ' selected' : '') + '>' +
+        'Level ' + i + (lv && lv.name ? ' · ' + lv.name : '') + '</option>';
+    }
+    return '<div class="field-label" style="margin-top:18px;padding-top:14px;' +
+        'border-top:1px dashed rgba(185,169,155,.45)">Replay from a level</div>' +
+      '<p style="margin-top:2px;font-size:12px;color:var(--ink-soft)">' +
+        'Locks this level and every level after it, clears their stars, and starts them over.</p>' +
+      '<div class="relock-row">' +
+        '<select id="relock-level" class="field" aria-label="Level to lock from">' + opts + '</select>' +
+        '<button type="button" id="relock-apply" class="relock-btn">Lock</button>' +
+      '</div>';
   }
 
   function openSavePanel() {
@@ -944,6 +970,41 @@
     // 家长开关已删除：行为固定（60 秒宽松计时 / 不显示「试一试」/ 9、12 限时挑战关闭），
     // 设置变动统一由 EVT_SETTINGS_CHANGED → timer.rebase() 处理，此处不再绑定任何勾选。
     // E1 陪玩钩子 1：讲给爸爸妈妈听 → 家长按「I heard you」成长树 +1 叶（不判对错、不录音、不强制）
+    // 家长「从第 N 关重新锁死」：确认弹层写明范围与后果，再落盘并让地图重绘
+    var relockBtn = byId('relock-apply');
+    if (relockBtn) relockBtn.addEventListener('click', function () {
+      var sel = byId('relock-level');
+      var from = sel ? Math.floor(Number(sel.value)) : 0;
+      if (!from) return;
+      var maxLevel = 1;
+      Object.keys(DATA.levels).forEach(function (key) {
+        var n = Math.floor(Number(key));
+        if (n > maxLevel) maxLevel = n;
+      });
+      Engine.sfx.tap();
+      var scopeText = from === 1
+        ? 'All ' + maxLevel + ' levels will be locked again and every star cleared.'
+        : 'Levels ' + from + '–' + maxLevel + ' will be locked again and their stars cleared. ' +
+          'Levels 1–' + (from - 1) + ' keep their stars.';
+      Engine.modal({
+        title: 'Lock from Level ' + from + '?',
+        bodyHTML: '<p style="font-size:14px;line-height:1.7;color:var(--ink-soft)">' +
+          scopeText + ' A half-finished round in those levels will start over.</p>',
+        actions: [
+          { label: 'Cancel', kind: 'ghost' },
+          {
+            label: 'Lock & replay',
+            onClick: function () {
+              Progress.relockFrom(from);
+              Cloud.schedulePush();
+              if (currentLevel && currentLevel.id >= from) exitLevel();
+              Engine.toast('Locked again from Level ' + from);
+            }
+          }
+        ]
+      });
+    });
+
     var leaf = byId('wb-parent-leaf');
     if (leaf) leaf.addEventListener('click', function () {
       if (global.Wellbeing && Wellbeing.addParentLeaf) Wellbeing.addParentLeaf();

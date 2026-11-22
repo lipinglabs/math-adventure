@@ -472,6 +472,10 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
   三处必截断的等待（2600 / 5200 / 2600 ms 对应 3.58 / 5.50 / 4.73 秒语音）全部消除；② L22 `buildWrong()` 补 `is-in`
   —— `.l22-vrow` 默认 `opacity:0`，缺类导致三张竖式卡"有字但全透明"，同时卡片内边距 6→10px、skew 位移 13→10px 防个位列出界；
   ③ L36 语音前缀 `l36/` → `lv36/`，此前 12 条语音全 404、`play()` 抛 `NotSupportedError` 被 `saySeq` 静默吞掉；
+- **家长重锁（2026-11-22，v58）**：家长面板新增「Replay from a level」。选定第 N 关后，
+  N 及之后的星 / 通关记录清空、`unlockedLevel` 收到 N，并清掉这些关的续做游标 / pending / 复习池，
+  孩子从第 N 关完整重来；二次确认弹层写明范围。存档新增 `relockFrom / relockAt` 并进云白名单——
+  `Progress.merge` 以较晚的 `relockAt` 截断旧快照，避免另一台设备同步时把清掉的星加回来。
 - **题面消失 + 三次放行（2026-11-22，v57）**：① `Feedback.cancelProcess()` 旧实现把
   `trackProcess` 的节点一律 `removeChild`，而 F3「再试一次」高亮的是关卡的 `.lv-story`——
   于是同一题答错两次后，整个题面被当成过程浮层删掉，只剩托盘里的数字键。

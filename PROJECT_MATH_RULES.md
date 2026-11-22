@@ -1047,14 +1047,30 @@ L40 排查出一类会「静默放过错误」的写法，此前关卡同样中�
 ### 7.1 本地
 
 - `localStorage` 键：`math-adventure.progress.v1`。
-- 结构：`{ version, unlockedLevel, stars:{levelId:'gold'|'silver'}, cleared:[], updatedAt }`。
+- 结构：`{ version, unlockedLevel, stars:{levelId:'gold'|'silver'}, cleared:[], relockFrom, relockAt, updatedAt }`。
+  `relockFrom = 0` 表示从未被家长重锁；`relockAt` 是该次重锁的时间戳。
 
 ### 7.2 合并规则（最高关卡覆盖）
 
 - `unlockedLevel` 取最大值；
 - 每关星级取最高（`gold > silver > none`）；
 - `cleared` 取并集；
-- **任何时候都先合并再写**，禁止用低进度覆盖高进度。
+- **任何时候都先合并再写**，禁止用低进度覆盖高进度；
+- **唯一例外是家长重锁**：以较晚的 `relockAt` 为准，`updatedAt < relockAt` 的一方
+  在 `relockFrom` 及之后的星 / `cleared` 一律作废，`unlockedLevel` 也压回 `relockFrom`。
+  这样另一台设备用旧快照同步时，不会把家长清掉的星加回来；重锁之后重新通关写下的星
+  （`updatedAt ≥ relockAt`）照常保留。
+
+### 7.2.1 家长重锁（从第 N 关重新开始）
+
+- 入口：家长面板（`btn-save` → Grown-ups only 图形验证）→ **Replay from a level** → 选关 → **Lock** → 二次确认。
+- 语义：`N` 及之后的所有关重新锁死、星与通关记录清空，`unlockedLevel` 收到 `N`；`1…N-1` 原样保留。
+- 同时清掉这些关的续做游标、`pendingQuestions`、`reviewPool` 条目——孩子是从第 `N` 关**完整重来**，
+  不是接着半局继续做。
+- 落盘走 `Progress.relockFrom(N)`；`save()` 触发 `progress:change`，地图自动翻到第 `N` 关所在阶段。
+- 若家长此时正停在一个会被锁掉的关卡里，立即退回地图。
+- 只降不升：选一个高于当前 `unlockedLevel` 的关不会产生变化。
+- 错题统计（`levelMistakes` / `attempts`）**不清**，家长看板仍能看到历史薄弱点。
 
 ### 7.3 令牌
 
@@ -1259,4 +1275,5 @@ L40 排查出一类会「静默放过错误」的写法，此前关卡同样中�
 | 2026-10-30 | v54 | **终极仪式**：新增 §5.33、§6.16 差异表；题型表补 L48 两型；验收补 119–120 条；新增 L48 `Ultimate Math Challenge`（全项目完结） |
 | 2026-10-31 | v55 | **背景改版**：§5.16-2/4、§5.17-1/4 改为「780×1688 + 按屏幕比例裁切 + 不模糊 + opacity .5」；验收 62/63 条同步；新增 `tools/bg_layout.json` 固定 48 张裁切窗口 |
 | 2026-11-21 | v56 | **解锁链与续做**：§6.2 改为「完成即解锁」；解锁推进到下一关实际存在的关号；续做时进度点按整关计；P9 取消隐藏轨（L16/19–24/27 并入 core）；验收第 7 条同步 |
+| 2026-11-22 | v58 | **家长重锁**：§7.2.1 新增「从第 N 关重新开始」；§7.1 存档结构加 `relockFrom/relockAt`；§7.2 合并规则补重锁例外；`cloud.js` 白名单同步这两个字段 |
 | 2026-11-22 | v57 | **三次答错放行 + 题面消失修复**：§6.3 补三级错误处理（第 3 次亮答案、停留 1.5s、无条件前进、只发银星）；`Feedback.cancelProcess()` 改为「自建浮层才删除，借用节点只摘类名」——修复 F3 高亮 `.lv-story` 后被整块移除、导致答错两次题面消失 |

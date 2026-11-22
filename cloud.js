@@ -131,9 +131,11 @@ window.Cloud = (function () {
   }
 
   /** A6/E3：Gist payload 白名单序列化。
-      只保留 7 个既有字段（version:1 / unlockedLevel / stars / cleared /
-      levelMistakes / attempts / updatedAt），结构 / 字段 / 版本号绝对不变；
-      任何新增本地态字段都会被丢弃，旧存档可读、跨设备无需 migration。 */
+      保留 7 个进度字段（version:1 / unlockedLevel / stars / cleared /
+      levelMistakes / attempts / updatedAt），外加 v58 的家长重锁标记
+      relockFrom / relockAt —— 这两个字段必须跨设备同步，否则另一台设备
+      合并旧快照时会把家长清掉的星原样加回来。
+      其余本地态字段（settings / cursor / pending）仍一律丢弃。 */
   function payloadOf(p) {
     p = p || {};
     return {
@@ -143,7 +145,9 @@ window.Cloud = (function () {
       cleared: p.cleared || [],
       levelMistakes: p.levelMistakes || {},
       attempts: p.attempts || {},
-      updatedAt: p.updatedAt || 0
+      updatedAt: p.updatedAt || 0,
+      relockFrom: p.relockFrom || 0,
+      relockAt: p.relockAt || 0
     };
   }
 

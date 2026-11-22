@@ -40,6 +40,9 @@ window.Progress = (function () {
   function blank() {
     return {
       version: 1, unlockedLevel: 1, stars: {}, cleared: [],
+      // 家长「从第 N 关重新锁死」的事件标记：relockFrom=0 表示从未重锁。
+      // 必须进云存档，否则另一台设备合并时会把已清掉的星加回来。
+      relockFrom: 0, relockAt: 0,
       levelMistakes: {}, attempts: {}, updatedAt: 0
     };
   }
@@ -85,6 +88,10 @@ window.Progress = (function () {
         if (n > 0) p.attempts[String(key)] = n;
       });
     }
+
+    var rf = Math.floor(Number(raw.relockFrom) || 0);
+    p.relockFrom = rf > 0 ? rf : 0;
+    p.relockAt = Math.max(0, Math.floor(Number(raw.relockAt) || 0));
 
     p.updatedAt = Number(raw.updatedAt) || 0;
     return p;
@@ -193,6 +200,57 @@ window.Progress = (function () {
     return save(next);
   }
 
+  /** 家长「从第 N 关重新锁死」。
+      N 及之后的星与通关记录清空，unlockedLevel 收到 N（只降不升）。
+      同时清掉这些关在本地分区的续做游标 / 待做队列 / 复习池，
+      保证孩子是从第 N 关完整重来，而不是接着半局继续做。
+      1…N-1 的星与通关记录原样保留。 */
+  function relockFrom(levelId) {
+    var from = Math.floor(Number(levelId));
+    if (!from || from < 1) return read();
+
+    var next = normalize(cache || readStorage());
+    Object.keys(next.stars).forEach(function (key) {
+      if (Math.floor(Number(key)) >= from) delete next.stars[key];
+    });
+    next.cleared = next.cleared.filter(function (id) { return id < from; });
+    next.unlockedLevel = Math.max(1, Math.min(next.unlockedLevel, from));
+    next.relockFrom = from;
+    next.relockAt = Date.now();
+
+    var maxLevel = from;
+    var levels = (window.MATH_DATA && window.MATH_DATA.levels) || null;
+    if (levels) {
+      Object.keys(levels).forEach(function (key) {
+        var n = Math.floor(Number(key));
+        if (n > maxLevel) maxLevel = n;
+      });
+    }
+
+    var W = window.Wellbeing;
+    if (W && W.store) {
+      for (var i = from; i <= maxLevel; i += 1) {
+        if (W.store.clearCursor) W.store.clearCursor(i);
+      }
+      if (W.store.pendingAll && W.store.patch) {
+        var keepPending = W.store.pendingAll().filter(function (ref) {
+          return Math.floor(Number(String(ref).split(':')[0])) < from;
+        });
+        var pool = W.store.reviewPool ? W.store.reviewPool() : {};
+        var keepPool = {};
+        Object.keys(pool).forEach(function (key) {
+          if (Math.floor(Number(String(key).split(':')[0])) < from) keepPool[key] = pool[key];
+        });
+        W.store.patch(function (s) {
+          s.pendingQuestions = keepPending;
+          s.reviewPool = keepPool;
+        });
+      }
+    }
+
+    return save(next);   // save() 内部 emit → 地图立即重绘
+  }
+
   function isUnlocked(levelId) {
     var p = read();
     var id = Number(levelId);
@@ -206,10 +264,40 @@ window.Progress = (function () {
   }
 
   /** 合并两份存档：最高关卡覆盖、最高星级覆盖、通关取并集 */
+  /** 重锁截断：早于 relockAt 的存档，其在 relockFrom 及之后的星与通关记录一律作废。
+      「重锁设备」自己在 relockAt 之后写的星是新的，必须保留，所以按 updatedAt 判断。 */
+  function stripRelocked(side, from, at) {
+    if (!from || !at) return side;
+    if ((side.updatedAt || 0) >= at) return side;
+    var out = normalize(JSON.parse(JSON.stringify(side)));
+    Object.keys(out.stars).forEach(function (key) {
+      if (Math.floor(Number(key)) >= from) delete out.stars[key];
+    });
+    out.cleared = out.cleared.filter(function (id) { return id < from; });
+    out.unlockedLevel = Math.max(1, Math.min(out.unlockedLevel, from));
+    return out;
+  }
+
   function merge(a, b) {
     var left = normalize(a);
     var right = normalize(b);
+
+    // 取较晚的一次重锁作为截断线，先剔除旧一侧在截断线之后的进度
+    var relockFrom = 0;
+    var relockAt = 0;
+    if ((left.relockAt || 0) >= (right.relockAt || 0)) {
+      relockFrom = left.relockFrom; relockAt = left.relockAt;
+    } else {
+      relockFrom = right.relockFrom; relockAt = right.relockAt;
+    }
+    if (relockAt && relockFrom) {
+      left = stripRelocked(left, relockFrom, relockAt);
+      right = stripRelocked(right, relockFrom, relockAt);
+    }
+
     var out = blank();
+    out.relockFrom = relockFrom;
+    out.relockAt = relockAt;
 
     out.unlockedLevel = Math.max(left.unlockedLevel, right.unlockedLevel);
     out.updatedAt = Math.max(left.updatedAt, right.updatedAt);
@@ -350,6 +438,7 @@ window.Progress = (function () {
     read: read,
     save: save,
     record: record,
+    relockFrom: relockFrom,
     recordMistake: recordMistake,
     recordAttempt: recordAttempt,
     isUnlocked: isUnlocked,
