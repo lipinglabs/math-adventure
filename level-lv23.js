@@ -624,6 +624,7 @@
       board.innerHTML = '';
       list.forEach(function (s, i) {
         var wrap = el('button', 'l23-list');
+        if (s.bad) state.answerNode = wrap;
         wrap.type = 'button';
         wrap.dataset.key = s.a + '+' + s.b + '=' + s.total;
         wrap.setAttribute('aria-label', s.a + ' plus ' + s.b + ' equals ' + s.total);

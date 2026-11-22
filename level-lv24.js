@@ -585,6 +585,7 @@
       board.innerHTML = '';
       list.forEach(function (r, i) {
         var card = el('button', 'l24-route');
+        if (r.bad) state.answerNode = card;
         card.type = 'button';
         card.dataset.key = r.parts.join('') + '=' + r.total;
         card.setAttribute('aria-label', r.parts.join(' ') + ' equals ' + r.total);

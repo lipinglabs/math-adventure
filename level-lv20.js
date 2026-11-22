@@ -996,6 +996,7 @@
       board.innerHTML = '';
       list.forEach(function (s, i) {
         var c = sentenceCard(s);
+        if (s.bad) state.answerNode = c.node;
         c.node.addEventListener('click', function () { pick(s, c); });
         popIn(c.node, i * 60);
         board.appendChild(c.node);

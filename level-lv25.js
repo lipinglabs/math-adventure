@@ -630,6 +630,7 @@
       board.innerHTML = '';
       list.forEach(function (s, i) {
         var card = el('button', 'l25-card');
+        if (s.bad) state.answerNode = card;
         card.type = 'button';
         card.dataset.key = s.a + '+' + s.b + '=' + s.shown;
         card.setAttribute('aria-label', s.a + ' plus ' + s.b + ' equals ' + s.shown);

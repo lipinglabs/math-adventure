@@ -423,6 +423,7 @@
       board.innerHTML = '';
       list.forEach(function (s, i) {
         var card = el('button', 'l27-card');
+        if (s.bad) state.answerNode = card;
         card.type = 'button';
         card.dataset.key = s.a + s.sign + s.b + '=' + s.shown;
         card.setAttribute('aria-label', s.a + ' ' + s.sign + ' ' + s.b + ' equals ' + s.shown);

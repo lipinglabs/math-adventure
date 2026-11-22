@@ -702,6 +702,7 @@
         v.line.classList.add('is-in');
         v.r3.row.classList.add('is-in');
         var wrap = el('button', 'l22-vcard');
+        if (s.bad) state.answerNode = wrap;
         wrap.type = 'button';
         wrap.dataset.key = s.a + '+' + s.b + '=' + s.shown + (s.skew ? 's' : '');
         wrap.setAttribute('aria-label', s.a + ' plus ' + s.b + ' equals ' + s.shown);
