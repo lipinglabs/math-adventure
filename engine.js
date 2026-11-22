@@ -1102,7 +1102,15 @@
     };
 
     var cursor = W.store.getCursor(levelId) || {};
-    var solved = (cursor.solved || []).slice();
+    /* 中途退出不接续（2026-11-22）：从地图再次进关一律从第 1 题重新开始。
+       旧行为会按 cursor.solved 只出剩余题，孩子看到的是「10 个进度点却只做 4 题」，
+       且上一局的对错会带进新一局。这里直接丢弃游标，保证每次进关都是完整一局；
+       重玩按钮（ctx.restart）同样走这个入口，行为一致。 */
+    if (cursor.solved && cursor.solved.length) {
+      if (W.store.clearCursor) W.store.clearCursor(levelId);
+      cursor = {};
+    }
+    var solved = [];
     // 一关一局：整关 10 题在一次进入里连续做完（疲劳由 Wellbeing 按时间插休息画面），
     // 只在整关收尾结算一次，才能保证「全对 = 金星」。
     var groupSizes = [Math.max(1, n)];

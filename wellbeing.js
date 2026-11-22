@@ -493,14 +493,12 @@
     var card = document.createElement('div');
     card.className = 'wb-gate';
     card.innerHTML =
-      '<p class="wb-gate-title">Grown-ups only</p>' +
-      '<p class="wb-gate-hint">Tap the circle</p>' +
+      '<p class="wb-gate-hint">请点一下圆形</p>' +
       '<div class="wb-gate-shapes">' +
-      '<button type="button" class="wb-shape wb-shape--square" data-ok="0" aria-label="Square"></button>' +
-      '<button type="button" class="wb-shape wb-shape--triangle" data-ok="0" aria-label="Triangle"></button>' +
-      '<button type="button" class="wb-shape wb-shape--circle" data-ok="1" aria-label="Circle"></button>' +
-      '</div>' +
-      '<button type="button" class="wb-gate-cancel" data-act="cancel">Cancel</button>';
+      '<button type="button" class="wb-shape wb-shape--square" data-ok="0" aria-label="正方形"></button>' +
+      '<button type="button" class="wb-shape wb-shape--triangle" data-ok="0" aria-label="三角形"></button>' +
+      '<button type="button" class="wb-shape wb-shape--circle" data-ok="1" aria-label="圆形"></button>' +
+      '</div>';
     host.appendChild(card);
     card.addEventListener('click', function (e) {
       var t = e.target && e.target.closest ? e.target.closest('button') : null;

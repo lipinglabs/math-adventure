@@ -887,9 +887,9 @@
     // A6 ParentGate：仅防孩子误改设置（不是能力测试、不采集信息）
     if (W && W.parentGate) {
       Engine.modal({
-        title: 'Grown-ups only',
+        title: '家长模式',
         bodyHTML: '<div id="wb-gate-host" class="wb-gate-host"></div>',
-        actions: [{ label: 'Cancel', kind: 'ghost' }]
+        actions: [{ label: '取消', kind: 'ghost' }]
       });
       W.parentGate(byId('wb-gate-host'), function () { openSavePanelContent(); });
     } else {

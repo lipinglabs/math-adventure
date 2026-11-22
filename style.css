@@ -19609,3 +19609,86 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
 }
 
 .relock-btn:active { transform: translateY(1px); }
+
+/* ============================================================
+   家长模式入口（图形验证）
+   ------------------------------------------------------------
+   这三个 .wb-shape 之前只有 HTML、没有任何样式，实际尺寸 0×0：
+   真实手指点上去命中的是外层容器，只有脚本 .click() 能过——
+   所以家长在真机上永远进不去。这里补最小可用样式：
+   72×72 可点区域（≥64px 触控标准），形状画在 ::before 上。
+   ============================================================ */
+.wb-gate { text-align: center; }
+
+.wb-gate-hint {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.wb-gate-shapes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 4px 0 14px;
+}
+
+.wb-shape {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wb-shape::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #F3E3C8;
+}
+
+.wb-shape--square::before {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  box-shadow: 0 3px 0 #E3CDAA;
+}
+
+.wb-shape--circle::before {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 3px 0 #E3CDAA;
+}
+
+.wb-shape--triangle::before {
+  width: 0;
+  height: 0;
+  background: transparent;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 52px solid #F3E3C8;
+}
+
+.wb-shape:active::before { transform: translate(-50%, -50%) scale(0.94); }
+
+.wb-gate.is-nudge { animation: wbGateNudge 320ms ease-out; }
+
+@keyframes wbGateNudge {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  55% { transform: translateX(6px); }
+  80% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wb-gate.is-nudge { animation: none !important; }
+}
