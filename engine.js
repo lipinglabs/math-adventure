@@ -1000,12 +1000,32 @@
           // B5 第 3 次：展示答案并前进（正确项放大停留 1.5s、outcome=shown、无条件前进）
           result.level = 3; result.outcome = 'shown'; result.forceAdvance = true;
           result.revealHoldMs = (global.FB_SPEC && global.FB_SPEC.revealHoldMs) || 1500;
+          result.answer = hint;          // 数值题的正确答案，供关卡高亮；识别题为 null
           outcomes[i] = 'shown';
           shownPendingAdvance = true;
           emit('quiz:shown', { levelId: levelId, index: i, holdMs: result.revealHoldMs });
         }
         persist();
         return result;
+      },
+
+      /* B5 第 3 次「展示答案并前进」的推进动作。
+         与 answer(true) 的区别：不计 cleanCount、不算首答正确，星级只能是银。
+         由 Engine.flow.shown() 在 1.5s 停留结束后调用。 */
+      advanceShown: function () {
+        if (index >= total) return finishResult();
+        var i = index;
+        outcomes[i] = 'shown';
+        var ref = plannedRefs[i] || (String(levelId) + ':' + i);
+        if (solvedRefs.indexOf(ref) < 0) solvedRefs.push(ref);
+        index += 1;
+        shownPendingAdvance = false;
+        api.resolve();
+        persist();
+        emit('quiz:advance', { levelId: levelId, index: i, track: sessionFlags.track, shown: true });
+        if (index >= total) return finishResult();
+        return { done: false, advance: true, retry: false, outcome: 'shown',
+                 wrongCount: wrong.length, correctCount: correctCount };
       },
 
       reset: function () {
@@ -1275,6 +1295,82 @@
     }
     list.push(list.shift());     // 保底：轮转一位，答案位置必定改变
     return list;
+  }
+
+  /* ---------------- B5 第 3 次：展示答案并放行 ----------------
+     48 关共用的收尾动作：亮出正确项 → 停留 revealHoldMs → 推进下一题。
+     关卡只需要在 session.answer(false) 返回 forceAdvance 时调用一次。
+     · 正确项来源：state.answerNode（识别题由关卡标记）优先，
+       否则按 [data-value="答案"] 在关卡里找（数值题通用）。
+     · 识别题没有数值答案时仍会亮出提示条，保证「给答案」而不是静默跳过。 */
+  var shownLocks = {};      // "levelId:index" → 已放行，防止重复点击把同一题推进两次
+
+  function flowShown(res, opts) {
+    opts = opts || {};
+    var state = opts.state || {};
+    if (state.locked) return false;
+    var alive = typeof opts.alive === 'function' ? opts.alive : function () { return true; };
+    if (!alive()) return false;
+    var lockKey = String(activeLevelId) + ':' + String(lastSession ? lastSession.index : -1);
+    if (shownLocks[lockKey]) return false;
+    shownLocks[lockKey] = true;
+    state.locked = true;
+    if (global.Engine && global.Engine.audio && global.Engine.audio.stop) global.Engine.audio.stop();
+
+    var root = opts.root || document.getElementById('stage');
+    var host = opts.story || root;
+    // 答案来源优先级：关卡显式给出（最准）→ 引擎数值提示 → 只能靠高亮指认
+    var answer = (opts.answerValue != null) ? opts.answerValue
+      : ((state.answerValue != null) ? state.answerValue
+        : ((res && res.answer != null) ? res.answer : null));
+    var node = null;
+    var banner = null;
+    var wait = Math.max(900, Math.floor(Number(res && res.revealHoldMs) || 1500));
+
+    /* 各关在 wrong() 返回后还会执行一次 320ms 左右的重绘（reshuffle + 重建选项）。
+       若立刻高亮，节点会在重绘时被替换掉，看起来「没亮」。
+       因此把定位与高亮延后到重绘之后，再开始 1.5s 停留。 */
+    var SHOW_DELAY = 420;
+
+    var blocker = null;
+
+    function reveal() {
+      if (!alive()) return;
+      // 透明挡板：揭示与停留期间不接受任何点击（有些关卡只有局部 locked 变量）
+      blocker = document.createElement('div');
+      blocker.className = 'reveal-block';
+      document.body.appendChild(blocker);
+      node = (state.answerNode && state.answerNode.parentNode) ? state.answerNode : null;
+      if (!node && answer != null && root && root.querySelector) {
+        node = root.querySelector('[data-value="' + answer + '"]');
+      }
+      if (node && node.classList) node.classList.add('reveal-answer');
+
+      banner = document.createElement('div');
+      banner.className = 'reveal-banner';
+      banner.textContent = answer != null ? ('The answer is ' + answer + '.')
+        : (node ? 'Look at this one.' : 'Look at the answer.');
+      if (host) host.appendChild(banner);
+    }
+
+    function advance() {
+      if (node && node.classList) node.classList.remove('reveal-answer');
+      if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+      if (blocker && blocker.parentNode) blocker.parentNode.removeChild(blocker);
+      blocker = null;
+      if (!alive()) return;
+      var s = opts.session || lastSession;
+      var next = (s && s.advanceShown) ? s.advanceShown() : null;
+      if (next && next.done) {
+        if (typeof opts.finish === 'function') opts.finish(next.star);
+        return;
+      }
+      if (typeof opts.next === 'function') opts.next();
+    }
+
+    setTimeout(reveal, SHOW_DELAY);
+    setTimeout(advance, SHOW_DELAY + wait);
+    return true;
   }
 
   /* ---------------- Three.js 扩展位 ----------------
@@ -1578,6 +1674,7 @@
     // 每关重置续做偏移：乘除段有 22 关不走 quiz.shuffle/planQueue，
     // 否则会继承上一关的偏移，进度点从一半开始亮。
     sessionFlags.resumeOffset = 0;
+    shownLocks = {};
     var tasks = buildTasks(level, options);
     var done = 0;
     var failed = [];
@@ -1827,9 +1924,9 @@
     document.addEventListener('quiz:near', function () {
       var F = global.Feedback; if (F) F.F.F4_near(stageHost());
     });
-    document.addEventListener('quiz:shown', function () {
-      var F = global.Feedback; if (F) F.F.F7_reveal(stageHost(), function () {});
-    });
+    /* quiz:shown 只作为事件广播：真正的「亮答案 + 停留 + 放行」由关卡调用
+       Engine.flow.shown() 完成——旧版在这里对整个 #stage 加高亮，
+       既没有指出正确项，又和关卡的推进互不知情。 */
     document.addEventListener('quiz:correct', function () {
       var F = global.Feedback; if (F) F.ensureTouchTargets(stageHost());
     });
@@ -1871,6 +1968,8 @@
     session: createSession,
     sessionLast: function () { return lastSession; },
     flags: sessionFlags,
+    // B5 第 3 次「展示答案并放行」的统一实现（关卡在 wrong 分支调用）
+    flow: { shown: flowShown },
     bus: {
       emit: emit,
       EVT: EVT,

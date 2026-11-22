@@ -477,7 +477,17 @@
     function wrong(node) {
       if (state.locked) return;
       state.errors += 1;
-      session.answer(false);
+      var flow = session.answer(false);
+      if (flow && flow.forceAdvance) {
+        Engine.flow.shown(flow, {
+          root: root, story: story, session: session,
+          state: (typeof state !== 'undefined' && state) ? state : null,
+          alive: function () { return alive; },
+          finish: function (star) { ctx.step(Math.min(session.index, TOTAL)); finish(star); },
+          next: function () { ctx.step(Math.min(session.index, TOTAL)); askQuestion(root); }
+        });
+        return;
+      }
       if (state.errors === 1) {
         Engine.audio.stop();
         later(function () { ctx.audio.play('common/try_again'); }, 240);
@@ -564,6 +574,7 @@
       board.innerHTML = '';
       list.forEach(function (entry, i) {
         var card = el('button', 'l9-card');
+        if (entry === bad) state.answerNode = card;   // 第三次放行时用来亮出正确项
         card.type = 'button';
         card.dataset.key = keyOf(entry);
         card.setAttribute('aria-label', entry.a + ' plus ' + entry.b + ' equals ' + entry.shown);

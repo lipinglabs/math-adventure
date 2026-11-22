@@ -472,6 +472,14 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
   三处必截断的等待（2600 / 5200 / 2600 ms 对应 3.58 / 5.50 / 4.73 秒语音）全部消除；② L22 `buildWrong()` 补 `is-in`
   —— `.l22-vrow` 默认 `opacity:0`，缺类导致三张竖式卡"有字但全透明"，同时卡片内边距 6→10px、skew 位移 13→10px 防个位列出界；
   ③ L36 语音前缀 `l36/` → `lv36/`，此前 12 条语音全 404、`play()` 抛 `NotSupportedError` 被 `saySeq` 静默吞掉；
+- **题面消失 + 三次放行（2026-11-22，v57）**：① `Feedback.cancelProcess()` 旧实现把
+  `trackProcess` 的节点一律 `removeChild`，而 F3「再试一次」高亮的是关卡的 `.lv-story`——
+  于是同一题答错两次后，整个题面被当成过程浮层删掉，只剩托盘里的数字键。
+  现区分 `processNodes`（自建浮层，删除）与 `borrowedNodes`（借用容器，只摘 `fb-hl/fb-pop/fb-dim`）。
+  ② 引擎第 3 次答错返回的 `forceAdvance` 此前没有任何关卡消费，孩子只能无限重做；
+  现 `Engine.flow.shown()` 统一实现「亮正确项 + `The answer is N.` 提示条 + 停留 1.5s + 自动下一题」，
+  `session.advanceShown()` 负责推进并结算（该题 `outcome=shown`，不再可能金星）。
+  27 关的 `session.answer(false)` 全部接入；L1/L2 无 `state` 对象、走 `answerValue` 兜底。
 - **解锁链与续做修复（2026-11-21，v56）**：① 隐藏轨导致地图缺号——`CORE` 排除了 L16/19–24/27，
   而「试一试」开关已下线，于是打完 L15 后 16 不存在、17 锁死，18→25、26→28 同样断链；
   现 1–48 全部并入 core。② `Progress.record` 不再写 `id+1`，改为推进到「数据里实际存在的下一关」。

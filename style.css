@@ -19520,3 +19520,60 @@ body.is-sandbox .sandbox-chip { display: inline-flex; }
   .cd-stem-ear, .cd-token.is-inhand, .cd-q-mark, .cd-guide-bar, .cd-ring circle,
   .cd-card, .cd-group-item, .cd-intro-prop, .cd-quad-cell { animation: none !important; }
 }
+
+/* ============================================================
+   B5 第三次答错：亮出正确项并放行（engine.js · Engine.flow.shown）
+   ------------------------------------------------------------
+   正确项加 .reveal-answer（暖黄描边 + 呼吸放大），
+   题面上方浮一条 .reveal-banner 说明答案，1.5s 后自动进入下一题。
+   类名刻意与关卡自己的 .is-answer 区分，避免影响既有题型样式。
+   ============================================================ */
+.reveal-answer {
+  outline: 4px solid #D2691E !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 8px rgba(210, 105, 30, 0.18) !important;
+  background-color: #FFF3D6 !important;
+  animation: revealAnswerPulse 900ms ease-in-out infinite alternate;
+}
+
+@keyframes revealAnswerPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+.reveal-banner {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  max-width: 86vw;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #FFF7E6;
+  color: #8A5A12;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(120, 88, 40, 0.18);
+  pointer-events: none;
+  animation: revealBannerIn 220ms ease-out both;
+}
+
+@keyframes revealBannerIn {
+  from { opacity: 0; transform: translate(-50%, -6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-answer, .reveal-banner { animation: none !important; }
+}
+
+/* 第三次放行期间的全屏透明挡板：防止停留 1.5s 内重复点击把本题推进两次 */
+.reveal-block {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: transparent;
+}

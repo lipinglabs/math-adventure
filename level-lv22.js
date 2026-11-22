@@ -828,7 +828,17 @@
       if (state.locked || state.busy) return;
       state.busy = true;
       state.errors += 1;
-      session.answer(false);
+      var flow = session.answer(false);
+      if (flow && flow.forceAdvance) {
+        Engine.flow.shown(flow, {
+          root: root, story: story, session: session,
+          state: (typeof state !== 'undefined' && state) ? state : null,
+          alive: function () { return alive; },
+          finish: function (star) { ctx.step(Math.min(session.index, TOTAL)); finish(star); },
+          next: function () { ctx.step(Math.min(session.index, TOTAL)); askQuestion(root); }
+        });
+        return;
+      }
       if (state.errors === 1) {
         Engine.audio.stop();
         later(function () { ctx.audio.play('common/try_again'); }, 240);

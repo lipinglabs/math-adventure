@@ -109,9 +109,12 @@
        · 集星 / 贴纸等视觉动效等语音 ended 后才起
        · 答错：无表扬语音、无星星 */
   var feedbackBus = {
-    processNodes: [],
-    trackProcess: function (node) {
-      if (node) feedbackBus.processNodes.push(node);
+    processNodes: [],      // 自己创建的浮层：取消时整块移除
+    borrowedNodes: [],     // 借来打高亮的关卡容器/选项：取消时只摘类名，绝不删除
+    trackProcess: function (node, opts) {
+      if (!node) return node;
+      if (opts && opts.borrowed) feedbackBus.borrowedNodes.push(node);
+      else feedbackBus.processNodes.push(node);
       return node;
     },
     cancelProcess: function () {
@@ -119,6 +122,13 @@
         if (n && n.parentNode) n.parentNode.removeChild(n);
       });
       feedbackBus.processNodes = [];
+      /* 关键：F3 高亮的是关卡的 .lv-story（关卡自己创建的容器）。
+         旧实现把它当浮层一起 removeChild，于是「同一题答错两次 → 题面被整块删掉」。
+         借用的节点只摘掉过程动效的类名，节点本身必须留在 DOM 里。 */
+      feedbackBus.borrowedNodes.forEach(function (n) {
+        if (n && n.classList) n.classList.remove('fb-hl', 'fb-pop', 'fb-dim');
+      });
+      feedbackBus.borrowedNodes = [];
     },
     /** 答对：返回 true 表示已按三轨时序排好；onEnded 由调用方在语音 ended 时触发集星。 */
     correct: function (opts) {
@@ -168,7 +178,8 @@
       injectStyle();
       if (!node) return null;
       node.classList.add('fb-hl', 'fb-pop');
-      return feedbackBus.trackProcess(node);
+      // borrowed：这个节点属于关卡，取消动效时只能摘类名，不能删节点
+      return feedbackBus.trackProcess(node, { borrowed: true });
     },
     // F4 差一点（near）：所选框与目标框间浮出 2–3 小圆点，不判定对错、不消失选项
     F4_near: function (host) {
