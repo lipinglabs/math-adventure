@@ -383,10 +383,20 @@
     });
   }
 
+  /* 同一 URL 的并发加载去重。
+     两次 play 抢在第一次 resolve 之前时，旧实现会 new 出两个 Audio：
+     后一个覆盖 audioPool[url]，前一个既不在池里也不会被 stopAudio 暂停——
+     它会一直播到结尾，听感就是两条同样的语音叠在一起。
+     用一张 in-flight 表把并发请求收成同一个 Promise。 */
+  var loadingAudio = {};
+
   function loadAudio(src, base, cache, stats, opts) {
     var lazy = !!(opts && opts.lazy);
     var url = resolveUrl(src, base);
-    return new Promise(function (resolve, reject) {
+    if (audioPool[url]) return Promise.resolve(url);
+    if (loadingAudio[url]) return loadingAudio[url];
+
+    var task = new Promise(function (resolve, reject) {
       if (audioPool[url]) return resolve(url);
       if (Object.keys(audioPool).length >= LIMITS.maxAudioNodes) {
         return reject(new Error('音频元素已达上限'));
@@ -451,6 +461,10 @@
         reject(err instanceof Error ? err : new Error('音频下载失败'));
       });
     });
+
+    loadingAudio[url] = task;
+    task.then(function () { delete loadingAudio[url]; }, function () { delete loadingAudio[url]; });
+    return task;
   }
 
   /**
@@ -508,19 +522,35 @@
       return new Promise(function (resolve) {
         var done = false;
         var timer = null;
+        function clearTimer() { if (timer) { clearTimeout(timer); timer = null; } }
         function finish(v) {
           if (done) return;
           done = true;
-          if (timer) clearTimeout(timer);
+          clearTimer();
           a.removeEventListener('ended', finishTrue);
           a.removeEventListener('error', finishFalse);
+          a.removeEventListener('playing', armFallback);
           resolve(v);
         }
         function finishTrue() { finish(true); }
         function finishFalse() { finish(false); }
 
+        /* 兜底必须从「真正开始出声」起算。
+           懒加载后 play() 可能在缓冲阶段停留 0.5–2s；若仍按 duration 从调用时刻计时，
+           兜底会早于真实结束触发，saySeq 立刻起下一句——听感就是两条语音叠在一起，
+           动画也抢在语音前面。起播前只留宽松守卫，起播后再按剩余时长 +1.5s 兜底。 */
+        function armFallback() {
+          if (done) return;
+          clearTimer();
+          var remain = (isFinite(a.duration) && a.duration > 0)
+            ? Math.max(0, (a.duration - a.currentTime) * 1000)
+            : 8000;
+          timer = setTimeout(finishTrue, remain + 1500);
+        }
+
         a.addEventListener('ended', finishTrue);
         a.addEventListener('error', finishFalse);
+        a.addEventListener('playing', armFallback);
         try { a.currentTime = 0; } catch (e) { /* 未就绪 */ }
         a.volume = opts.volume == null ? 1 : clamp(opts.volume, 0, 1);
         a.muted = !!opts.muted;
@@ -532,9 +562,8 @@
           return finish(false);
         }
 
-        // 兜底：音频事件丢失时也不能卡住流程；finish() 会清掉这个定时器
-        var guess = (isFinite(a.duration) && a.duration > 0) ? a.duration * 1000 : 8000;
-        timer = setTimeout(function () { finish(true); }, guess + 900);
+        // 起播前守卫：只防「事件全丢」，绝不在上一句还没播完时放行
+        timer = setTimeout(finishTrue, 15000);
       });
     }
 

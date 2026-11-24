@@ -472,6 +472,11 @@ node tools/cdp-shot.mjs .shots/map.png 390 844
   三处必截断的等待（2600 / 5200 / 2600 ms 对应 3.58 / 5.50 / 4.73 秒语音）全部消除；② L22 `buildWrong()` 补 `is-in`
   —— `.l22-vrow` 默认 `opacity:0`，缺类导致三张竖式卡"有字但全透明"，同时卡片内边距 6→10px、skew 位移 13→10px 防个位列出界；
   ③ L36 语音前缀 `l36/` → `lv36/`，此前 12 条语音全 404、`play()` 抛 `NotSupportedError` 被 `saySeq` 静默吞掉；
+- **语音叠音/错位（2026-11-24，v61）**：v60 的懒加载让音频起播可能晚 0.5–2s，而结束兜底仍按
+  「调用时刻 + duration」计时，于是兜底早于真实结束触发，下一句立刻起播、下一幕动画也抢跑，
+  听感是语音叠在一起且与画面错开。现改为 `playing` 事件后按「剩余时长 + 1.5s」起兜底，
+  起播前只留 15s 守卫；另修 `loadAudio` 同一 URL 并发时 new 出两个元素、旧元素脱离
+  `stopAudio` 管理继续出声的通道（in-flight 去重）。
 - **热进关提速（2026-11-23，v60）**：旧路径每次进关都对 24 个素材逐个 `new Audio()` 并等
   `canplaythrough`，即使用户已经玩过、文件全在 Cache Storage 里，也要多付 100–200ms。
   现在 `countMissing === 0` 时走快路径：音频元素只挂 `src` 不阻塞解码，`loadLevel` 立即返回
